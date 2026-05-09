@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#10131f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Prompt Muse" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Prompt Muse v2 for Suno</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Unofficial iPhone prompt studio · v2 trait engine</p>
+        <h1>Prompt Muse <span>for Suno</span></h1>
+        <p class="hero-copy">Turn artist inspirations into original, Suno-ready prompts with safe commercial, creative experimental, and venue-ready variants.</p>
+      </div>
+      <div class="header-actions">
+        <button class="ghost small" id="installHelpBtn" type="button">iPhone install</button>
+        <button class="ghost small" id="aboutBtn" type="button">About v2</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="card notice" id="installHelp" hidden>
+        <h2>Add to iPhone Home Screen</h2>
+        <p>Open this app in Safari, tap <strong>Share</strong>, then choose <strong>Add to Home Screen</strong>. After first load, the app works offline and stores prompt history locally on the device.</p>
+      </section>
+
+      <section class="card notice" id="aboutPanel" hidden>
+        <h2>What changed in v2</h2>
+        <p>v2 adds an inspiration-expansion engine, per-artist influence weighting, a reusable AI expansion brief, release/stem logging, originality scoring, venue-fit scoring, and three separate Suno prompt variants.</p>
+      </section>
+
+      <section class="card status-card">
+        <div>
+          <strong>Artist-safe mode is ON.</strong>
+          <p>Artist names stay in private notes and QA logs. Generated Suno prompts use traits such as vocal texture, groove, production, instrumentation, arrangement, and lyric attitude instead of requesting imitation.</p>
+        </div>
+        <label class="switch-row">
+          <input type="checkbox" id="artistSafeMode" checked />
+          <span>Safe</span>
+        </label>
+      </section>
+
+      <form id="promptForm" class="stack" autocomplete="off">
+        <section class="card">
+          <h2>1. Song identity</h2>
+          <div class="grid two">
+            <label>
+              Working title
+              <input id="title" name="title" placeholder="Ras Beirut Afterglow" />
+            </label>
+            <label>
+              Use case
+              <select id="useCase" name="useCase">
+                <option>Single / release candidate</option>
+                <option>Venue background playlist</option>
+                <option>Instagram reel / short video</option>
+                <option>Luxury brand ambience</option>
+                <option>Restaurant dinner set</option>
+                <option>Beach sunset set</option>
+                <option>Demo for human vocalist</option>
+              </select>
+            </label>
+          </div>
+          <label>
+            Core idea
+            <textarea id="coreIdea" rows="3" placeholder="A warm Mediterranean lounge track for golden-hour dining by the sea in Ras Beirut."></textarea>
+          </label>
+        </section>
+
+        <section class="card">
+          <div class="section-title-row">
+            <h2>2. Artist inspirations</h2>
+            <div class="button-row compact">
+              <button class="secondary small" id="presetArtistsBtn" type="button">Sporting trio</button>
+              <button class="secondary small" id="addArtistBtn" type="button">+ Add</button>
+            </div>
+          </div>
+          <p class="hint">Add 3–5 references, pick what to borrow, and set influence strength. The final prompts translate references into musical traits rather than names.</p>
+          <div id="artistRows" class="artist-rows"></div>
+        </section>
+
+        <section class="card trait-engine-card">
+          <h2>3. Inspiration expansion engine</h2>
+          <div class="grid two">
+            <label>
+              Blend strategy
+              <select id="blendStrategy"></select>
+            </label>
+            <label>
+              Originality guard
+              <select id="originalityGuard"></select>
+            </label>
+          </div>
+          <label>
+            Trait instructions
+            <textarea id="traitInstructions" rows="3" placeholder="e.g. blend into a premium Mediterranean lounge identity; keep melody and lyrics fully original"></textarea>
+          </label>
+        </section>
+
+        <section class="card">
+          <h2>4. Venue, genre, and mood</h2>
+          <div class="grid two">
+            <label>
+              Venue / preset
+              <select id="venuePreset"></select>
+            </label>
+            <label>
+              Genre spine
+              <select id="genreSpine"></select>
+            </label>
+          </div>
+          <div class="grid two">
+            <label>
+              Custom genre detail
+              <input id="customGenre" placeholder="e.g. brass-led Latin Mediterranean lounge" />
+            </label>
+            <label>
+              Brand / hook phrase
+              <input id="hookPhrase" placeholder="e.g. Sporting Club by the sea" />
+            </label>
+          </div>
+          <div>
+            <p class="label-like">Mood palette</p>
+            <div id="moodChips" class="chips"></div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>5. Musical controls</h2>
+          <div class="grid three">
+            <label>
+              BPM
+              <input id="bpm" inputmode="numeric" placeholder="104" />
+            </label>
+            <label>
+              Key
+              <input id="songKey" placeholder="A minor" />
+            </label>
+            <label>
+              Length target
+              <select id="lengthTarget">
+                <option>3:00 radio-ready</option>
+                <option>2:00 short-form</option>
+                <option>4:30 extended lounge</option>
+                <option>6:00 DJ-friendly</option>
+                <option>8:00 long-form</option>
+              </select>
+            </label>
+          </div>
+          <div class="grid two">
+            <label>
+              Vocal direction
+              <select id="vocalDirection"></select>
+            </label>
+            <label>
+              Language
+              <select id="language"></select>
+            </label>
+          </div>
+          <div class="grid two">
+            <label>
+              Arrangement arc
+              <select id="arrangementArc"></select>
+            </label>
+            <label>
+              Prompt depth
+              <select id="promptDepth">
+                <option value="standard">Standard</option>
+                <option value="short">Short</option>
+                <option value="detailed">Detailed custom-mode</option>
+              </select>
+            </label>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>6. Sonic palette and release log</h2>
+          <label>
+            Instruments / textures
+            <textarea id="instruments" rows="3" placeholder="oud, nylon guitar, Rhodes, brushed drums, soft trumpet, sea ambience"></textarea>
+          </label>
+          <label>
+            Exclusions / avoid
+            <textarea id="exclusions" rows="3" placeholder="no direct artist names, no copied hooks, no harsh EDM drops, no muddy low end"></textarea>
+          </label>
+          <div class="grid two">
+            <label>
+              Release posture
+              <select id="releasePosture"></select>
+            </label>
+            <label>
+              Stem / DAW plan
+              <select id="stemPlan"></select>
+            </label>
+          </div>
+          <label>
+            Human edit notes
+            <textarea id="humanEditNotes" rows="3" placeholder="e.g. replace lead vocal, add live trumpet, export stems for Ableton polish"></textarea>
+          </label>
+        </section>
+
+        <div class="sticky-actions">
+          <button class="primary" id="generateBtn" type="submit">Generate Suno prompt set</button>
+          <button class="secondary" id="randomizeBtn" type="button">Spark idea</button>
+        </div>
+      </form>
+
+      <section class="card output-card" id="outputSection" aria-live="polite">
+        <div class="section-title-row">
+          <h2>Generated prompt bundle</h2>
+          <span id="qualityBadge" class="badge">Ready</span>
+        </div>
+
+        <div class="score-grid">
+          <div class="score-card"><span id="originalityScore">—</span><small>Originality</small></div>
+          <div class="score-card"><span id="venueScore">—</span><small>Venue fit</small></div>
+          <div class="score-card"><span id="sunoScore">—</span><small>Suno clarity</small></div>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="Prompt outputs">
+          <button class="tab active" data-tab="safe" type="button">Safe</button>
+          <button class="tab" data-tab="experimental" type="button">Experimental</button>
+          <button class="tab" data-tab="venue" type="button">Venue</button>
+          <button class="tab" data-tab="lyrics" type="button">Lyrics</button>
+          <button class="tab" data-tab="simple" type="button">Simple</button>
+          <button class="tab" data-tab="ai" type="button">AI brief</button>
+          <button class="tab" data-tab="qa" type="button">QA log</button>
+        </div>
+
+        <div class="tab-panel active" id="panel-safe">
+          <label>
+            Safe Commercial Style Prompt
+            <textarea id="safeOutput" rows="12" readonly></textarea>
+          </label>
+          <div class="button-row"><button class="secondary" data-copy="safeOutput" type="button">Copy Safe</button></div>
+        </div>
+
+        <div class="tab-panel" id="panel-experimental">
+          <label>
+            Creative Experimental Style Prompt
+            <textarea id="experimentalOutput" rows="12" readonly></textarea>
+          </label>
+          <div class="button-row"><button class="secondary" data-copy="experimentalOutput" type="button">Copy Experimental</button></div>
+        </div>
+
+        <div class="tab-panel" id="panel-venue">
+          <label>
+            Venue-Ready Style Prompt
+            <textarea id="venueOutput" rows="12" readonly></textarea>
+          </label>
+          <div class="button-row"><button class="secondary" data-copy="venueOutput" type="button">Copy Venue</button></div>
+        </div>
+
+        <div class="tab-panel" id="panel-lyrics">
+          <label>
+            Lyrics / structure scaffold
+            <textarea id="lyricsOutput" rows="13" readonly></textarea>
+          </label>
+          <div class="button-row"><button class="secondary" data-copy="lyricsOutput" type="button">Copy Lyrics</button></div>
+        </div>
+
+        <div class="tab-panel" id="panel-simple">
+          <label>
+            One-box Simple Mode Prompt
+            <textarea id="simpleOutput" rows="12" readonly></textarea>
+          </label>
+          <div class="button-row"><button class="secondary" data-copy="simpleOutput" type="button">Copy Simple</button></div>
+        </div>
+
+        <div class="tab-panel" id="panel-ai">
+          <label>
+            Optional AI Expansion Brief
+            <textarea id="aiBriefOutput" rows="16" readonly></textarea>
+          </label>
+          <div class="button-row"><button class="secondary" data-copy="aiBriefOutput" type="button">Copy AI Brief</button></div>
+        </div>
+
+        <div class="tab-panel" id="panel-qa">
+          <label>
+            QA / Release Log
+            <textarea id="qaOutput" rows="16" readonly></textarea>
+          </label>
+          <div class="button-row"><button class="secondary" data-copy="qaOutput" type="button">Copy QA Log</button></div>
+        </div>
+
+        <div class="button-row wrap">
+          <button class="primary" id="copyAllBtn" type="button">Copy all</button>
+          <button class="secondary" id="savePromptBtn" type="button">Save to history</button>
+          <button class="secondary" id="downloadMdBtn" type="button">Download .md</button>
+          <button class="danger" id="clearHistoryBtn" type="button">Clear history</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-title-row">
+          <h2>Prompt history</h2>
+          <span id="historyCount" class="badge muted">0 saved</span>
+        </div>
+        <div id="historyList" class="history-list"></div>
+      </section>
+    </main>
+  </div>
+
+  <template id="artistRowTemplate">
+    <div class="artist-row">
+      <label>
+        Artist / reference
+        <input class="artist-name" placeholder="e.g. Fairuz, Sade, Black Coffee" />
+      </label>
+      <label>
+        What to borrow
+        <select class="artist-aspect">
+          <option value="overall">Overall vibe</option>
+          <option value="vocal">Vocal texture</option>
+          <option value="groove">Groove / rhythm</option>
+          <option value="production">Production / mix</option>
+          <option value="arrangement">Arrangement</option>
+          <option value="instrumentation">Instrumentation</option>
+          <option value="lyric">Lyric attitude</option>
+          <option value="performance">Performance energy</option>
+        </select>
+      </label>
+      <label class="full intensity-row">
+        Influence strength <span class="artist-intensity-label">balanced</span>
+        <input class="artist-intensity" type="range" min="1" max="5" step="1" value="3" />
+      </label>
+      <label class="full">
+        Notes
+        <input class="artist-notes" placeholder="e.g. intimate vocal, coastal warmth, disco pulse — no imitation" />
+      </label>
+      <button class="ghost remove-artist" type="button" aria-label="Remove inspiration">Remove</button>
+    </div>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
