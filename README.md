@@ -1,69 +1,70 @@
-# Prompt Muse v2 for Suno
+# Prompt Muse v3 for Suno
 
-Prompt Muse v2 is an iPhone-first PWA for building artist-inspired but original Suno prompt bundles. It works offline after first load, stores prompt history locally, and keeps artist names out of the final Suno-ready style prompts.
+Prompt Muse v3 is an iPhone-first static PWA for generating Suno-ready prompt fields from artist inspirations while keeping artist names out of the Suno-facing output.
 
-## v2 upgrades
+## What v3 adds
 
-- Three Suno prompt variants: **Safe Commercial**, **Creative Experimental**, and **Venue Ready**.
-- Per-artist inspiration rows with aspect selection and influence strength.
-- Expanded trait mapping for vocal texture, groove, production, instrumentation, arrangement, lyric attitude, and performance energy.
-- Optional **AI Expansion Brief** you can paste into ChatGPT/Codex to further refine the prompt while preserving artist-safe guardrails.
-- QA / release log with originality score, venue-fit score, Suno clarity score, stem/DAW plan, and human edit notes.
-- Built-in Sporting Club / Mediterranean lounge presets plus additional venue and reel presets.
-- Local prompt history, copy buttons, and Markdown export.
+- Four-field Suno copy dock:
+  - Title
+  - Prompt / Lyrics
+  - Style
+  - Negative Prompt
+- Individual copy buttons for each field.
+- One-tap copy of all Suno fields.
+- Searchable local prompt library.
+- Library filters for:
+  - Genre
+  - Style
+  - Inspired by
+  - Country / market
+  - BPM min/max
+  - Favorites
+  - Free-text search
+- Load, duplicate, favorite, delete, export, and import saved prompts.
+- Local-only storage using `localStorage`; no backend is required.
+- Offline support after first load through the service worker.
 
-## iPhone install
+## Deploy to Netlify
 
-1. Deploy this folder to a static host such as Vercel, Netlify, GitHub Pages, Cloudflare Pages, or your own server.
-2. Open the deployed URL in Safari on iPhone.
-3. Tap **Share → Add to Home Screen**.
-4. Launch from the Home Screen.
+1. Unzip the app package.
+2. Make sure `index.html` is directly inside the folder you deploy.
+3. Drag the unzipped folder into Netlify Drop or a Netlify manual deploy area.
+4. Open the live URL on iPhone Safari.
+5. Tap Share → Add to Home Screen.
 
-The app uses only local browser storage. It does not upload prompts, artists, or history.
-
-## Local preview
-
-From inside this folder:
+## Deploy to Vercel CLI
 
 ```bash
+cd suno-iphone-prompt-studio-v3
+npm i -g vercel
+vercel --prod
+```
+
+Use these settings if prompted:
+
+- Framework preset: Other
+- Build command: leave blank
+- Output directory: `.`
+
+## Local testing
+
+```bash
+cd suno-iphone-prompt-studio-v3
 python3 -m http.server 8080
 ```
 
-Then open:
+Then open `http://localhost:8080`.
+
+## Safety model
+
+The app keeps artist names as private inspiration metadata for search and recall. The generated Suno fields translate those names into musical traits such as vocal texture, groove, instrumentation, production character, arrangement shape, and mood. This reduces direct imitation requests and keeps prompts easier to use commercially.
+
+## Storage note
+
+The prompt library is saved locally in the browser under:
 
 ```text
-http://localhost:8080
+promptMuseSunoLibrary.v3
 ```
 
-## Files
-
-```text
-index.html              Main PWA shell
-styles.css              iPhone-first styling
-app.js                  Prompt engine and local history
-manifest.webmanifest    PWA manifest
-sw.js                   Offline cache service worker
-icons/                  App icons
-```
-
-## Suggested deployment prompt for Codex
-
-```text
-You are inside the Prompt Muse v2 folder.
-
-Goal: deploy this static PWA and verify it works on iPhone Safari.
-
-Tasks:
-1. Inspect index.html, styles.css, app.js, manifest.webmanifest, and sw.js.
-2. Confirm all DOM IDs used by app.js exist in index.html.
-3. Run a local static server.
-4. Check that the app loads, tabs switch, prompts generate, copy buttons work, and Markdown export works.
-5. Deploy to my preferred static host.
-6. Do not upload private prompt history or personal data.
-
-After deployment, give me the live URL and iPhone install steps.
-```
-
-## Safe use note
-
-Artist names are treated as private creative references. The generated Suno style prompts convert them into descriptive traits and guardrails rather than asking Suno to imitate, clone, or name a real artist.
+Use the Export Library JSON button before clearing browser storage, changing devices, or redeploying under a different domain.

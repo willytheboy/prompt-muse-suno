@@ -1,4 +1,4 @@
-const CACHE_NAME = 'prompt-muse-suno-v2-cache-2026-05-09';
+const CACHE_NAME = 'prompt-muse-suno-v3-cache-1';
 const ASSETS = [
   './',
   './index.html',
@@ -16,9 +16,7 @@ self.addEventListener('install', event => {
 
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(keys => Promise.all(
-      keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
-    ))
+    caches.keys().then(keys => Promise.all(keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))))
   );
   self.clients.claim();
 });

@@ -1,91 +1,14 @@
+'use strict';
+
+const STORAGE_KEY = 'promptMuseSunoLibrary.v3';
+const LEGACY_STORAGE_KEYS = ['promptMuseSunoHistory.v2'];
+
 const $ = selector => document.querySelector(selector);
 const $$ = selector => Array.from(document.querySelectorAll(selector));
+let currentEntryId = null;
+let lastBundle = null;
 
-const STORAGE_KEY = 'promptMuseSunoHistory.v2';
-
-const venuePresets = {
-  'Custom / no preset': {
-    bpm: '', key: '', genre: '',
-    moods: [], instruments: '',
-    arc: 'slow cinematic build → motif reveal → groove development → hook lift → clean ending',
-    energy: 'user-defined',
-    notes: 'User-defined direction.'
-  },
-  'Sporting Club · The Deck Café': {
-    bpm: '92', key: 'D minor',
-    genre: 'Mediterranean acoustic beach lounge',
-    moods: ['sun-kissed', 'relaxed', 'premium', 'coastal'],
-    instruments: 'nylon guitar, soft oud, Rhodes piano, brushed drums, upright bass, subtle sea ambience',
-    arc: 'gentle café intro → warm verse → memorable sunset chorus → instrumental coastal outro',
-    energy: 'low-to-medium, conversation-friendly',
-    notes: 'Warm daytime-to-golden-hour dining atmosphere for Ras Beirut.'
-  },
-  'Sporting Club · Sunset Bar': {
-    bpm: '118', key: 'A minor',
-    genre: 'Mediterranean deep house with organic percussion',
-    moods: ['sunset', 'euphoric', 'polished', 'oceanic'],
-    instruments: 'deep rounded kick, warm sub bass, plucked oud motifs, darbuka accents, airy pads, soft brass swells',
-    arc: 'textural intro → groove lift → euphoric chorus/drop → percussion break → sunset outro',
-    energy: 'medium-high, elegant sunset movement',
-    notes: 'Elegant sunset energy without aggressive festival EDM.'
-  },
-  'Sporting Club · Feluka Seafood': {
-    bpm: '100', key: 'E minor',
-    genre: 'Eastern Mediterranean seafood lounge with folk-jazz colors',
-    moods: ['fresh', 'seaside', 'earthy', 'welcoming'],
-    instruments: 'qanun, ney flute, acoustic guitar, hand percussion, light upright bass, brushed cymbals',
-    arc: 'sea-air intro → storytelling verse → call-and-response hook → instrumental ney outro',
-    energy: 'medium-low, organic dinner flow',
-    notes: 'Organic, tasteful, conversation-friendly dining music.'
-  },
-  'Sporting Club · The Loft': {
-    bpm: '104', key: 'G minor',
-    genre: 'late-night Mediterranean sophisti-pop and jazz lounge',
-    moods: ['smoky', 'elegant', 'intimate', 'after-dark'],
-    instruments: 'Rhodes, muted trumpet, warm saxophone, upright bass, brushed drums, subtle tape saturation',
-    arc: 'noir intro → intimate verse → silky chorus → brass solo → late-night fade',
-    energy: 'medium, late-night velvet groove',
-    notes: 'Refined evening lounge with jazz-club intimacy.'
-  },
-  'Mykonos · Global Lounge Fusion': {
-    bpm: '106', key: 'B minor',
-    genre: 'Balearic global lounge with Mediterranean-Arabian fusion',
-    moods: ['luxury', 'serene', 'island', 'cosmopolitan'],
-    instruments: 'oud, qanun, darbuka, djembe, marimba, ney flute, shakuhachi, congas, Rhodes, ambient pads',
-    arc: 'ocean-wave intro → hypnotic groove → airy chorus → world-percussion bridge → sunset outro',
-    energy: 'medium, high-end island lounge',
-    notes: 'High-end island lounge with global textures.'
-  },
-  'Beirut Waterfront · Private Event': {
-    bpm: '110', key: 'C minor',
-    genre: 'luxury Levantine pop-lounge with soft dance pulse',
-    moods: ['premium', 'romantic', 'polished', 'coastal'],
-    instruments: 'oud hook, modern bass, hand percussion, satin strings, Rhodes, soft female backing vocals',
-    arc: 'elegant intro → vocal statement → polished chorus → instrumental sparkle → final refrain',
-    energy: 'medium, upscale social energy',
-    notes: 'Event-friendly, memorable, not too intrusive.'
-  },
-  'Rooftop · After-Dark House': {
-    bpm: '122', key: 'F minor',
-    genre: 'organic melodic house with Mediterranean motifs',
-    moods: ['after-dark', 'hypnotic', 'euphoric', 'minimal'],
-    instruments: 'rounded kick, warm sub bass, plucked oud phrase, airy vocal chops, muted brass pads, tight shakers',
-    arc: 'DJ intro → bass groove → motif reveal → controlled drop → percussion bridge → mixable outro',
-    energy: 'medium-high, rooftop dance momentum',
-    notes: 'Club-adjacent without becoming harsh festival EDM.'
-  },
-  'Luxury Fashion Reel': {
-    bpm: '116', key: 'A minor',
-    genre: 'minimal luxury electro-lounge with Mediterranean accents',
-    moods: ['minimal', 'premium', 'sleek', 'cinematic'],
-    instruments: 'tight electronic pulse, tactile percussion, muted oud sample, glassy pads, dry bass, breathy vocal textures',
-    arc: 'instant motif → stylish groove → micro hook → textural break → clean logo-friendly ending',
-    energy: 'controlled, editorial, short-form ready',
-    notes: 'Designed for visual cuts, short hooks, and brand ambience.'
-  }
-};
-
-const genreSpines = [
+const genres = [
   'Mediterranean acoustic beach lounge',
   'Mediterranean deep house',
   'Brass-led Latin Mediterranean lounge',
@@ -99,7 +22,38 @@ const genreSpines = [
   'Levantine jazz-pop lounge',
   'Trip-hop coastal noir',
   'Afro-Cuban Mediterranean lounge',
-  'Minimal luxury electro-lounge'
+  'Minimal luxury electro-lounge',
+  'Custom'
+];
+
+const styles = [
+  'sunset terrace luxury',
+  'moonlit coastal lounge',
+  'warm analog café polish',
+  'late-night velvet intimacy',
+  'premium hospitality background',
+  'Balearic island calm',
+  'organic melodic house pulse',
+  'cinematic romantic glow',
+  'global lounge fusion',
+  'editorial fashion reel sleekness',
+  'earthy acoustic warmth',
+  'minimal hypnotic groove',
+  'Custom'
+];
+
+const countries = [
+  'Lebanon', 'Greece', 'Egypt', 'France', 'Spain', 'Italy', 'Morocco', 'UAE',
+  'Brazil', 'Cuba', 'Cape Verde', 'Turkey', 'United Kingdom', 'United States', 'Global / mixed', 'Custom'
+];
+
+const energies = [
+  'low, elegant background',
+  'low-medium, conversation-friendly',
+  'medium, premium lounge movement',
+  'medium-high, sunset lift',
+  'high, controlled dance energy',
+  'cinematic, emotional build'
 ];
 
 const moods = [
@@ -125,62 +79,11 @@ const vocalDirections = [
 
 const languages = [
   'English', 'Arabic', 'English + Arabic', 'French', 'French + Arabic',
-  'English + French', 'Spanish', 'Spanish + Arabic', 'Instrumental / no lyrics',
-  'Wordless vocal textures only'
+  'English + French', 'Spanish', 'Spanish + Arabic', 'Portuguese',
+  'Instrumental / no lyrics', 'Wordless vocal textures only'
 ];
 
-const arrangementArcs = [
-  'gentle intro → verse → pre-chorus lift → memorable chorus → bridge → final chorus → elegant outro',
-  'textural intro → groove enters → vocal hook → instrumental break → bigger final hook → clean ending',
-  'cinematic intro → intimate first verse → sweeping chorus → instrumental solo → emotional final refrain',
-  'DJ-friendly intro → beat drop → verse fragments → chorus motif → percussion break → extended outro',
-  'café intro → storytelling verse → soft chorus → acoustic solo → reprise → sea-air fade',
-  'minimal intro → bassline focus → half-time bridge → chorus lift → restrained ending',
-  'instant hook → groove pocket → vocal motif → short bridge → final hook → logo-safe ending',
-  'ocean ambience → oud motif → brushed groove → brass answer → choral lift → moonlit outro'
-];
-
-const blendStrategies = [
-  'Balanced blend: every reference contributes one or two traits',
-  'Primary anchor: first artist sets the emotional center, others add color',
-  'Contrast blend: combine opposite traits into a fresh hybrid',
-  'Venue polish: reduce extremes and optimize for background luxury',
-  'Hook-first: prioritize memorable chorus, vocal identity, and replay value',
-  'Experimental fusion: keep originality high and make bolder combinations'
-];
-
-const originalityGuards = [
-  'Strict commercial-safe: no names, no imitation, no copied melodies or lyrics',
-  'Moderate: no names in final prompt; traits may be more specific',
-  'Reference-only draft: keep private names only in QA and AI brief',
-  'Release ledger mode: include provenance, human edit plan, and risk notes'
-];
-
-const releasePostures = [
-  'Private demo / concept exploration',
-  'Venue playlist candidate',
-  'Commercial release candidate',
-  'Client presentation draft',
-  'Human vocalist demo',
-  'Sync / short-form cue candidate'
-];
-
-const stemPlans = [
-  'No stem plan yet',
-  'Export stems for Ableton polish',
-  'Export stems for Logic vocal replacement',
-  'Export stems for Pro Tools mix/master',
-  'Use Suno output as writing demo only',
-  'Replace lead vocal and add live instrument overdubs'
-];
-
-const intensityLabels = {
-  1: 'subtle',
-  2: 'light',
-  3: 'balanced',
-  4: 'strong',
-  5: 'dominant'
-};
+const intensityLabels = { 1: 'subtle', 2: 'light', 3: 'balanced', 4: 'strong', 5: 'dominant' };
 
 const traitLibrary = {
   'fairuz': {
@@ -203,331 +106,207 @@ const traitLibrary = {
     lyric: ['observational, conversational, bittersweet urban tone'],
     performance: ['clever, relaxed, lightly ironic']
   },
-  'umm kulthum': {
-    overall: ['grand Arabic classicism', 'deep emotional patience', 'ceremonial romantic scale'],
-    vocal: ['long-form Arabic ornamentation', 'dramatic dynamic control', 'sustained emotional phrasing'],
-    groove: ['slow tarab pulse', 'patient rhythmic cycles'],
-    instrumentation: ['strings, qanun, oud, riq, and orchestral percussion'],
-    arrangement: ['extended melodic development', 'call-and-response orchestral answers', 'gradual emotional peaks'],
-    production: ['large classic ensemble feel', 'warm midrange emphasis'],
-    lyric: ['elevated romantic devotion', 'classical Arabic emotional imagery'],
-    performance: ['commanding, patient, emotionally expansive']
-  },
-  'abdel halim hafez': {
-    overall: ['golden-era Arabic romance', 'cinematic longing'],
-    vocal: ['romantic Arabic crooner phrasing', 'smooth legato', 'dramatic but controlled delivery'],
-    groove: ['classic ballad pulse', 'swelling rhythmic drama'],
-    instrumentation: ['classic strings, qanun flourishes, swelling percussion'],
-    arrangement: ['cinematic intro', 'romantic refrain lift', 'orchestral bridge'],
-    production: ['warm vintage orchestral tone'],
-    lyric: ['direct romantic longing', 'nostalgic night imagery'],
-    performance: ['tender, vulnerable, elegant']
-  },
-  'amr diab': {
-    overall: ['clean Mediterranean pop appeal', 'summer radio confidence'],
-    vocal: ['smooth confident male pop vocal', 'melodic Arabic phrasing'],
-    groove: ['clean Mediterranean pop groove', 'danceable mid-tempo pulse', 'polished percussion'],
-    instrumentation: ['acoustic guitar motifs', 'modern percussion', 'bright synth accents'],
-    arrangement: ['verse-to-chorus clarity', 'strong hook repetition', 'radio-ready sections'],
-    production: ['bright modern pop mix', 'radio-ready hook clarity'],
-    lyric: ['simple romantic immediacy', 'sunny emotional directness'],
-    performance: ['confident, relaxed, melodic']
-  },
-  'nancy ajram': {
-    overall: ['friendly Arabic pop charm', 'light danceable brightness'],
-    vocal: ['bright playful pop vocal', 'crisp diction', 'light ornamentation'],
-    groove: ['uplifting Arabic pop rhythm', 'friendly dance pulse'],
-    instrumentation: ['clean pop drums', 'sparkling synths', 'Arabic melodic accents'],
-    arrangement: ['quick chorus payoff', 'light bridge', 'catchy final refrain'],
-    production: ['glossy chorus lift', 'clean radio-pop finish'],
-    lyric: ['playful romance', 'direct memorable phrases'],
-    performance: ['bright, approachable, smiling']
-  },
-  'majida el roumi': {
-    overall: ['elegant Lebanese romantic grandeur', 'formal Mediterranean drama'],
-    vocal: ['clear dramatic soprano presence', 'wide dynamic emotional lift'],
-    groove: ['slow cinematic pulse', 'orchestral ballad movement'],
-    instrumentation: ['sweeping strings', 'piano, oud colors, choral lift'],
-    arrangement: ['grand intro', 'slow-bloom verse', 'large final chorus'],
-    production: ['wide orchestral mix', 'polished ballad finish'],
-    lyric: ['elevated romance', 'homeland, sea, memory, devotion'],
-    performance: ['formal, powerful, graceful']
-  },
-  'marcel khalife': {
-    overall: ['poetic oud-led Levantine folk artistry', 'literary political-romantic dignity'],
-    vocal: ['clear folk-theater delivery', 'melodic Arabic storytelling'],
-    groove: ['acoustic folk pulse', 'hand-percussion movement'],
-    instrumentation: ['oud lead, qanun, strings, frame drums'],
-    arrangement: ['oud motif development', 'poetic refrain', 'ensemble replies'],
-    production: ['natural acoustic space', 'live ensemble feel'],
-    lyric: ['poetic Arabic imagery, place, longing, social conscience'],
-    performance: ['earnest, literary, grounded']
-  },
   'sade': {
-    overall: ['silky late-night elegance', 'understated sensuality', 'smooth-jazz restraint'],
-    vocal: ['velvety low-register vocal', 'unhurried phrasing', 'cool emotional control'],
-    groove: ['laid-back sophisti-pop groove', 'soft syncopated bassline'],
-    instrumentation: ['soft saxophone touches', 'clean guitar, electric piano, understated drums'],
-    arrangement: ['space around every phrase', 'minimal bridge', 'elegant repeatable hook'],
-    production: ['warm analog polish', 'space around the vocal'],
-    lyric: ['adult romance, restraint, emotional privacy'],
-    performance: ['cool, poised, intimate']
+    overall: ['silky late-night elegance', 'understated romantic restraint', 'sophisticated smoothness'],
+    vocal: ['low intimate vocal focus', 'soft phrasing with emotional economy'],
+    groove: ['slow-burn sophisti-pop pocket', 'laid-back bass-led swing'],
+    instrumentation: ['warm electric bass, brushed drums, muted guitar, soft saxophone'],
+    arrangement: ['minimal verse space', 'subtle chorus lift', 'tasteful instrumental replies'],
+    production: ['velvet midrange', 'clean reverb tails', 'polished but not glossy'],
+    lyric: ['adult romantic simplicity', 'private longing without melodrama'],
+    performance: ['cool, composed, intimate']
   },
-  'daft punk': {
-    overall: ['futuristic dance precision', 'sleek electronic nostalgia'],
-    vocal: ['vocoder-like texture without imitation', 'robotic harmony color'],
-    groove: ['precise disco-house pulse', 'robotic-funk bounce', 'four-on-the-floor clarity'],
-    instrumentation: ['synth bass, electronic drums, funky guitar accents'],
-    arrangement: ['repeating hook motif', 'gradual electronic layering'],
-    production: ['glossy electronic sheen', 'tight sidechain movement'],
-    lyric: ['minimal repeated phrases, technology-meets-emotion mood'],
-    performance: ['controlled, mechanical, dance-focused']
+  'black coffee': {
+    overall: ['organic afro-house depth', 'elegant club restraint', 'spiritual nighttime lift'],
+    vocal: ['soulful fragments', 'call-like melodic phrases'],
+    groove: ['deep house pulse', 'polyrhythmic percussion', 'hypnotic forward motion'],
+    instrumentation: ['warm sub bass, shakers, hand percussion, atmospheric synths'],
+    arrangement: ['long-form groove evolution', 'controlled drops', 'percussion-led bridges'],
+    production: ['wide club mix', 'rounded kick', 'deep low-end control'],
+    lyric: ['minimal emotional phrases', 'mantra-like repetition'],
+    performance: ['restrained, grounded, magnetic']
   },
-  'billie eilish': {
-    overall: ['minimal dark-pop intimacy', 'controlled vulnerability'],
-    vocal: ['close-mic intimate vocal', 'soft breath texture', 'controlled vulnerability'],
-    groove: ['sparse low-end pulse', 'minimal trap-pop pocket'],
-    instrumentation: ['sub bass, muted percussion, tiny atmospheric details'],
-    arrangement: ['negative space verse', 'quiet hook impact', 'small sonic surprises'],
-    production: ['minimal low-end pop production', 'negative space', 'subtle dark textures'],
-    lyric: ['confessional, understated, image-led writing'],
-    performance: ['whisper-close, inward, precise']
+  'nora en pure': {
+    overall: ['melodic deep-house serenity', 'nature-luxury atmosphere', 'sunset elegance'],
+    vocal: ['airy vocal textures', 'minimal lead phrases'],
+    groove: ['steady deep-house pulse', 'clean four-on-floor glide'],
+    instrumentation: ['plucked motifs, soft piano, strings, airy pads'],
+    arrangement: ['gradual melodic reveal', 'clean breakdown', 'uplifting return'],
+    production: ['polished stereo image', 'smooth high end', 'controlled sub'],
+    lyric: ['short emotional phrases', 'open-sky imagery'],
+    performance: ['serene, lifted, refined']
   },
-  'lana del rey': {
-    overall: ['cinematic vintage melancholy', 'coastal nocturnal glamour'],
-    vocal: ['cinematic alto mood', 'slow-bloom melodic phrasing', 'dreamy melancholy'],
-    groove: ['slow ballad pulse', 'half-time sway'],
-    instrumentation: ['piano, strings, tremolo guitar, vintage pads'],
-    arrangement: ['slow cinematic bloom', 'wide chorus haze', 'melancholic bridge'],
-    production: ['vintage reverb haze', 'orchestral-pop atmosphere'],
-    lyric: ['nostalgic glamour', 'coastal night imagery', 'romantic fatalism'],
-    performance: ['dreamy, languid, cinematic']
+  'rufus du sol': {
+    overall: ['cinematic electronic melancholy', 'wide emotional dance space'],
+    vocal: ['vulnerable male vocal texture', 'long reverb emotional bloom'],
+    groove: ['pulsing electronic groove', 'anthemic but restrained lift'],
+    instrumentation: ['analog synth arps, deep bass, wide pads, tight kick'],
+    arrangement: ['slow build', 'expansive chorus', 'breakdown into final lift'],
+    production: ['large atmospheric depth', 'clean club-ready low end'],
+    lyric: ['yearning, night travel, emotional release'],
+    performance: ['vulnerable, cinematic, immersive']
   },
-  'the weeknd': {
-    overall: ['neon night-drive pop-R&B', 'dark polished sensuality'],
-    vocal: ['high, sleek pop-R&B vocal energy', 'melismatic hooks used tastefully'],
-    groove: ['night-drive synth-pop pulse', 'R&B groove with dance momentum'],
-    instrumentation: ['neon synths, pulsing bass, crisp drums'],
-    arrangement: ['pre-chorus tension', 'large chorus payoff', 'dark bridge'],
-    production: ['neon synth textures', 'wide modern mix', 'dark polished low end'],
-    lyric: ['after-dark desire, ambiguity, city lights'],
-    performance: ['sleek, dramatic, nocturnal']
+  'thievery corporation': {
+    overall: ['downtempo global lounge', 'dub-inflected sophistication'],
+    vocal: ['soft multilingual phrases', 'relaxed delivery'],
+    groove: ['downtempo breakbeat pocket', 'dub bass sway'],
+    instrumentation: ['sitar or oud colors, congas, Rhodes, dub bass, airy pads'],
+    arrangement: ['layered texture entry', 'instrumental motif focus', 'smoky transitions'],
+    production: ['warm dub space', 'tape-like saturation', 'wide lounge ambience'],
+    lyric: ['cosmopolitan travel mood', 'minimal poetic fragments'],
+    performance: ['cool, worldly, relaxed']
   },
-  'dua lipa': {
-    overall: ['confident disco-pop brightness', 'club-ready polish'],
-    vocal: ['cool assertive pop vocal', 'rhythmic hook phrasing'],
-    groove: ['confident disco-pop pulse', 'bassline-forward dance groove'],
-    instrumentation: ['punchy bass, clean drums, disco strings or stabs'],
-    arrangement: ['tight verse economy', 'big chorus impact', 'dance break'],
-    production: ['clean modern pop mix', 'bright chorus impact'],
-    lyric: ['direct confidence, concise pop slogans'],
-    performance: ['cool, assertive, rhythmic']
+  'cafe del mar': {
+    overall: ['Balearic sunset chillout', 'ocean-air serenity', 'luxury island calm'],
+    vocal: ['wordless airy voices', 'distant soft phrases'],
+    groove: ['slow lounge pulse', 'relaxed percussion', 'open breathing tempo'],
+    instrumentation: ['nylon guitar, pads, soft trumpet, gentle percussion, ocean ambience'],
+    arrangement: ['ambient intro', 'main motif', 'gentle groove', 'long fade'],
+    production: ['soft horizon-like width', 'smooth ambience', 'non-intrusive master'],
+    lyric: ['sea, horizon, afterglow, memory'],
+    performance: ['calm, weightless, luxurious']
   },
-  'stromae': {
-    overall: ['francophone electro-pop theatricality', 'bittersweet dance energy'],
-    vocal: ['rhythmic spoken-sung precision', 'theatrical phrasing'],
-    groove: ['syncopated electronic dance pulse', 'playful rhythmic phrasing'],
-    instrumentation: ['minimal electronic beat, accordion-like color, punchy synths'],
-    arrangement: ['verse narrative', 'danceable refrain', 'theatrical break'],
-    production: ['clean electro-pop architecture', 'dry rhythmic vocal mix'],
-    lyric: ['wry social observation', 'melancholy hidden inside danceability'],
-    performance: ['precise, theatrical, bittersweet']
-  },
-  'buena vista social club': {
-    overall: ['vintage Latin warmth', 'social, sunlit, human performance'],
-    vocal: ['relaxed ensemble vocal warmth', 'aged human character'],
-    groove: ['Afro-Cuban sway', 'clave-informed percussion', 'warm live ensemble feel'],
-    instrumentation: ['nylon guitar, trumpet, piano montuno, congas, upright bass'],
-    arrangement: ['instrumental solos', 'live band responses', 'social dance flow'],
-    production: ['roomy vintage ensemble warmth'],
-    lyric: ['simple social warmth, nostalgia, place'],
-    performance: ['human, communal, warm']
-  },
-  'cesaria evora': {
-    overall: ['morna-like island melancholy', 'smoky acoustic dignity'],
-    vocal: ['weathered intimate vocal character', 'unforced melancholy', 'smoky warmth'],
-    groove: ['morna-like sway', 'slow island rhythm'],
-    instrumentation: ['acoustic guitar, cavaquinho-like sparkle, soft piano, upright bass'],
-    arrangement: ['slow sway', 'instrumental answer phrases', 'unhurried outro'],
-    production: ['acoustic room feel', 'guitar-led warmth'],
-    lyric: ['homesick sea imagery, saudade-like longing'],
-    performance: ['unforced, dignified, weathered']
-  },
-  'beyonce': {
-    overall: ['polished pop-R&B scale', 'commanding modern confidence'],
-    vocal: ['powerful polished pop-R&B vocal presence', 'stacked harmony energy', 'dynamic ad-libs'],
-    groove: ['tight R&B-pop pocket', 'impactful drum movement'],
-    instrumentation: ['modern drums, bass, layered harmonies, cinematic accents'],
-    arrangement: ['vocal build from restraint to power', 'anthemic final chorus'],
-    production: ['big modern mix', 'impactful drums', 'anthemic chorus scale'],
-    lyric: ['empowerment, desire, high-confidence declarations'],
-    performance: ['commanding, dynamic, polished']
-  },
-  'adele': {
-    overall: ['soulful emotional ballad force', 'plainspoken heartbreak grandeur'],
-    vocal: ['soulful belt potential', 'emotive dynamic arc', 'clear piano-ballad phrasing'],
-    groove: ['slow ballad pulse', 'restrained drum entrance'],
-    instrumentation: ['piano, strings, warm drums, gospel-tinged backing vocals'],
-    arrangement: ['piano-led verse', 'orchestral lift', 'big final chorus'],
-    production: ['large warm ballad mix', 'vocal-forward clarity'],
-    lyric: ['direct heartbreak language', 'plainspoken emotional honesty'],
-    performance: ['open, emotional, powerful']
-  },
-  'pink floyd': {
-    overall: ['dreamlike progressive-rock atmosphere', 'slow immersive scale'],
-    vocal: ['detached atmospheric vocal', 'long sustained phrases'],
-    groove: ['slow hypnotic rock pulse', 'patient drum development'],
-    instrumentation: ['electric guitar textures, analog synth pads, live bass and drums'],
-    arrangement: ['extended instrumental passages', 'guitar solo centerpiece', 'cinematic transitions'],
-    production: ['wide psychedelic soundstage', 'slow atmospheric build', 'immersive delay textures'],
-    lyric: ['existential imagery, distance, dreams, time'],
-    performance: ['patient, atmospheric, expansive']
-  },
-  'coldplay': {
-    overall: ['earnest anthemic uplift', 'wide communal emotion'],
-    vocal: ['earnest melodic lead vocal', 'communal chorus energy'],
-    groove: ['steady pop-rock pulse', 'uplifting four-beat motion'],
-    instrumentation: ['simple piano or guitar motif, shimmering pads, wide drums'],
-    arrangement: ['anthemic build', 'simple emotional piano/guitar motif', 'wide singalong chorus'],
-    production: ['bright stadium-pop lift', 'shimmering guitars and pads'],
-    lyric: ['universal hope, light, togetherness'],
-    performance: ['open-hearted, uplifting, communal']
-  },
-  'massive attack': {
-    overall: ['noir electronic atmosphere', 'slow shadowy tension'],
-    vocal: ['detached intimate vocal', 'understated trip-hop phrasing'],
-    groove: ['slow trip-hop pulse', 'heavy dub-influenced bass', 'hypnotic restraint'],
-    instrumentation: ['grainy drums, sub bass, dark pads, sparse guitar or strings'],
-    arrangement: ['minimal loop evolution', 'cinematic break', 'shadowy reprise'],
-    production: ['dark cinematic space', 'grainy textures', 'shadowy low end'],
-    lyric: ['urban unease, emotional distance, night imagery'],
-    performance: ['cool, restrained, smoky']
-  },
-  'jamiroquai': {
-    overall: ['acid-jazz funk brightness', 'bassline-driven dance polish'],
-    vocal: ['agile funk-pop vocal energy', 'rhythmic phrasing'],
-    groove: ['acid-jazz funk bassline', 'syncopated dance-funk pocket'],
-    instrumentation: ['Rhodes, slap bass accents, brass stabs, tight drums'],
-    arrangement: ['groove-first intro', 'funky chorus', 'instrumental pocket break'],
-    production: ['bright live funk polish'],
-    lyric: ['movement, nightlife, playful confidence'],
-    performance: ['elastic, upbeat, funky']
-  },
-  'bonobo': {
-    overall: ['organic downtempo electronic warmth', 'textural travel mood'],
-    vocal: ['airy vocal fragments', 'wordless human texture'],
-    groove: ['laid-back downtempo pulse', 'organic percussion movement'],
-    instrumentation: ['marimba, strings, field recordings, soft synth bass, hand percussion'],
-    arrangement: ['gradual layering', 'instrumental motif evolution', 'ambient outro'],
-    production: ['wide organic-electronic space', 'warm detailed textures'],
-    lyric: ['minimal, image-led, often instrumental'],
-    performance: ['calm, textural, patient']
-  },
-  'fkj': {
-    overall: ['smooth live-looped neo-soul lounge', 'sunset instrumental intimacy'],
-    vocal: ['soft soulful vocal textures', 'minimal ad-libs'],
-    groove: ['laid-back neo-soul pocket', 'human swing', 'warm bass movement'],
-    instrumentation: ['Rhodes, guitar, saxophone, warm bass, live drums'],
-    arrangement: ['loop-like build with live-feeling solos', 'sax or guitar break'],
-    production: ['warm analog bedroom-studio polish', 'intimate stereo field'],
-    lyric: ['simple romantic fragments, more vibe than narrative'],
-    performance: ['fluid, relaxed, musical']
-  },
-  'rosalia': {
-    overall: ['modern flamenco-pop tension', 'percussive vocal drama'],
-    vocal: ['ornamental vocal runs', 'dramatic clipped phrasing'],
-    groove: ['handclap-driven rhythmic tension', 'minimal urban pulse'],
-    instrumentation: ['palmas, guitar accents, sub bass, sharp percussion'],
-    arrangement: ['sudden dropouts', 'rhythmic vocal hooks', 'dramatic contrast'],
-    production: ['dry percussive intimacy', 'modern bass pressure'],
-    lyric: ['desire, pride, ritual, sharp emotional images'],
-    performance: ['dramatic, precise, percussive']
+  'ibrahim maalouf': {
+    overall: ['lyrical trumpet-led Mediterranean emotion', 'brass warmth with cinematic drama'],
+    vocal: ['instrumental voice-like trumpet phrasing'],
+    groove: ['jazz pulse with Levantine accents', 'ceremonial rhythmic lift'],
+    instrumentation: ['warm trumpet or flugelhorn, piano, frame drums, strings'],
+    arrangement: ['brass theme', 'call-and-response sections', 'dramatic bridge'],
+    production: ['live-room brass focus', 'cinematic brass reverb'],
+    lyric: ['instrumental storytelling arc', 'melodic longing'],
+    performance: ['expressive, noble, emotional']
   },
   'gotan project': {
-    overall: ['electro-tango lounge sophistication', 'noir dance elegance'],
-    vocal: ['spoken or minimal vocal texture', 'smoky cabaret tone'],
-    groove: ['tango rhythm fused with downtempo pulse'],
-    instrumentation: ['bandoneon-like color, piano, upright bass, electronic beat, strings'],
-    arrangement: ['tango motif', 'electronic groove build', 'noir instrumental break'],
-    production: ['polished lounge-electronic mix', 'dramatic midrange textures'],
-    lyric: ['urban night, longing, elegant restraint'],
-    performance: ['stylish, smoky, controlled']
+    overall: ['electro-tango noir', 'smoky dancefloor sophistication'],
+    vocal: ['spoken fragments', 'dramatic low-register phrasing'],
+    groove: ['tango pulse over electronic beat', 'syncopated bandoneon feel'],
+    instrumentation: ['bandoneon-like accordion, strings, upright bass, electronic drums'],
+    arrangement: ['noir intro', 'rhythmic motif', 'dramatic break', 'dance return'],
+    production: ['dark polished ambience', 'cinematic low light'],
+    lyric: ['night streets, longing, elegance'],
+    performance: ['dramatic, sensual, controlled']
+  },
+  'gipsy kings': {
+    overall: ['festive nylon-guitar Mediterranean fire', 'sunny communal joy'],
+    vocal: ['raspy group response', 'passionate but loose phrasing'],
+    groove: ['rumba-flamenca strum pulse', 'clapping drive'],
+    instrumentation: ['nylon guitars, palmas, hand percussion, bright chorus shouts'],
+    arrangement: ['immediate guitar hook', 'call-response chorus', 'percussion break'],
+    production: ['live acoustic energy', 'bright guitar presence'],
+    lyric: ['simple celebratory romance', 'summer movement'],
+    performance: ['fiery, festive, human']
+  },
+  'bebel gilberto': {
+    overall: ['soft bossa nova sophistication', 'breathy tropical intimacy'],
+    vocal: ['gentle close-mic vocal', 'soft Portuguese phrasing'],
+    groove: ['light bossa pulse', 'laid-back syncopation'],
+    instrumentation: ['nylon guitar, brushes, soft percussion, warm bass'],
+    arrangement: ['minimal verse', 'gentle chorus sway', 'small instrumental answer'],
+    production: ['soft airy room', 'warm acoustic polish'],
+    lyric: ['breeze, water, private romance'],
+    performance: ['soft, elegant, intimate']
+  },
+  'buena vista social club': {
+    overall: ['vintage Cuban warmth', 'communal acoustic joy'],
+    vocal: ['weathered human vocal texture', 'call-and-response warmth'],
+    groove: ['son cubano sway', 'clave-informed pulse'],
+    instrumentation: ['piano montuno, trumpet, tres-like guitar, congas, upright bass'],
+    arrangement: ['live ensemble interplay', 'instrumental solos', 'chorus responses'],
+    production: ['vintage room feel', 'organic ensemble balance'],
+    lyric: ['nostalgia, place, dance, social warmth'],
+    performance: ['warm, lived-in, communal']
+  },
+  'cesaria evora': {
+    overall: ['melancholic island saudade', 'barefoot coastal dignity'],
+    vocal: ['smoky alto warmth', 'unhurried emotional gravity'],
+    groove: ['morna sway', 'gentle island rhythm'],
+    instrumentation: ['nylon guitar, cavaquinho-like sparkle, accordion, soft percussion'],
+    arrangement: ['patient verse-led storytelling', 'small ensemble support'],
+    production: ['natural acoustic warmth', 'simple vocal-centered mix'],
+    lyric: ['sea, distance, homesickness, memory'],
+    performance: ['dignified, wistful, unhurried']
+  },
+  'daft punk': {
+    overall: ['sleek electronic-pop polish', 'robotic-funk precision translated into original traits'],
+    vocal: ['processed backing textures', 'tight vocoder-like color without imitation'],
+    groove: ['clean dance pocket', 'funk bass discipline'],
+    instrumentation: ['analog synths, tight bass, crisp drums, glossy pads'],
+    arrangement: ['loop discipline with evolving layers', 'breakdown and clean return'],
+    production: ['high-definition electronic sheen', 'precise transient control'],
+    lyric: ['simple memorable phrases', 'futuristic romantic minimalism'],
+    performance: ['polished, controlled, futuristic']
+  },
+  'massive attack': {
+    overall: ['trip-hop shadow and cinematic tension', 'slow nocturnal atmosphere'],
+    vocal: ['intimate whispered gravity', 'restrained emotional darkness'],
+    groove: ['slow breakbeat pocket', 'heavy but spacious bass'],
+    instrumentation: ['sub bass, dusty drums, dark pads, sparse guitar accents'],
+    arrangement: ['moody intro', 'slow accumulation', 'textural bridge'],
+    production: ['dark spacious mix', 'gritty low-end atmosphere'],
+    lyric: ['urban night, tension, ambiguity'],
+    performance: ['cool, shadowed, restrained']
+  },
+  'jamiroquai': {
+    overall: ['acid-jazz funk movement', 'bright urban groove confidence'],
+    vocal: ['agile rhythmic phrasing', 'playful ad-libs'],
+    groove: ['syncopated funk bassline', 'danceable live pocket'],
+    instrumentation: ['wah guitar, clavinet-like keys, slap-style bass, brass stabs'],
+    arrangement: ['bass hook intro', 'groove verse', 'chorus lift', 'instrumental break'],
+    production: ['clean funk presence', 'live drums with polish'],
+    lyric: ['movement, nightlife, playful confidence'],
+    performance: ['energetic, stylish, groove-led']
+  },
+  'lana del rey': {
+    overall: ['cinematic vintage melancholy', 'slow romantic atmosphere'],
+    vocal: ['low intimate vocal presence', 'dreamy sustained phrasing'],
+    groove: ['slow ballad pulse', 'wide cinematic pacing'],
+    instrumentation: ['piano, strings, tremolo guitar, soft drums'],
+    arrangement: ['slow reveal', 'chorus bloom', 'cinematic bridge'],
+    production: ['vintage haze', 'lush reverb, warm saturation'],
+    lyric: ['nostalgia, desire, night, glamour, memory'],
+    performance: ['dreamy, tragic, intimate']
+  },
+  'coldplay': {
+    overall: ['anthemic melodic uplift', 'broad emotional accessibility'],
+    vocal: ['clear earnest vocal line', 'simple singable phrasing'],
+    groove: ['steady pop-rock pulse', 'building rhythmic lift'],
+    instrumentation: ['piano, chiming guitars, warm bass, stadium-like pads'],
+    arrangement: ['quiet intro', 'big chorus lift', 'final communal refrain'],
+    production: ['wide uplifting mix', 'bright emotional polish'],
+    lyric: ['hope, light, return, human connection'],
+    performance: ['earnest, open, uplifting']
   }
 };
 
 const sparkIdeas = [
   {
-    title: 'Ras Beirut Afterglow',
-    idea: 'A refined golden-hour lounge track for terrace dining above the Mediterranean, nostalgic but not sleepy.',
-    venue: 'Sporting Club · The Deck Café',
-    genre: 'Mediterranean acoustic beach lounge',
-    hook: 'Ras Beirut afterglow',
-    artists: [
-      { name: 'Sade', aspect: 'overall', notes: 'silky late-night elegance, no imitation', intensity: '3' },
-      { name: 'Fairuz', aspect: 'lyric', notes: 'place imagery and Levantine dignity', intensity: '2' },
-      { name: 'Ziad Rahbani', aspect: 'arrangement', notes: 'subtle Beirut jazz harmony', intensity: '2' }
-    ]
+    title: 'Ras Beirut Afterglow', country: 'Lebanon', genre: 'Mediterranean acoustic beach lounge', style: 'sunset terrace luxury', bpm: '104', key: 'A minor',
+    coreIdea: 'A warm Mediterranean lounge song for golden-hour dining by the sea in Ras Beirut.', hook: 'Sporting Club by the sea',
+    instruments: 'oud, nylon guitar, Rhodes, brushed drums, soft trumpet, light sea ambience',
+    artists: [{ name: 'Sade', aspect: 'vocal', intensity: '3', notes: 'silky restraint' }, { name: 'Fairuz', aspect: 'lyric', intensity: '2', notes: 'Levantine place imagery' }, { name: 'Ziad Rahbani', aspect: 'arrangement', intensity: '2', notes: 'subtle jazz harmony' }]
   },
   {
-    title: 'Feluka Moon Table',
-    idea: 'A seafood dinner soundtrack with Levantine folk colors, soft jazz harmony, and a hook that feels like waves against wood.',
-    venue: 'Sporting Club · Feluka Seafood',
-    genre: 'Eastern Mediterranean seafood lounge with folk-jazz colors',
-    hook: 'by the moonlit sea',
-    artists: [
-      { name: 'Marcel Khalife', aspect: 'instrumentation', notes: 'oud-led acoustic dignity', intensity: '3' },
-      { name: 'Cesaria Evora', aspect: 'overall', notes: 'island melancholy and acoustic warmth', intensity: '2' }
-    ]
+    title: 'Mykonos Moon Current', country: 'Greece', genre: 'Balearic global lounge', style: 'Balearic island calm', bpm: '106', key: 'B minor',
+    coreIdea: 'A luxury island lounge cue with Mediterranean-Arabian textures and ocean-night atmosphere.', hook: 'under the moon, we move slow',
+    instruments: 'oud, qanun, darbuka, marimba, Rhodes, ambient pads, soft congas, distant ney flute',
+    artists: [{ name: 'Cafe del Mar', aspect: 'overall', intensity: '4', notes: 'sunset chillout horizon' }, { name: 'Thievery Corporation', aspect: 'production', intensity: '3', notes: 'global lounge depth' }, { name: 'Nora En Pure', aspect: 'groove', intensity: '2', notes: 'clean deep-house glide' }]
   },
   {
-    title: 'Aegean Oud Signal',
-    idea: 'A Mykonos-style global lounge cue blending oud, marimba, soft house percussion, and expensive sunset pads.',
-    venue: 'Mykonos · Global Lounge Fusion',
-    genre: 'Balearic global lounge with Mediterranean-Arabian fusion',
-    hook: 'island lights on the water',
-    artists: [
-      { name: 'Bonobo', aspect: 'production', notes: 'organic-electronic texture and gradual layering', intensity: '4' },
-      { name: 'Daft Punk', aspect: 'groove', notes: 'precise pulse only, no robotic imitation', intensity: '2' }
-    ]
+    title: 'Trumpet on the Corniche', country: 'Lebanon', genre: 'Brass-led Latin Mediterranean lounge', style: 'warm analog café polish', bpm: '112', key: 'D minor',
+    coreIdea: 'A brass-led lounge track with Latin percussion, Levantine warmth, and an elegant seaside dinner groove.', hook: 'lights on the corniche',
+    instruments: 'trumpet, flugelhorn, marimba, nylon guitar, bongos, shakers, upright bass, Rhodes',
+    artists: [{ name: 'Ibrahim Maalouf', aspect: 'instrumentation', intensity: '4', notes: 'lyrical brass motif' }, { name: 'Buena Vista Social Club', aspect: 'groove', intensity: '2', notes: 'organic ensemble warmth' }]
   },
   {
-    title: 'Late Loft Brass',
-    idea: 'A late-night jazz lounge track with muted trumpet, Rhodes, velvet vocals, and a polished urban Beirut mood.',
-    venue: 'Sporting Club · The Loft',
-    genre: 'late-night Mediterranean sophisti-pop and jazz lounge',
-    hook: 'stay a little longer',
-    artists: [
-      { name: 'Sade', aspect: 'vocal', notes: 'low velvet intimacy and restraint', intensity: '3' },
-      { name: 'Ziad Rahbani', aspect: 'groove', notes: 'Rhodes-led Beirut jazz pocket', intensity: '3' },
-      { name: 'Buena Vista Social Club', aspect: 'instrumentation', notes: 'human brass warmth', intensity: '2' }
-    ]
+    title: 'After Dark Oud House', country: 'Global / mixed', genre: 'Organic house with oud and darbuka', style: 'organic melodic house pulse', bpm: '122', key: 'F minor',
+    coreIdea: 'A rooftop-friendly deep house track that blends oud motifs, hand percussion, and a refined late-night club pulse.', hook: 'we rise with the night',
+    instruments: 'rounded kick, warm sub bass, plucked oud phrase, darbuka, tight shakers, airy vocal chops, muted brass pads',
+    artists: [{ name: 'Black Coffee', aspect: 'groove', intensity: '4', notes: 'deep organic house pocket' }, { name: 'Rufus Du Sol', aspect: 'production', intensity: '2', notes: 'cinematic electronic width' }]
   }
 ];
 
-function normalize(value) {
-  return (value || '')
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9\s]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-function unique(values) {
-  return [...new Set((values || []).filter(Boolean).map(v => String(v).trim()).filter(Boolean))];
-}
-
-function sentenceJoin(values, limit = 16) {
-  return unique(values).slice(0, limit).join('; ');
-}
-
-function clampScore(value) {
-  return Math.max(0, Math.min(100, Math.round(value)));
-}
-
-function populateSelect(id, values) {
-  const select = $(id);
+function populateSelect(selector, values) {
+  const select = $(selector);
   select.innerHTML = '';
   values.forEach(value => {
     const option = document.createElement('option');
@@ -543,9 +322,43 @@ function initMoodChips() {
   moods.forEach(mood => {
     const label = document.createElement('label');
     label.className = 'chip';
-    label.innerHTML = `<input type="checkbox" value="${escapeHtml(mood)}"><span>${escapeHtml(mood)}</span>`;
+    label.innerHTML = `<input type="checkbox" value="${escapeAttr(mood)}" /> ${escapeHtml(mood)}`;
     container.appendChild(label);
   });
+}
+
+function normalize(text) {
+  return String(text || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+}
+
+function unique(values) {
+  const seen = new Set();
+  return values
+    .map(value => String(value || '').trim())
+    .filter(Boolean)
+    .filter(value => {
+      const key = normalize(value);
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+}
+
+function sentenceJoin(values, max = 10) {
+  return unique(values).slice(0, max).join(', ');
+}
+
+function fallback(value, defaultValue) {
+  return value && String(value).trim() ? String(value).trim() : defaultValue;
+}
+
+function clampScore(value) {
+  return Math.max(0, Math.min(100, Math.round(Number(value) || 0)));
 }
 
 function updateIntensityLabel(row) {
@@ -576,11 +389,28 @@ function addArtistRow(data = {}) {
   $('#artistRows').appendChild(row);
 }
 
+function setArtistRows(artists) {
+  $('#artistRows').innerHTML = '';
+  (artists && artists.length ? artists : [{}]).forEach(addArtistRow);
+}
+
 function getState() {
   return {
     title: $('#title').value.trim(),
     useCase: $('#useCase').value,
     coreIdea: $('#coreIdea').value.trim(),
+    hookPhrase: $('#hookPhrase').value.trim(),
+    promptMode: $('#promptMode').value,
+    genre: $('#genre').value,
+    customGenre: $('#customGenre').value.trim(),
+    style: $('#style').value,
+    customStyle: $('#customStyle').value.trim(),
+    country: $('#country').value,
+    customCountry: $('#customCountry').value.trim(),
+    bpm: $('#bpm').value.trim(),
+    key: $('#songKey').value.trim(),
+    energy: $('#energy').value,
+    moods: $$('#moodChips input:checked').map(input => input.value),
     safeMode: $('#artistSafeMode').checked,
     artists: $$('.artist-row').map(row => ({
       name: row.querySelector('.artist-name').value.trim(),
@@ -588,35 +418,72 @@ function getState() {
       intensity: row.querySelector('.artist-intensity').value,
       notes: row.querySelector('.artist-notes').value.trim()
     })).filter(item => item.name || item.notes),
-    blendStrategy: $('#blendStrategy').value,
-    originalityGuard: $('#originalityGuard').value,
-    traitInstructions: $('#traitInstructions').value.trim(),
-    venuePreset: $('#venuePreset').value,
-    genreSpine: $('#genreSpine').value,
-    customGenre: $('#customGenre').value.trim(),
-    hookPhrase: $('#hookPhrase').value.trim(),
-    moods: $$('#moodChips input:checked').map(input => input.value),
-    bpm: $('#bpm').value.trim(),
-    key: $('#songKey').value.trim(),
-    lengthTarget: $('#lengthTarget').value,
     vocalDirection: $('#vocalDirection').value,
     language: $('#language').value,
-    arrangementArc: $('#arrangementArc').value,
-    promptDepth: $('#promptDepth').value,
     instruments: $('#instruments').value.trim(),
-    exclusions: $('#exclusions').value.trim(),
-    releasePosture: $('#releasePosture').value,
-    stemPlan: $('#stemPlan').value,
-    humanEditNotes: $('#humanEditNotes').value.trim()
+    arrangement: $('#arrangement').value.trim(),
+    negativePrompt: $('#negativePrompt').value.trim()
   };
+}
+
+function setFormState(state = {}) {
+  $('#title').value = state.title || '';
+  $('#useCase').value = state.useCase || 'Single / release candidate';
+  $('#coreIdea').value = state.coreIdea || '';
+  $('#hookPhrase').value = state.hookPhrase || '';
+  $('#promptMode').value = state.promptMode || 'lyric-scaffold';
+  ensureOption('#genre', state.genre || genres[0]);
+  $('#genre').value = state.genre || genres[0];
+  $('#customGenre').value = state.customGenre || '';
+  ensureOption('#style', state.style || styles[0]);
+  $('#style').value = state.style || styles[0];
+  $('#customStyle').value = state.customStyle || '';
+  ensureOption('#country', state.country || 'Lebanon');
+  $('#country').value = state.country || 'Lebanon';
+  $('#customCountry').value = state.customCountry || '';
+  $('#bpm').value = state.bpm || '';
+  $('#songKey').value = state.key || '';
+  ensureOption('#energy', state.energy || energies[1]);
+  $('#energy').value = state.energy || energies[1];
+  $('#artistSafeMode').checked = state.safeMode !== false;
+  $$('#moodChips input').forEach(input => { input.checked = (state.moods || []).includes(input.value); });
+  setArtistRows(state.artists || [{}]);
+  ensureOption('#vocalDirection', state.vocalDirection || vocalDirections[0]);
+  $('#vocalDirection').value = state.vocalDirection || vocalDirections[0];
+  ensureOption('#language', state.language || 'English');
+  $('#language').value = state.language || 'English';
+  $('#instruments').value = state.instruments || '';
+  $('#arrangement').value = state.arrangement || '';
+  $('#negativePrompt').value = state.negativePrompt || '';
+}
+
+function ensureOption(selector, value) {
+  const select = $(selector);
+  if (!select || !value || [...select.options].some(option => option.value === value)) return;
+  const option = document.createElement('option');
+  option.value = value;
+  option.textContent = value;
+  select.appendChild(option);
+}
+
+function genreLabel(state) {
+  return fallback(state.customGenre, state.genre === 'Custom' ? '' : state.genre) || 'original contemporary music';
+}
+
+function styleLabel(state) {
+  return fallback(state.customStyle, state.style === 'Custom' ? '' : state.style) || 'polished original style';
+}
+
+function countryLabel(state) {
+  return fallback(state.customCountry, state.country === 'Custom' ? '' : state.country) || 'Global / mixed';
 }
 
 function findTraitMap(artistName) {
   const normalized = normalize(artistName);
   if (!normalized) return null;
   if (traitLibrary[normalized]) return traitLibrary[normalized];
-  const exact = Object.keys(traitLibrary).find(key => normalized.includes(key) || key.includes(normalized));
-  return exact ? traitLibrary[exact] : null;
+  const key = Object.keys(traitLibrary).find(item => normalized.includes(item) || item.includes(normalized));
+  return key ? traitLibrary[key] : null;
 }
 
 function categoriesForAspect(aspect) {
@@ -625,7 +492,18 @@ function categoriesForAspect(aspect) {
   return [aspect, 'overall'];
 }
 
-function traitsForArtist(artist) {
+function sanitizeCreativeNote(note, state) {
+  let text = String(note || '');
+  if (!state.safeMode) return text;
+  state.artists.forEach(artist => {
+    if (!artist.name) return;
+    const pattern = new RegExp(escapeRegExp(artist.name), 'ig');
+    text = text.replace(pattern, 'private inspiration reference');
+  });
+  return text;
+}
+
+function traitsForArtist(artist, state) {
   const map = findTraitMap(artist.name);
   const categories = categoriesForAspect(artist.aspect || 'overall');
   const traits = [];
@@ -634,19 +512,12 @@ function traitsForArtist(artist) {
       if (map[category]) traits.push(...map[category].slice(0, artist.aspect === 'overall' ? 2 : 3));
     });
   } else if (artist.name) {
-    traits.push(`broad ${String(artist.aspect || 'overall').replace('-', ' ')} energy from a private inspiration reference, translated into original musical traits`);
+    traits.push(`private reference translated into ${String(artist.aspect || 'overall').replace('-', ' ')} traits only`);
   }
-  if (artist.notes) traits.push(artist.notes);
+  if (artist.notes) traits.push(sanitizeCreativeNote(artist.notes, state));
   const label = intensityLabels[artist.intensity] || 'balanced';
   if (traits.length) traits.push(`${label} influence level, used as color rather than imitation`);
   return unique(traits);
-}
-
-function weightedPush(target, category, values, artist) {
-  if (!values || !values.length) return;
-  const intensity = Number(artist.intensity || 3);
-  const take = intensity >= 4 ? 3 : intensity <= 2 ? 1 : 2;
-  target[category].push(...values.slice(0, take));
 }
 
 function expandTraitMap(state) {
@@ -656,179 +527,109 @@ function expandTraitMap(state) {
   state.artists.forEach(artist => {
     const library = findTraitMap(artist.name);
     const aspect = artist.aspect || 'overall';
+    const intensity = Number(artist.intensity || 3);
+    const take = intensity >= 4 ? 3 : intensity <= 2 ? 1 : 2;
     if (library) {
-      if (aspect === 'overall') {
-        ['overall', 'vocal', 'groove', 'production', 'lyric'].forEach(category => weightedPush(map, category, library[category], artist));
-      } else {
-        weightedPush(map, aspect, library[aspect], artist);
-        weightedPush(map, 'overall', library.overall, { ...artist, intensity: Math.max(1, Number(artist.intensity || 3) - 1) });
-      }
+      const categories = aspect === 'overall' ? ['overall', 'vocal', 'groove', 'production', 'lyric'] : [aspect, 'overall'];
+      categories.forEach(category => {
+        if (library[category]) map[category].push(...library[category].slice(0, take));
+      });
     } else if (artist.name) {
-      map[aspect === 'performance' ? 'performance' : 'overall'].push(`private reference translated into ${aspect.replace('-', ' ')} traits only`);
+      const category = map[aspect] ? aspect : 'overall';
+      map[category].push(`private reference translated into original ${aspect} traits only`);
     }
     if (artist.notes) map.notes.push(`${sanitizeCreativeNote(artist.notes, state)} (${intensityLabels[artist.intensity] || 'balanced'} influence)`);
   });
-  if (state.traitInstructions) map.notes.push(sanitizeCreativeNote(state.traitInstructions, state));
   Object.keys(map).forEach(key => { map[key] = unique(map[key]); });
   return map;
 }
 
-function fallback(value, defaultValue) {
-  return value && String(value).trim() ? String(value).trim() : defaultValue;
-}
-
-function getGenre(state, preset) {
-  return fallback(state.customGenre, fallback(state.genreSpine, preset.genre || 'original contemporary music'));
-}
-
-function getMoodText(state, preset) {
-  const selected = unique([...(state.moods || []), ...(preset.moods || [])]).slice(0, 9);
-  return selected.length ? selected.join(', ') : 'clear, focused, emotionally coherent';
-}
-
-function escapeRegex(value) {
-  return String(value || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-function sanitizeCreativeNote(text, state) {
-  let clean = String(text || '');
-  const names = unique([
-    ...Object.keys(traitLibrary),
-    ...(state?.artists || []).map(artist => artist.name)
-  ]).filter(name => name && name.length > 2);
-  names.forEach(name => {
-    clean = clean.replace(new RegExp(`\\b${escapeRegex(name)}\\b`, 'ig'), 'private reference');
-  });
-  return clean
-    .replace(/sound\s*like/ig, 'evoke broad traits from')
-    .replace(/copy/ig, 'avoid copying')
-    .replace(/clone/ig, 'avoid cloning')
-    .replace(/identical/ig, 'distinct from')
-    .replace(/impersonate/ig, 'avoid impersonating')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-function getArtistNamesInOutput(output, state) {
-  const text = normalize(output);
-  return state.artists
-    .map(a => a.name)
-    .filter(Boolean)
-    .filter(name => {
-      const n = normalize(name);
-      return n.length > 2 && text.includes(n);
-    });
-}
-
-function hookInstruction(state) {
-  return state.hookPhrase
-    ? `Tastefully integrate the hook phrase “${state.hookPhrase}” as a memorable refrain without over-repeating it.`
-    : 'Create one concise original hook that is memorable after one listen without copying any existing song.';
-}
-
-function exclusionText(state) {
-  return fallback(
-    state.exclusions,
-    'no direct artist names, no impersonation, no copied melodies, no copyrighted hooks, no muddy low end, no harsh cymbals, no generic stock-music feel'
-  );
-}
-
-function originalityLine(state) {
-  if (!state.safeMode) return 'Artist-safe mode is off; still avoid impersonation, direct imitation, copied melodies, and copied lyrics.';
-  return `${state.originalityGuard}. Use artist references only as private inspiration; final prompt must not name or imitate any real artist.`;
-}
-
-function densityLines(state, lines) {
-  if (state.promptDepth === 'short') return lines.filter((_, index) => index < 7).join('\n');
-  if (state.promptDepth === 'detailed') return lines.join('\n');
-  const standardIndexes = [0, 1, 2, 3, 4, 5, 7, 8, 9];
-  return standardIndexes.map(index => lines[index]).filter(Boolean).join('\n');
-}
-
-function buildSafePrompt(ctx) {
-  const { state, title, idea, genre, bpm, key, moodText, vocal, instruments, arc, traits, exclusions, preset } = ctx;
-  const lines = [
-    `TITLE / BRIEF: ${title} — ${idea}`,
-    `STYLE: ${genre}; ${bpm} BPM; ${key}; ${state.lengthTarget}; mood palette: ${moodText}.`,
-    `VOCAL: ${vocal}; language: ${state.language}; performance should feel human, tasteful, and emotionally precise.`,
-    `INSTRUMENTATION: ${instruments}.`,
-    `TRAIT BLEND: overall vibe: ${sentenceJoin(traits.overall.concat(traits.notes), 12) || 'original, polished, emotionally specific'}; vocal: ${sentenceJoin(traits.vocal.concat(traits.performance), 8) || vocal}; groove: ${sentenceJoin(traits.groove, 8) || 'clear rhythmic pocket'}; production: ${sentenceJoin(traits.production, 8) || 'clean premium mix'}.`,
-    `ARRANGEMENT: ${arc}. Let the song evolve; avoid flat loop repetition.`,
-    `HOOK: ${hookInstruction(state)}`,
-    `VENUE / USE CASE: ${state.useCase}; ${preset.energy || 'balanced energy'}; ${preset.notes || 'user-defined context'}.`,
-    `MIX / MASTER: clean low end, warm mids, smooth highs, wide but not washed out, vocal intelligible, venue-friendly dynamics.`,
-    `ORIGINALITY RULE: ${originalityLine(state)}`,
-    `EXCLUDE: ${exclusions}.`
+function defaultNegative(state) {
+  const base = [
+    'no direct artist names',
+    'no impersonation',
+    'no soundalike request',
+    'no copied melodies',
+    'no copied lyrics',
+    'no copyrighted hooks',
+    'no muddy low end',
+    'no harsh cymbals',
+    'no generic stock-music feel',
+    'no over-compressed master'
   ];
-  return densityLines(state, lines);
+  const user = state.negativePrompt ? state.negativePrompt.split(/[,;\n]+/) : [];
+  return sentenceJoin(base.concat(user), 20);
 }
 
-function buildExperimentalPrompt(ctx) {
-  const { state, title, idea, genre, bpm, key, moodText, vocal, instruments, arc, traits, exclusions } = ctx;
-  const lines = [
-    `CREATIVE EXPERIMENT: ${title} — ${idea}`,
-    `Hybridize ${genre} with bold but tasteful contrast; ${bpm} BPM; ${key}; ${state.lengthTarget}; mood: ${moodText}.`,
-    `Blend strategy: ${state.blendStrategy}. Prioritize a fresh identity over reference accuracy.`,
-    `Vocal character: ${vocal}; use micro-dynamics, human breaths, subtle ad-libs, and natural imperfections where appropriate.`,
-    `Groove DNA: ${sentenceJoin(traits.groove, 10) || 'organic pulse, syncopation, controlled lift'}; add one unexpected rhythmic or textural twist.`,
-    `Sound palette: ${instruments}; expand with ${sentenceJoin(traits.instrumentation, 8) || 'one distinctive lead color and one subtle atmospheric layer'}.`,
-    `Production texture: ${sentenceJoin(traits.production, 10) || 'warm modern depth, detailed stereo field, tactile percussion'}; use contrast between intimate space and cinematic width.`,
-    `Arrangement: ${arc}; include a surprising bridge, instrumental answer phrase, or stripped-down breakdown before the final hook.`,
-    `Lyric worldview: ${sentenceJoin(traits.lyric, 10) || 'image-led, emotionally specific, not generic'}; avoid clichés and overused rhymes.`,
-    `Originality rule: ${originalityLine(state)}`,
-    `Avoid: ${exclusions}; no parody, no soundalike request, no copied topline.`
-  ];
-  return lines.join('\n');
+function buildStyleField(ctx) {
+  const { state, genre, style, country, bpm, key, traits } = ctx;
+  const vocal = state.language.includes('Instrumental') || state.language.includes('Wordless')
+    ? 'instrumental only, no lead vocal'
+    : state.vocalDirection;
+  return [
+    `Original ${genre}; ${style}; ${bpm} BPM; ${key}; ${country} influence; use case: ${state.useCase}.`,
+    `Mood/energy: ${sentenceJoin(state.moods, 8) || 'warm, polished, emotionally specific'}; ${state.energy}.`,
+    `Vocal/language: ${vocal}; ${state.language}.`,
+    `Instrumentation: ${fallback(state.instruments, 'tasteful live-feeling instrumentation and polished electronic support')}.`,
+    `Trait blend from private inspirations: ${sentenceJoin([].concat(traits.overall, traits.vocal, traits.groove, traits.production, traits.instrumentation, traits.notes), 18) || 'premium, original, polished, hook-aware, human-feeling'}.`,
+    `Arrangement: ${fallback(state.arrangement, 'clear intro, verse, chorus, bridge, final lift, clean outro')}.`,
+    `Mix: warm mids, controlled low end, smooth highs, clear vocal center, wide but not washed-out, iPhone-friendly and venue-friendly.`,
+    `Originality: use inspirations only as descriptive traits; do not name or imitate real artists; keep melody, topline, lyrics, and arrangement original.`
+  ].join('\n');
 }
 
-function buildVenuePrompt(ctx) {
-  const { state, title, idea, genre, bpm, key, moodText, vocal, instruments, arc, traits, exclusions, preset } = ctx;
-  const lines = [
-    `VENUE-READY PROMPT: ${title}`,
-    `Create an original ${genre} track for ${state.useCase}. Core idea: ${idea}`,
-    `Tempo/key/length: ${bpm} BPM, ${key}, ${state.lengthTarget}. Energy: ${preset.energy || 'balanced'}; mood: ${moodText}.`,
-    `Venue context: ${state.venuePreset}; ${preset.notes || 'fit the user-defined venue context'}.`,
-    `Vocal/language: ${vocal}; ${state.language}. Keep intelligibility high and avoid distracting vocal excess for hospitality playback.`,
-    `Instruments: ${instruments}. Add venue-fit colors: ${sentenceJoin(traits.instrumentation, 8) || 'tasteful live-feeling melodic accents'}.`,
-    `Groove: ${sentenceJoin(traits.groove, 8) || 'steady, elegant, conversation-friendly'}; maintain premium flow without harsh drops.`,
-    `Arrangement: ${arc}. Make the intro useful for playlist transitions and the outro clean for crossfades.`,
-    `Hook: ${hookInstruction(state)}`,
-    `Mix: smooth highs, controlled sub, clear midrange, no piercing percussion, no muddy ambience; works on restaurant, terrace, and phone speakers.`,
-    `Originality rule: ${originalityLine(state)}`,
-    `Avoid: ${exclusions}.`
-  ];
-  return lines.join('\n');
-}
+function buildPromptField(ctx) {
+  const { state, title, genre, style, country, traits } = ctx;
+  const languageNote = state.language.includes('+')
+    ? `Use a natural ${state.language} blend; keep code-switching elegant and not forced.`
+    : state.language.includes('Instrumental') || state.language.includes('Wordless')
+      ? 'No sung lyrics; use instrumental motifs and wordless textures only.'
+      : `Write in ${state.language}.`;
+  const hook = state.hookPhrase
+    ? `Tastefully use this original refrain: “${state.hookPhrase}”.`
+    : 'Create one concise original refrain that is memorable after one listen.';
+  const lyricWorld = sentenceJoin(traits.lyric.concat(traits.performance, traits.notes), 10) || 'place, movement, sea air, light, memory, and emotional clarity';
 
-function buildLyricScaffold(ctx) {
-  const { state, idea, traits } = ctx;
-  if (state.language.includes('Instrumental') || state.language.includes('Wordless')) {
+  if (state.promptMode === 'minimal-suno') {
+    return `Create an original song titled “${title}”. Core idea: ${state.coreIdea}. ${genre}; ${style}; ${country} influence. ${hook} ${languageNote}`;
+  }
+
+  if (state.promptMode === 'instrumental-structure' || state.language.includes('Instrumental')) {
     return [
       '[Intro]',
-      '*Instrumental opening; establish the main motif and ambience.*',
+      '*Instrumental opening; establish the main motif, ambience, and tempo without vocals.*',
       '',
       '[A Section]',
       '*Main groove enters; feature the lead instrument with a clear melodic phrase.*',
       '',
       '[B Section]',
-      '*Harmonic lift; add counter-melody and subtle percussion variation.*',
+      '*Harmonic lift; add counter-melody, tasteful percussion variation, and more width.*',
       '',
       '[Bridge]',
-      '*Break down to texture, hand percussion, and atmosphere.*',
+      '*Break down to texture, hand percussion, bass, and atmosphere; avoid losing the pulse.*',
       '',
       '[Final Section]',
-      '*Return with fuller instrumentation, then fade or end cleanly.*'
+      '*Return with fuller instrumentation, a stronger motif, and a clean ending or elegant fade.*'
     ].join('\n');
   }
 
-  const lyricWorld = sentenceJoin(traits.lyric, 6) || 'place, longing, sea air, night light, and emotional clarity';
-  const languageNote = state.language.includes('+') ? `Use a natural ${state.language} blend; keep code-switching elegant and not forced.` : `Write in ${state.language}.`;
+  if (state.promptMode === 'full-writing-brief') {
+    return [
+      `Write an original ${genre} song titled “${title}” with ${style} character and ${country} emotional color.`,
+      `Core idea: ${state.coreIdea}.`,
+      `Lyric worldview: ${lyricWorld}. ${languageNote}`,
+      `${hook}`,
+      'Structure: [Intro], [Verse 1], [Pre-Chorus], [Chorus], [Verse 2], [Bridge], [Final Chorus], [Outro].',
+      'Keep lyrics singable, image-led, and original. Avoid direct artist references and avoid copying known melodic or lyrical phrases.'
+    ].join('\n');
+  }
+
   return [
     '[Intro]',
     '*Short instrumental intro; establish the atmosphere without singing production notes.*',
     '',
     '[Verse 1]',
-    `4 concise lines about: ${idea}`,
+    `4 concise lines about: ${fallback(state.coreIdea, 'the central emotional scene')}`,
     `Lyric worldview: ${lyricWorld}.`,
     languageNote,
     '',
@@ -836,8 +637,8 @@ function buildLyricScaffold(ctx) {
     '2 lines that move from private feeling to open horizon; increase melodic lift.',
     '',
     '[Chorus]',
-    state.hookPhrase ? `Use this refrain naturally: ${state.hookPhrase}` : 'Write a simple original refrain that can be remembered after one listen.',
-    'Keep it original; do not echo a known lyric or melody.',
+    hook,
+    'Keep the hook original; do not echo a known lyric or melody.',
     '',
     '[Verse 2]',
     'Add a second image, new detail, or time-of-night shift. Do not repeat Verse 1.',
@@ -853,69 +654,17 @@ function buildLyricScaffold(ctx) {
   ].join('\n');
 }
 
-function buildSimplePrompt(ctx) {
-  const { state, title, idea, genre, bpm, key, moodText, vocal, instruments, arc, traits, exclusions } = ctx;
+function buildPrivateNotes(ctx) {
+  const { state, traits } = ctx;
+  const inspirations = state.artists.length
+    ? state.artists.map((artist, index) => `${index + 1}. ${artist.name || 'Unnamed reference'} — aspect: ${artist.aspect}; intensity: ${intensityLabels[artist.intensity] || 'balanced'}; notes: ${artist.notes || 'none'}; translated traits: ${traitsForArtist(artist, state).join(', ') || 'none'}`).join('\n')
+    : 'No private inspirations entered.';
   return [
-    `Create an original ${genre} song called “${title}” for ${state.useCase}.`,
-    `Core idea: ${idea}`,
-    `Tempo/key: ${bpm} BPM, ${key}. Length: ${state.lengthTarget}. Mood: ${moodText}.`,
-    `Vocal/language: ${vocal}; ${state.language}.`,
-    `Instrumentation: ${instruments}.`,
-    `Arrangement: ${arc}.`,
-    `Use private artist inspirations only as these traits: ${sentenceJoin([].concat(traits.overall, traits.vocal, traits.groove, traits.production, traits.notes), 18) || 'original, polished, emotionally specific, hook-driven'}.`,
-    hookInstruction(state),
-    `Avoid: ${exclusions}. Do not imitate or name any real artist, and do not copy existing melodies or lyrics.`
-  ].join('\n');
-}
-
-function buildAiBrief(ctx) {
-  const { state, title, idea, genre, bpm, key, moodText, vocal, instruments, arc, traits, preset } = ctx;
-  const inspirationList = state.artists.length
-    ? state.artists.map((artist, index) => `${index + 1}. ${artist.name || 'Unnamed reference'} — desired aspect: ${artist.aspect}; intensity: ${intensityLabels[artist.intensity] || 'balanced'}; my notes: ${artist.notes || 'none'}; local traits: ${traitsForArtist(artist).join(', ') || 'none'}`).join('\n')
-    : 'No artist references entered.';
-  return [
-    'You are helping me expand a Suno prompt while keeping it original and artist-safe.',
+    'PRIVATE INSPIRATION NOTES — DO NOT PASTE INTO SUNO UNLESS YOU WANT REFERENCE-ONLY NOTES',
     '',
-    'Task:',
-    '- Convert the private artist inspirations below into descriptive musical traits only.',
-    '- Do not place artist names in the final Suno prompt.',
-    '- Do not request imitation, soundalikes, copied melodies, copied lyrics, or vocal impersonation.',
-    '- Output three versions: safe commercial, creative experimental, and venue-ready.',
-    '- Keep style prompt separate from lyrics/structure.',
+    inspirations,
     '',
-    `Working title: ${title}`,
-    `Core idea: ${idea}`,
-    `Use case: ${state.useCase}`,
-    `Venue preset: ${state.venuePreset} — ${preset.notes || 'user-defined'}`,
-    `Genre: ${genre}`,
-    `BPM/key/length: ${bpm} BPM, ${key}, ${state.lengthTarget}`,
-    `Mood: ${moodText}`,
-    `Vocal/language: ${vocal}; ${state.language}`,
-    `Instruments: ${instruments}`,
-    `Arrangement: ${arc}`,
-    `Hook phrase: ${state.hookPhrase || 'create an original hook'}`,
-    `Blend strategy: ${state.blendStrategy}`,
-    `Originality guard: ${state.originalityGuard}`,
-    `Release posture: ${state.releasePosture}`,
-    `Stem/DAW plan: ${state.stemPlan}`,
-    '',
-    'Private artist inspirations:',
-    inspirationList,
-    '',
-    'Local trait map:',
-    formatTraitMap(traits),
-    '',
-    'Return:',
-    '1. Safe commercial Suno style prompt',
-    '2. Creative experimental Suno style prompt',
-    '3. Venue-ready Suno style prompt',
-    '4. Lyrics/structure scaffold',
-    '5. QA flags and one-variable revision plan'
-  ].join('\n');
-}
-
-function formatTraitMap(traits) {
-  return [
+    'Expanded trait map:',
     `Overall: ${sentenceJoin(traits.overall, 12) || '—'}`,
     `Vocal: ${sentenceJoin(traits.vocal, 12) || '—'}`,
     `Groove: ${sentenceJoin(traits.groove, 12) || '—'}`,
@@ -928,127 +677,147 @@ function formatTraitMap(traits) {
   ].join('\n');
 }
 
-function buildQa(ctx, prompts, scores) {
-  const { state, title, genre, bpm, key, traits, preset, exclusions } = ctx;
-  const directNames = unique([
-    ...getArtistNamesInOutput(prompts.safePrompt, state),
-    ...getArtistNamesInOutput(prompts.experimentalPrompt, state),
-    ...getArtistNamesInOutput(prompts.venuePrompt, state),
-    ...getArtistNamesInOutput(prompts.simplePrompt, state)
-  ]);
-  const inspirationList = state.artists.length
-    ? state.artists.map((artist, index) => `${index + 1}. ${artist.name || 'Unnamed reference'} | aspect: ${artist.aspect} | intensity: ${intensityLabels[artist.intensity] || 'balanced'} | notes: ${artist.notes || 'none'} | translated: ${traitsForArtist(artist).join(', ') || 'none'}`).join('\n')
-    : 'No artist references entered.';
-  const flags = scorePrompt(ctx, prompts).flags;
-
+function buildPacket(fields, ctx) {
   return [
-    'PROMPT MUSE v2 QA / RELEASE LOG',
-    `Title: ${title}`,
-    `Generated: ${new Date().toLocaleString()}`,
-    `Genre / BPM / key: ${genre}; ${bpm} BPM; ${key}`,
-    `Use case: ${state.useCase}`,
-    `Release posture: ${state.releasePosture}`,
-    `Venue preset: ${state.venuePreset}`,
-    `Venue note: ${preset.notes || 'None'}`,
-    `Stem / DAW plan: ${state.stemPlan}`,
-    `Human edit notes: ${state.humanEditNotes || 'None'}`,
+    '# Suno Fields',
     '',
-    `Scores: originality ${scores.originality}/100; venue fit ${scores.venue}/100; Suno clarity ${scores.suno}/100; total ${scores.total}/100.`,
-    `QA flags: ${flags.length ? flags.join('; ') : 'No major flags.'}`,
-    `Direct artist names detected inside generated Suno prompts: ${directNames.length ? directNames.join(', ') : 'None'}`,
+    '## Title',
+    fields.title,
     '',
-    'Private inspiration log:',
-    inspirationList,
+    '## Prompt / Lyrics',
+    fields.prompt,
     '',
-    'Expanded local trait map:',
-    formatTraitMap(traits),
+    '## Style',
+    fields.style,
     '',
-    `Exclusions: ${exclusions}`,
+    '## Negative Prompt',
+    fields.negative,
     '',
-    'One-variable revision plan:',
-    '1. Generate 4 Suno versions from the Safe prompt.',
-    '2. Save the best two outputs.',
-    '3. Revise only one variable at a time: BPM, vocal direction, hook phrase, instrument palette, or arrangement arc.',
-    '4. For release candidates, export stems, log the prompt, add human edits, and avoid direct artist names in public metadata.'
+    '## Metadata',
+    `Genre: ${ctx.genre}`,
+    `Style: ${ctx.style}`,
+    `Country / market: ${ctx.country}`,
+    `BPM: ${ctx.bpm}`,
+    `Inspired by: ${ctx.state.artists.map(a => a.name).filter(Boolean).join(', ') || 'none'}`,
+    `Created: ${new Date().toLocaleString()}`
   ].join('\n');
 }
 
-function scorePrompt(ctx, prompts) {
-  const { state, traits, genre, bpm, key, instruments } = ctx;
+function scoreBundle(ctx, fields) {
+  const { state, genre, style, country, bpm, traits } = ctx;
   const flags = [];
-  let suno = 100;
   let originality = 100;
-  let venue = 100;
+  let suno = 100;
+  let library = 100;
 
-  if (!state.coreIdea) { suno -= 14; flags.push('Core idea is empty'); }
-  if (!bpm || bpm === 'medium tempo') { suno -= 8; flags.push('BPM missing'); }
-  if (!key || key === 'open key') { suno -= 5; flags.push('Key missing'); }
-  if (!instruments || instruments === 'tasteful band and electronic textures') { suno -= 8; flags.push('Instrument palette missing'); }
-  if (!genre || genre === 'original contemporary music') { suno -= 8; flags.push('Genre spine is vague'); }
-  if (prompts.safePrompt.length > 1400) { suno -= 6; flags.push('Safe prompt is long; try Standard or Short density'); }
-
-  if (!state.safeMode) { originality -= 18; flags.push('Artist-safe mode is off'); }
+  if (!state.safeMode) { originality -= 20; flags.push('Artist-safe mode is off'); }
+  const directNames = state.artists.map(a => a.name).filter(Boolean).filter(name => {
+    const pattern = new RegExp(`\\b${escapeRegExp(name)}\\b`, 'i');
+    return pattern.test(fields.style) || pattern.test(fields.prompt) || pattern.test(fields.negative);
+  });
+  if (directNames.length) { originality -= 35; flags.push(`Direct artist names detected in Suno fields: ${directNames.join(', ')}`); }
   if (!state.artists.length) { originality -= 5; flags.push('No artist inspirations entered'); }
-  if (!Object.values(traits).flat().length) { originality -= 8; flags.push('Trait expansion is thin'); }
-  const directNames = unique([
-    ...getArtistNamesInOutput(prompts.safePrompt, state),
-    ...getArtistNamesInOutput(prompts.experimentalPrompt, state),
-    ...getArtistNamesInOutput(prompts.venuePrompt, state),
-    ...getArtistNamesInOutput(prompts.simplePrompt, state)
-  ]);
-  if (directNames.length) { originality -= 25; flags.push(`Direct artist names found in generated Suno prompts: ${directNames.join(', ')}`); }
+  if (!Object.values(traits).flat().length) { originality -= 5; flags.push('Trait expansion is thin'); }
 
-  if (state.venuePreset === 'Custom / no preset') { venue -= 8; flags.push('No venue preset selected'); }
-  if (!state.moods.length) { venue -= 5; flags.push('No mood chips selected'); }
-  if (!state.hookPhrase && !state.language.includes('Instrumental')) { venue -= 4; flags.push('Hook phrase missing'); }
-  if (state.useCase.includes('Venue') && !state.stemPlan.includes('Export') && !state.stemPlan.includes('No stem')) { venue -= 3; }
+  if (!state.title) { suno -= 8; flags.push('Title is empty'); }
+  if (!state.coreIdea) { suno -= 12; flags.push('Core idea is empty'); }
+  if (!genre || genre === 'original contemporary music') { suno -= 8; flags.push('Genre is vague'); }
+  if (!style || style === 'polished original style') { suno -= 5; flags.push('Style is vague'); }
+  if (!bpm || bpm === 'medium tempo') { suno -= 8; flags.push('BPM is missing'); }
+  if (!state.instruments) { suno -= 7; flags.push('Instrument palette missing'); }
+  if (fields.style.length > 1400) { suno -= 5; flags.push('Style field is long; shorten before pasting'); }
 
-  suno = clampScore(suno);
-  originality = clampScore(originality);
-  venue = clampScore(venue);
-  const total = clampScore((suno + originality + venue) / 3);
-  return { suno, originality, venue, total, flags };
+  if (!country) { library -= 7; flags.push('Country/market is missing'); }
+  if (!state.moods.length) { library -= 5; flags.push('No mood tags selected'); }
+  if (!state.bpm) { library -= 8; }
+  if (!state.genre && !state.customGenre) { library -= 8; }
+  if (!state.style && !state.customStyle) { library -= 8; }
+
+  return {
+    originality: clampScore(originality),
+    suno: clampScore(suno),
+    library: clampScore(library),
+    total: clampScore((originality + suno + library) / 3),
+    flags: unique(flags)
+  };
 }
 
-function buildPromptBundle(state) {
-  const preset = venuePresets[state.venuePreset] || venuePresets['Custom / no preset'];
+function buildQa(ctx, fields, scores) {
+  return [
+    'PROMPT MUSE v3 QA / RELEASE LOG',
+    `Title: ${fields.title}`,
+    `Generated: ${new Date().toLocaleString()}`,
+    `Genre / style / country / BPM: ${ctx.genre}; ${ctx.style}; ${ctx.country}; ${ctx.bpm}`,
+    `Use case: ${ctx.state.useCase}`,
+    `Language / vocal: ${ctx.state.language}; ${ctx.state.vocalDirection}`,
+    `Scores: originality ${scores.originality}/100; Suno clarity ${scores.suno}/100; library detail ${scores.library}/100; total ${scores.total}/100.`,
+    `QA flags: ${scores.flags.length ? scores.flags.join('; ') : 'No major flags.'}`,
+    '',
+    'Copy workflow:',
+    '1. Copy Title into Suno title field.',
+    '2. Copy Style into Suno style field.',
+    '3. Copy Prompt/Lyrics into Suno lyrics or prompt field.',
+    '4. Copy Negative Prompt only if the target workflow supports it; otherwise keep it as an edit checklist.',
+    '5. Save the prompt to the library before generating versions.'
+  ].join('\n');
+}
+
+function buildBundle(state) {
   const title = fallback(state.title, 'Untitled Suno Concept');
-  const idea = fallback(state.coreIdea, 'Create an original song with a strong hook, coherent structure, and polished production.');
-  const genre = getGenre(state, preset);
-  const bpm = fallback(state.bpm, preset.bpm || 'medium tempo');
-  const key = fallback(state.key, preset.key || 'open key');
-  const instruments = fallback(state.instruments, preset.instruments || 'tasteful band and electronic textures');
-  const moodText = getMoodText(state, preset);
-  const vocal = state.language.includes('Instrumental') || state.language.includes('Wordless') ? 'instrumental only, no lead vocal' : state.vocalDirection;
-  const arc = state.arrangementArc || preset.arc || arrangementArcs[0];
-  const exclusions = exclusionText(state);
+  const genre = genreLabel(state);
+  const style = styleLabel(state);
+  const country = countryLabel(state);
+  const bpm = fallback(state.bpm, 'medium tempo');
+  const key = fallback(state.key, 'open key');
   const traits = expandTraitMap(state);
+  const ctx = { state, title, genre, style, country, bpm, key, traits };
+  const fields = {
+    title,
+    style: buildStyleField(ctx),
+    prompt: buildPromptField(ctx),
+    negative: defaultNegative(state)
+  };
+  const scores = scoreBundle(ctx, fields);
+  const privateNotes = buildPrivateNotes(ctx);
+  const packet = buildPacket(fields, ctx);
+  const qa = buildQa(ctx, fields, scores);
+  const metadata = buildMetadata(state, fields, scores);
+  return { fields, scores, privateNotes, packet, qa, metadata, title };
+}
 
-  const ctx = { state, preset, title, idea, genre, bpm, key, instruments, moodText, vocal, arc, exclusions, traits };
-  const safePrompt = buildSafePrompt(ctx);
-  const experimentalPrompt = buildExperimentalPrompt(ctx);
-  const venuePrompt = buildVenuePrompt(ctx);
-  const lyricScaffold = buildLyricScaffold(ctx);
-  const simplePrompt = buildSimplePrompt(ctx);
-  const aiBrief = buildAiBrief(ctx);
-  const promptSet = { safePrompt, experimentalPrompt, venuePrompt, simplePrompt };
-  const scores = scorePrompt(ctx, promptSet);
-  const qa = buildQa(ctx, promptSet, scores);
-
-  return { safePrompt, experimentalPrompt, venuePrompt, lyricScaffold, simplePrompt, aiBrief, qa, scores, title };
+function buildMetadata(state, fields, scores) {
+  const genre = genreLabel(state);
+  const style = styleLabel(state);
+  const country = countryLabel(state);
+  const bpmNumber = Number(String(state.bpm || '').match(/\d+/)?.[0] || 0);
+  const inspiredBy = state.artists.map(artist => artist.name).filter(Boolean);
+  const tags = unique([genre, style, country, ...state.moods, state.useCase, ...inspiredBy]);
+  return {
+    genre,
+    style,
+    country,
+    bpm: bpmNumber,
+    bpmText: state.bpm || '',
+    inspiredBy,
+    moods: state.moods || [],
+    useCase: state.useCase,
+    score: scores.total,
+    tags
+  };
 }
 
 function renderBundle(bundle) {
-  $('#safeOutput').value = bundle.safePrompt;
-  $('#experimentalOutput').value = bundle.experimentalPrompt;
-  $('#venueOutput').value = bundle.venuePrompt;
-  $('#lyricsOutput').value = bundle.lyricScaffold;
-  $('#simpleOutput').value = bundle.simplePrompt;
-  $('#aiBriefOutput').value = bundle.aiBrief;
+  lastBundle = bundle;
+  $('#sunoTitleOutput').value = bundle.fields.title;
+  $('#sunoStyleOutput').value = bundle.fields.style;
+  $('#sunoPromptOutput').value = bundle.fields.prompt;
+  $('#sunoNegativeOutput').value = bundle.fields.negative;
+  $('#packetOutput').value = bundle.packet;
+  $('#privateNotesOutput').value = bundle.privateNotes;
   $('#qaOutput').value = bundle.qa;
   $('#originalityScore').textContent = bundle.scores.originality;
-  $('#venueScore').textContent = bundle.scores.venue;
   $('#sunoScore').textContent = bundle.scores.suno;
+  $('#libraryScore').textContent = bundle.scores.library;
   const badge = $('#qualityBadge');
   badge.textContent = `${bundle.scores.total}/100 QA`;
   badge.classList.toggle('muted', bundle.scores.total < 82);
@@ -1057,7 +826,7 @@ function renderBundle(bundle) {
 function generate(event) {
   if (event) event.preventDefault();
   const state = getState();
-  const bundle = buildPromptBundle(state);
+  const bundle = buildBundle(state);
   renderBundle(bundle);
   $('#outputSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
   return { state, bundle };
@@ -1067,7 +836,6 @@ async function copyText(text) {
   if (!text) return;
   try {
     await navigator.clipboard.writeText(text);
-    flashBadge('Copied');
   } catch {
     const temp = document.createElement('textarea');
     temp.value = text;
@@ -1075,8 +843,8 @@ async function copyText(text) {
     temp.select();
     document.execCommand('copy');
     temp.remove();
-    flashBadge('Copied');
   }
+  flashBadge('Copied');
 }
 
 function flashBadge(text) {
@@ -1086,79 +854,549 @@ function flashBadge(text) {
   setTimeout(() => { badge.textContent = previous; }, 1100);
 }
 
-function getCurrentBundleText() {
+function getSunoFieldsText(bundle = lastBundle) {
+  if (!bundle) return '';
   return [
-    '# Prompt Muse v2 · Suno Prompt Bundle',
+    'TITLE:', bundle.fields.title,
     '',
-    '## Safe Commercial Style Prompt',
-    $('#safeOutput').value,
+    'STYLE:', bundle.fields.style,
     '',
-    '## Creative Experimental Style Prompt',
-    $('#experimentalOutput').value,
+    'PROMPT / LYRICS:', bundle.fields.prompt,
     '',
-    '## Venue-Ready Style Prompt',
-    $('#venueOutput').value,
-    '',
-    '## Lyrics / Structure Scaffold',
-    $('#lyricsOutput').value,
-    '',
-    '## One-Box Simple Mode Prompt',
-    $('#simpleOutput').value,
-    '',
-    '## Optional AI Expansion Brief',
-    $('#aiBriefOutput').value,
-    '',
-    '## QA / Release Log',
-    $('#qaOutput').value
+    'NEGATIVE PROMPT:', bundle.fields.negative
   ].join('\n');
 }
 
-function savePrompt() {
+function loadLibraryRaw() {
+  try {
+    const current = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    if (Array.isArray(current) && current.length) return current;
+  } catch {}
+  return migrateLegacyLibrary();
+}
+
+function saveLibraryRaw(items) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+}
+
+function migrateLegacyLibrary() {
+  for (const key of LEGACY_STORAGE_KEYS) {
+    try {
+      const legacy = JSON.parse(localStorage.getItem(key) || '[]');
+      if (Array.isArray(legacy) && legacy.length) {
+        const migrated = legacy.map(item => migrateLegacyItem(item)).filter(Boolean);
+        saveLibraryRaw(migrated);
+        return migrated;
+      }
+    } catch {}
+  }
+  return [];
+}
+
+function migrateLegacyItem(item) {
+  if (!item) return null;
+  const state = item.state || {};
+  const importedState = {
+    title: state.title || item.title || 'Imported Suno Prompt',
+    useCase: state.useCase || 'Single / release candidate',
+    coreIdea: state.coreIdea || '',
+    hookPhrase: state.hookPhrase || '',
+    promptMode: 'lyric-scaffold',
+    genre: state.genreSpine || genres[0],
+    customGenre: state.customGenre || '',
+    style: styles[0],
+    customStyle: '',
+    country: 'Global / mixed',
+    customCountry: '',
+    bpm: state.bpm || '',
+    key: state.key || '',
+    energy: 'medium, premium lounge movement',
+    moods: state.moods || [],
+    safeMode: state.safeMode !== false,
+    artists: state.artists || [],
+    vocalDirection: state.vocalDirection || vocalDirections[0],
+    language: state.language || 'English',
+    instruments: state.instruments || '',
+    arrangement: state.arrangementArc || '',
+    negativePrompt: state.exclusions || ''
+  };
+  const bundle = buildBundle(importedState);
+  return {
+    id: item.id || cryptoId(),
+    createdAt: item.createdAt || new Date().toISOString(),
+    updatedAt: item.createdAt || new Date().toISOString(),
+    favorite: false,
+    title: bundle.title,
+    state: importedState,
+    fields: bundle.fields,
+    metadata: bundle.metadata,
+    scores: bundle.scores
+  };
+}
+
+function saveToLibrary(forceNew = false) {
   const state = getState();
-  const bundle = buildPromptBundle(state);
+  const bundle = buildBundle(state);
   renderBundle(bundle);
-  const history = loadHistory();
-  history.unshift({
-    id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
-    createdAt: new Date().toISOString(),
+  const library = loadLibraryRaw();
+  const now = new Date().toISOString();
+  const id = !forceNew && currentEntryId ? currentEntryId : cryptoId();
+  const existing = library.find(item => item.id === id);
+  const entry = {
+    id,
+    createdAt: existing?.createdAt || now,
+    updatedAt: now,
+    favorite: existing?.favorite || false,
     title: bundle.title,
     state,
-    bundle
+    fields: bundle.fields,
+    metadata: bundle.metadata,
+    scores: bundle.scores
+  };
+  const next = [entry, ...library.filter(item => item.id !== id)].slice(0, 300);
+  currentEntryId = id;
+  saveLibraryRaw(next);
+  updateEditBadge();
+  renderLibrary();
+  flashBadge(forceNew ? 'Saved new' : 'Saved');
+}
+
+function updateEditBadge() {
+  const badge = $('#editBadge');
+  if (currentEntryId) {
+    badge.textContent = 'Editing saved item';
+    badge.classList.remove('muted');
+  } else {
+    badge.textContent = 'New prompt';
+    badge.classList.add('muted');
+  }
+}
+
+function filterLibrary(items) {
+  const search = normalize($('#librarySearch').value);
+  const genre = $('#filterGenre').value;
+  const style = $('#filterStyle').value;
+  const inspired = $('#filterInspired').value;
+  const country = $('#filterCountry').value;
+  const min = Number($('#filterBpmMin').value || 0);
+  const max = Number($('#filterBpmMax').value || 0);
+  const favorites = $('#favoritesOnly').checked;
+
+  return items.filter(item => {
+    const meta = item.metadata || buildMetadata(item.state || {}, { title: item.title }, item.scores || {});
+    const haystack = normalize([
+      item.title,
+      meta.genre,
+      meta.style,
+      meta.country,
+      meta.bpmText,
+      ...(meta.inspiredBy || []),
+      ...(meta.moods || []),
+      item.state?.coreIdea,
+      item.state?.hookPhrase,
+      item.state?.instruments,
+      item.state?.negativePrompt,
+      item.fields?.style,
+      item.fields?.prompt,
+      item.fields?.negative
+    ].join(' '));
+    if (search && !haystack.includes(search)) return false;
+    if (genre && meta.genre !== genre) return false;
+    if (style && meta.style !== style) return false;
+    if (country && meta.country !== country) return false;
+    if (inspired && !(meta.inspiredBy || []).includes(inspired)) return false;
+    if (favorites && !item.favorite) return false;
+    const bpm = Number(meta.bpm || 0);
+    if (min && (!bpm || bpm < min)) return false;
+    if (max && (!bpm || bpm > max)) return false;
+    return true;
   });
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(history.slice(0, 40)));
-  renderHistory();
-  flashBadge('Saved');
 }
 
-function loadHistory() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
-  catch { return []; }
+function sortLibrary(items) {
+  const mode = $('#librarySort').value;
+  const sorted = [...items];
+  sorted.sort((a, b) => {
+    const am = a.metadata || {};
+    const bm = b.metadata || {};
+    if (mode === 'title-asc') return String(a.title || '').localeCompare(String(b.title || ''));
+    if (mode === 'bpm-asc') return Number(am.bpm || 0) - Number(bm.bpm || 0);
+    if (mode === 'bpm-desc') return Number(bm.bpm || 0) - Number(am.bpm || 0);
+    if (mode === 'genre-asc') return String(am.genre || '').localeCompare(String(bm.genre || ''));
+    if (mode === 'created-desc') return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+    return new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0);
+  });
+  return sorted;
 }
 
-function renderHistory() {
-  const history = loadHistory();
-  $('#historyCount').textContent = `${history.length} saved`;
-  const container = $('#historyList');
+function refreshFilterOptions(items) {
+  const current = {
+    genre: $('#filterGenre').value,
+    style: $('#filterStyle').value,
+    inspired: $('#filterInspired').value,
+    country: $('#filterCountry').value
+  };
+  const metaValues = key => unique(items.map(item => item.metadata?.[key]).filter(Boolean)).sort((a, b) => a.localeCompare(b));
+  const inspirations = unique(items.flatMap(item => item.metadata?.inspiredBy || [])).sort((a, b) => a.localeCompare(b));
+  setFilterOptions('#filterGenre', 'All genres', metaValues('genre'), current.genre);
+  setFilterOptions('#filterStyle', 'All styles', metaValues('style'), current.style);
+  setFilterOptions('#filterInspired', 'All inspirations', inspirations, current.inspired);
+  setFilterOptions('#filterCountry', 'All countries', metaValues('country'), current.country);
+}
+
+function setFilterOptions(selector, label, values, currentValue) {
+  const select = $(selector);
+  select.innerHTML = `<option value="">${escapeHtml(label)}</option>`;
+  values.forEach(value => {
+    const option = document.createElement('option');
+    option.value = value;
+    option.textContent = value;
+    select.appendChild(option);
+  });
+  if (currentValue && values.includes(currentValue)) select.value = currentValue;
+}
+
+function renderActiveFilters() {
+  const chips = [];
+  if ($('#librarySearch').value) chips.push(`search: ${$('#librarySearch').value}`);
+  if ($('#filterGenre').value) chips.push(`genre: ${$('#filterGenre').value}`);
+  if ($('#filterStyle').value) chips.push(`style: ${$('#filterStyle').value}`);
+  if ($('#filterInspired').value) chips.push(`inspired by: ${$('#filterInspired').value}`);
+  if ($('#filterCountry').value) chips.push(`country: ${$('#filterCountry').value}`);
+  if ($('#filterBpmMin').value) chips.push(`BPM ≥ ${$('#filterBpmMin').value}`);
+  if ($('#filterBpmMax').value) chips.push(`BPM ≤ ${$('#filterBpmMax').value}`);
+  if ($('#favoritesOnly').checked) chips.push('favorites only');
+  $('#activeFilters').innerHTML = chips.map(chip => `<span class="filter-chip">${escapeHtml(chip)}</span>`).join('');
+}
+
+function renderLibrary() {
+  const library = loadLibraryRaw();
+  refreshFilterOptions(library);
+  const filtered = sortLibrary(filterLibrary(library));
+  $('#libraryCount').textContent = `${filtered.length}/${library.length} shown`;
+  renderActiveFilters();
+  const container = $('#libraryList');
   container.innerHTML = '';
-  if (!history.length) {
-    container.innerHTML = '<p class="footer-note">No prompts saved yet. Generate a bundle, then tap Save to history.</p>';
+  if (!library.length) {
+    container.innerHTML = '<p class="empty-state">No prompts saved yet. Generate Suno fields, then tap Save to library.</p>';
     return;
   }
-  history.slice(0, 16).forEach(item => {
+  if (!filtered.length) {
+    container.innerHTML = '<p class="empty-state">No saved prompts match these filters.</p>';
+    return;
+  }
+  filtered.forEach(item => {
+    const meta = item.metadata || {};
+    const created = formatDate(item.updatedAt || item.createdAt);
+    const artists = (meta.inspiredBy || []).join(', ') || 'none';
     const card = document.createElement('div');
-    card.className = 'history-item';
-    const date = new Date(item.createdAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
-    const score = item.bundle?.scores?.total ? `${item.bundle.scores.total}/100` : 'saved';
+    card.className = 'library-item';
     card.innerHTML = `
-      <h3>${escapeHtml(item.title || 'Untitled')}</h3>
-      <p>${escapeHtml(date)} · ${escapeHtml(item.state?.genreSpine || item.state?.customGenre || 'Prompt bundle')} · ${escapeHtml(score)}</p>
+      <div class="library-item-header">
+        <div>
+          <h3>${escapeHtml(item.title || 'Untitled')}</h3>
+          <p>${escapeHtml(meta.genre || 'No genre')} · ${escapeHtml(meta.style || 'No style')} · ${escapeHtml(meta.country || 'No country')} · ${escapeHtml(meta.bpmText || (meta.bpm ? String(meta.bpm) : 'no BPM'))} BPM</p>
+          <p>Inspired by: ${escapeHtml(artists)} · Updated ${escapeHtml(created)}</p>
+        </div>
+        <button class="ghost small star-button ${item.favorite ? 'active' : ''}" data-favorite="${escapeAttr(item.id)}" type="button" aria-label="Toggle favorite">★</button>
+      </div>
+      <div class="meta-row">
+        ${(meta.moods || []).slice(0, 8).map(mood => `<span class="meta-pill">${escapeHtml(mood)}</span>`).join('')}
+        <span class="meta-pill">QA ${escapeHtml(meta.score || item.scores?.total || '—')}</span>
+      </div>
       <div class="button-row wrap">
-        <button class="secondary small" data-load="${escapeHtml(item.id)}" type="button">Load</button>
-        <button class="secondary small" data-copy-history="${escapeHtml(item.id)}" type="button">Copy</button>
-        <button class="danger small" data-delete="${escapeHtml(item.id)}" type="button">Delete</button>
+        <button class="secondary small" data-load="${escapeAttr(item.id)}" type="button">Load</button>
+        <button class="primary small" data-copy-all="${escapeAttr(item.id)}" type="button">Copy all fields</button>
+        <button class="secondary small" data-copy-title="${escapeAttr(item.id)}" type="button">Title</button>
+        <button class="secondary small" data-copy-style="${escapeAttr(item.id)}" type="button">Style</button>
+        <button class="secondary small" data-copy-prompt="${escapeAttr(item.id)}" type="button">Prompt</button>
+        <button class="secondary small" data-copy-negative="${escapeAttr(item.id)}" type="button">Negative</button>
+        <button class="secondary small" data-duplicate="${escapeAttr(item.id)}" type="button">Duplicate</button>
+        <button class="danger small" data-delete="${escapeAttr(item.id)}" type="button">Delete</button>
       </div>`;
     container.appendChild(card);
   });
+}
+
+function findLibraryItem(id) {
+  return loadLibraryRaw().find(item => item.id === id);
+}
+
+function loadLibraryItem(id) {
+  const item = findLibraryItem(id);
+  if (!item) return;
+  currentEntryId = id;
+  setFormState(item.state || {});
+  const bundle = buildBundle(getState());
+  renderBundle(bundle);
+  updateEditBadge();
+  $('#promptForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function deleteLibraryItem(id) {
+  const next = loadLibraryRaw().filter(item => item.id !== id);
+  saveLibraryRaw(next);
+  if (currentEntryId === id) {
+    currentEntryId = null;
+    updateEditBadge();
+  }
+  renderLibrary();
+}
+
+function duplicateLibraryItem(id) {
+  const item = findLibraryItem(id);
+  if (!item) return;
+  const nextItem = {
+    ...item,
+    id: cryptoId(),
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    title: `${item.title || 'Untitled'} copy`,
+    favorite: false,
+    state: { ...(item.state || {}), title: `${item.state?.title || item.title || 'Untitled'} copy` }
+  };
+  const bundle = buildBundle(nextItem.state);
+  nextItem.fields = bundle.fields;
+  nextItem.metadata = bundle.metadata;
+  nextItem.scores = bundle.scores;
+  saveLibraryRaw([nextItem, ...loadLibraryRaw()]);
+  renderLibrary();
+  flashBadge('Duplicated');
+}
+
+function toggleFavorite(id) {
+  const next = loadLibraryRaw().map(item => item.id === id ? { ...item, favorite: !item.favorite, updatedAt: new Date().toISOString() } : item);
+  saveLibraryRaw(next);
+  renderLibrary();
+}
+
+function copyFieldFromItem(id, field) {
+  const item = findLibraryItem(id);
+  if (!item) return;
+  if (field === 'all') {
+    copyText(getSunoFieldsText({ fields: item.fields }));
+  } else {
+    copyText(item.fields?.[field] || '');
+  }
+}
+
+function clearFilters() {
+  $('#librarySearch').value = '';
+  $('#filterGenre').value = '';
+  $('#filterStyle').value = '';
+  $('#filterInspired').value = '';
+  $('#filterCountry').value = '';
+  $('#filterBpmMin').value = '';
+  $('#filterBpmMax').value = '';
+  $('#favoritesOnly').checked = false;
+  renderLibrary();
+}
+
+function exportLibrary() {
+  const data = {
+    app: 'Prompt Muse for Suno',
+    version: '3.0',
+    exportedAt: new Date().toISOString(),
+    items: loadLibraryRaw()
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `prompt-muse-suno-library-${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+function importLibrary(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const parsed = JSON.parse(reader.result);
+      const incoming = Array.isArray(parsed) ? parsed : parsed.items;
+      if (!Array.isArray(incoming)) throw new Error('No items array found');
+      const normalized = incoming.map(item => ({
+        ...item,
+        id: item.id || cryptoId(),
+        createdAt: item.createdAt || new Date().toISOString(),
+        updatedAt: item.updatedAt || new Date().toISOString(),
+        fields: item.fields || buildBundle(item.state || {}).fields,
+        metadata: item.metadata || buildBundle(item.state || {}).metadata,
+        scores: item.scores || buildBundle(item.state || {}).scores
+      }));
+      const existing = loadLibraryRaw();
+      const byId = new Map([...normalized, ...existing].map(item => [item.id, item]));
+      saveLibraryRaw(Array.from(byId.values()));
+      renderLibrary();
+      flashBadge('Imported');
+    } catch (error) {
+      alert(`Import failed: ${error.message}`);
+    }
+  };
+  reader.readAsText(file);
+}
+
+function downloadMarkdown() {
+  const bundle = lastBundle || buildBundle(getState());
+  const text = [bundle.packet, '', '## Private Notes', bundle.privateNotes, '', '## QA', bundle.qa].join('\n');
+  const nameBase = (bundle.fields.title || 'suno-prompt').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  const blob = new Blob([text], { type: 'text/markdown;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `${nameBase || 'suno-prompt'}.md`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+function sparkIdea() {
+  const idea = sparkIdeas[Math.floor(Math.random() * sparkIdeas.length)];
+  currentEntryId = null;
+  setFormState({
+    title: idea.title,
+    useCase: idea.bpm >= 118 ? 'Beach sunset set' : 'Venue background playlist',
+    coreIdea: idea.coreIdea,
+    hookPhrase: idea.hook,
+    promptMode: idea.bpm >= 118 ? 'full-writing-brief' : 'lyric-scaffold',
+    genre: idea.genre,
+    customGenre: '',
+    style: idea.style,
+    customStyle: '',
+    country: idea.country,
+    customCountry: '',
+    bpm: idea.bpm,
+    key: idea.key,
+    energy: idea.bpm >= 118 ? 'medium-high, sunset lift' : 'low-medium, conversation-friendly',
+    moods: idea.bpm >= 118 ? ['after-dark', 'hypnotic', 'premium'] : ['coastal', 'warm', 'premium'],
+    safeMode: true,
+    artists: idea.artists,
+    vocalDirection: idea.bpm >= 118 ? 'wordless vocal textures and choral pads' : vocalDirections[0],
+    language: idea.bpm >= 118 ? 'English + Arabic' : 'English',
+    instruments: idea.instruments,
+    arrangement: idea.bpm >= 118 ? 'DJ-friendly intro → motif reveal → controlled lift → percussion bridge → final hook → mixable outro' : 'gentle intro → verse → pre-chorus lift → memorable chorus → bridge → final chorus → elegant outro',
+    negativePrompt: 'no direct artist names, no impersonation, no copied hooks, no harsh EDM drops, no muddy low end, no over-compressed master'
+  });
+  updateEditBadge();
+  generate();
+}
+
+function loadSportingTrio() {
+  setArtistRows([
+    { name: 'Sade', aspect: 'vocal', notes: 'silky late-night restraint, no imitation', intensity: '3' },
+    { name: 'Fairuz', aspect: 'lyric', notes: 'Levantine place imagery and dignified nostalgia', intensity: '2' },
+    { name: 'Ziad Rahbani', aspect: 'arrangement', notes: 'subtle Beirut jazz harmony and Rhodes warmth', intensity: '2' }
+  ]);
+}
+
+function startNewPrompt() {
+  currentEntryId = null;
+  setFormState(defaultState());
+  updateEditBadge();
+  renderBundle(buildBundle(getState()));
+  $('#promptForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function defaultState() {
+  return {
+    title: 'Ras Beirut Afterglow',
+    useCase: 'Venue background playlist',
+    coreIdea: 'A warm Mediterranean lounge track for golden-hour dining by the sea in Ras Beirut.',
+    hookPhrase: 'Sporting Club by the sea',
+    promptMode: 'lyric-scaffold',
+    genre: 'Mediterranean acoustic beach lounge',
+    customGenre: '',
+    style: 'sunset terrace luxury',
+    customStyle: '',
+    country: 'Lebanon',
+    customCountry: 'Ras Beirut, Lebanon',
+    bpm: '104',
+    key: 'A minor',
+    energy: 'low-medium, conversation-friendly',
+    moods: ['coastal', 'warm', 'premium', 'romantic'],
+    safeMode: true,
+    artists: [
+      { name: 'Sade', aspect: 'vocal', intensity: '3', notes: 'silky restraint' },
+      { name: 'Fairuz', aspect: 'lyric', intensity: '2', notes: 'Levantine place imagery' },
+      { name: 'Ziad Rahbani', aspect: 'arrangement', intensity: '2', notes: 'subtle jazz harmony' }
+    ],
+    vocalDirection: 'warm male vocal, natural phrasing, emotionally restrained',
+    language: 'English + Arabic',
+    instruments: 'oud, nylon guitar, Rhodes, brushed drums, soft trumpet, upright bass, light sea ambience',
+    arrangement: 'gentle intro → verse → pre-chorus lift → memorable chorus → trumpet answer → bridge → final chorus → elegant sea-air outro',
+    negativePrompt: 'no direct artist names, no impersonation, no copied hooks, no harsh EDM drops, no muddy low end, no over-compressed master'
+  };
+}
+
+function wireEvents() {
+  $('#promptForm').addEventListener('submit', generate);
+  $('#installHelpBtn').addEventListener('click', () => { $('#installHelp').hidden = !$('#installHelp').hidden; });
+  $('#aboutBtn').addEventListener('click', () => { $('#aboutPanel').hidden = !$('#aboutPanel').hidden; });
+  $('#addArtistBtn').addEventListener('click', () => addArtistRow());
+  $('#presetArtistsBtn').addEventListener('click', loadSportingTrio);
+  $('#sparkBtn').addEventListener('click', sparkIdea);
+  $('#copySunoFieldsBtn').addEventListener('click', () => copyText(getSunoFieldsText(lastBundle || buildBundle(getState()))));
+  $('#saveLibraryBtn').addEventListener('click', () => saveToLibrary(false));
+  $('#saveAsNewBtn').addEventListener('click', () => saveToLibrary(true));
+  $('#downloadMdBtn').addEventListener('click', downloadMarkdown);
+  $('#newPromptBtn').addEventListener('click', startNewPrompt);
+
+  $$('[data-copy-output]').forEach(button => {
+    button.addEventListener('click', () => copyText($(`#${button.dataset.copyOutput}`).value));
+  });
+
+  $$('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      $$('.tab').forEach(item => item.classList.remove('active'));
+      $$('.tab-panel').forEach(panel => panel.classList.remove('active'));
+      tab.classList.add('active');
+      $(`#panel-${tab.dataset.tab}`).classList.add('active');
+    });
+  });
+
+  ['librarySearch', 'filterGenre', 'filterStyle', 'filterInspired', 'filterCountry', 'filterBpmMin', 'filterBpmMax', 'librarySort', 'favoritesOnly'].forEach(id => {
+    $(`#${id}`).addEventListener(id === 'librarySearch' || id.startsWith('filterBpm') ? 'input' : 'change', renderLibrary);
+  });
+
+  $('#clearFiltersBtn').addEventListener('click', clearFilters);
+  $('#exportLibraryBtn').addEventListener('click', exportLibrary);
+  $('#importLibraryInput').addEventListener('change', event => importLibrary(event.target.files[0]));
+  $('#clearLibraryBtn').addEventListener('click', () => {
+    if (confirm('Clear the entire prompt library stored on this device?')) {
+      saveLibraryRaw([]);
+      currentEntryId = null;
+      updateEditBadge();
+      renderLibrary();
+    }
+  });
+
+  $('#libraryList').addEventListener('click', event => {
+    const target = event.target.closest('button');
+    if (!target) return;
+    if (target.dataset.load) loadLibraryItem(target.dataset.load);
+    if (target.dataset.favorite) toggleFavorite(target.dataset.favorite);
+    if (target.dataset.copyAll) copyFieldFromItem(target.dataset.copyAll, 'all');
+    if (target.dataset.copyTitle) copyFieldFromItem(target.dataset.copyTitle, 'title');
+    if (target.dataset.copyStyle) copyFieldFromItem(target.dataset.copyStyle, 'style');
+    if (target.dataset.copyPrompt) copyFieldFromItem(target.dataset.copyPrompt, 'prompt');
+    if (target.dataset.copyNegative) copyFieldFromItem(target.dataset.copyNegative, 'negative');
+    if (target.dataset.duplicate) duplicateLibraryItem(target.dataset.duplicate);
+    if (target.dataset.delete && confirm('Delete this saved prompt?')) deleteLibraryItem(target.dataset.delete);
+  });
+}
+
+function cryptoId() {
+  if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  return `id-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
+function formatDate(value) {
+  try { return new Date(value).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }); }
+  catch { return 'unknown date'; }
 }
 
 function escapeHtml(text) {
@@ -1167,203 +1405,27 @@ function escapeHtml(text) {
   }[char]));
 }
 
-function setArtistRows(artists) {
-  $('#artistRows').innerHTML = '';
-  (artists?.length ? artists : [{}]).forEach(addArtistRow);
+function escapeAttr(text) {
+  return escapeHtml(text).replace(/`/g, '&#096;');
 }
 
-function setFormState(state) {
-  $('#title').value = state.title || '';
-  $('#useCase').value = state.useCase || 'Single / release candidate';
-  $('#coreIdea').value = state.coreIdea || '';
-  $('#artistSafeMode').checked = state.safeMode !== false;
-  setArtistRows(state.artists || [{}]);
-  $('#blendStrategy').value = state.blendStrategy || blendStrategies[0];
-  $('#originalityGuard').value = state.originalityGuard || originalityGuards[0];
-  $('#traitInstructions').value = state.traitInstructions || '';
-  $('#venuePreset').value = state.venuePreset || 'Custom / no preset';
-  ensureOption('#genreSpine', state.genreSpine || genreSpines[0]);
-  $('#genreSpine').value = state.genreSpine || genreSpines[0];
-  $('#customGenre').value = state.customGenre || '';
-  $('#hookPhrase').value = state.hookPhrase || '';
-  $$('#moodChips input').forEach(input => input.checked = (state.moods || []).includes(input.value));
-  $('#bpm').value = state.bpm || '';
-  $('#songKey').value = state.key || '';
-  $('#lengthTarget').value = state.lengthTarget || '3:00 radio-ready';
-  ensureOption('#vocalDirection', state.vocalDirection || vocalDirections[0]);
-  $('#vocalDirection').value = state.vocalDirection || vocalDirections[0];
-  ensureOption('#language', state.language || 'English');
-  $('#language').value = state.language || 'English';
-  ensureOption('#arrangementArc', state.arrangementArc || arrangementArcs[0]);
-  $('#arrangementArc').value = state.arrangementArc || arrangementArcs[0];
-  $('#promptDepth').value = state.promptDepth || 'standard';
-  $('#instruments').value = state.instruments || '';
-  $('#exclusions').value = state.exclusions || '';
-  $('#releasePosture').value = state.releasePosture || releasePostures[0];
-  $('#stemPlan').value = state.stemPlan || stemPlans[0];
-  $('#humanEditNotes').value = state.humanEditNotes || '';
-}
-
-function ensureOption(selector, value) {
-  const select = $(selector);
-  if (!value || [...select.options].some(option => option.value === value)) return;
-  const option = document.createElement('option');
-  option.value = value;
-  option.textContent = value;
-  select.appendChild(option);
-}
-
-function downloadMarkdown() {
-  const text = getCurrentBundleText();
-  const nameBase = ($('#title').value || 'suno-prompt-bundle-v2').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-  const blob = new Blob([text], { type: 'text/markdown;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = `${nameBase || 'suno-prompt-bundle-v2'}.md`;
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(url);
-}
-
-function applyVenuePreset() {
-  const preset = venuePresets[$('#venuePreset').value];
-  if (!preset) return;
-  if (preset.bpm) $('#bpm').value = preset.bpm;
-  if (preset.key) $('#songKey').value = preset.key;
-  if (preset.genre) {
-    ensureOption('#genreSpine', preset.genre);
-    $('#genreSpine').value = preset.genre;
-  }
-  if (preset.instruments) $('#instruments').value = preset.instruments;
-  if (preset.arc) {
-    ensureOption('#arrangementArc', preset.arc);
-    $('#arrangementArc').value = preset.arc;
-  }
-  $$('#moodChips input').forEach(input => {
-    input.checked = (preset.moods || []).includes(input.value);
-  });
-}
-
-function sparkIdea() {
-  const idea = sparkIdeas[Math.floor(Math.random() * sparkIdeas.length)];
-  $('#title').value = idea.title;
-  $('#coreIdea').value = idea.idea;
-  $('#venuePreset').value = idea.venue;
-  applyVenuePreset();
-  $('#customGenre').value = idea.genre;
-  $('#hookPhrase').value = idea.hook;
-  setArtistRows(idea.artists || [{}]);
-  $('#blendStrategy').value = idea.venue.includes('Mykonos') ? blendStrategies[5] : blendStrategies[3];
-  $('#traitInstructions').value = 'keep the final prompt original, premium, and free of direct artist names';
-  generate();
-}
-
-function loadArtistTrio() {
-  setArtistRows([
-    { name: 'Sade', aspect: 'vocal', notes: 'silky late-night restraint, no imitation', intensity: '3' },
-    { name: 'Fairuz', aspect: 'lyric', notes: 'Levantine place imagery and dignified nostalgia', intensity: '2' },
-    { name: 'Ziad Rahbani', aspect: 'arrangement', notes: 'subtle Beirut jazz harmony and Rhodes warmth', intensity: '2' }
-  ]);
-  $('#traitInstructions').value = 'blend into a modern Mediterranean lounge identity; keep melody and lyrics fully original';
-}
-
-function wireEvents() {
-  $('#promptForm').addEventListener('submit', generate);
-  $('#addArtistBtn').addEventListener('click', () => addArtistRow());
-  $('#presetArtistsBtn').addEventListener('click', loadArtistTrio);
-  $('#venuePreset').addEventListener('change', applyVenuePreset);
-  $('#randomizeBtn').addEventListener('click', sparkIdea);
-  $('#installHelpBtn').addEventListener('click', () => { $('#installHelp').hidden = !$('#installHelp').hidden; });
-  $('#aboutBtn').addEventListener('click', () => { $('#aboutPanel').hidden = !$('#aboutPanel').hidden; });
-  $$('.tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      $$('.tab').forEach(t => t.classList.remove('active'));
-      $$('.tab-panel').forEach(panel => panel.classList.remove('active'));
-      tab.classList.add('active');
-      $(`#panel-${tab.dataset.tab}`).classList.add('active');
-    });
-  });
-  $$('[data-copy]').forEach(button => {
-    button.addEventListener('click', () => copyText($(`#${button.dataset.copy}`).value));
-  });
-  $('#copyAllBtn').addEventListener('click', () => copyText(getCurrentBundleText()));
-  $('#savePromptBtn').addEventListener('click', savePrompt);
-  $('#downloadMdBtn').addEventListener('click', downloadMarkdown);
-  $('#clearHistoryBtn').addEventListener('click', () => {
-    if (confirm('Clear all saved prompt history on this device?')) {
-      localStorage.removeItem(STORAGE_KEY);
-      renderHistory();
-    }
-  });
-  $('#historyList').addEventListener('click', event => {
-    const target = event.target.closest('button');
-    if (!target) return;
-    const history = loadHistory();
-    if (target.dataset.load) {
-      const item = history.find(h => h.id === target.dataset.load);
-      if (item) {
-        setFormState(item.state);
-        renderBundle(item.bundle || buildPromptBundle(item.state));
-        $('#promptForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }
-    if (target.dataset.copyHistory) {
-      const item = history.find(h => h.id === target.dataset.copyHistory);
-      if (item) {
-        const b = item.bundle || buildPromptBundle(item.state);
-        copyText([
-          '# Prompt Muse v2 · Suno Prompt Bundle',
-          '',
-          '## Safe Commercial Style Prompt', b.safePrompt,
-          '',
-          '## Creative Experimental Style Prompt', b.experimentalPrompt,
-          '',
-          '## Venue-Ready Style Prompt', b.venuePrompt,
-          '',
-          '## Lyrics / Structure Scaffold', b.lyricScaffold,
-          '',
-          '## One-Box Simple Mode Prompt', b.simplePrompt,
-          '',
-          '## Optional AI Expansion Brief', b.aiBrief,
-          '',
-          '## QA / Release Log', b.qa
-        ].join('\n'));
-      }
-    }
-    if (target.dataset.delete) {
-      const next = history.filter(h => h.id !== target.dataset.delete);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-      renderHistory();
-    }
-  });
+function escapeRegExp(text) {
+  return String(text || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 function init() {
-  populateSelect('#venuePreset', Object.keys(venuePresets));
-  populateSelect('#genreSpine', genreSpines);
+  populateSelect('#genre', genres);
+  populateSelect('#style', styles);
+  populateSelect('#country', countries);
+  populateSelect('#energy', energies);
   populateSelect('#vocalDirection', vocalDirections);
   populateSelect('#language', languages);
-  populateSelect('#arrangementArc', arrangementArcs);
-  populateSelect('#blendStrategy', blendStrategies);
-  populateSelect('#originalityGuard', originalityGuards);
-  populateSelect('#releasePosture', releasePostures);
-  populateSelect('#stemPlan', stemPlans);
   initMoodChips();
-  setArtistRows([{ name: '', aspect: 'overall', notes: '', intensity: '3' }]);
-  $('#coreIdea').value = 'A warm Mediterranean lounge track for golden-hour dining by the sea in Ras Beirut.';
-  $('#venuePreset').value = 'Sporting Club · The Deck Café';
-  applyVenuePreset();
-  $('#title').value = 'Ras Beirut Afterglow';
-  $('#hookPhrase').value = 'Sporting Club by the sea';
-  $('#traitInstructions').value = 'premium Mediterranean warmth, original melody, elegant hospitality playback';
-  $('#exclusions').value = 'no direct artist names, no impersonation, no copied hooks, no harsh EDM drops, no muddy low end, no over-compressed master';
-  $('#releasePosture').value = 'Venue playlist candidate';
-  $('#stemPlan').value = 'Export stems for Ableton polish';
+  setFormState(defaultState());
+  updateEditBadge();
   wireEvents();
-  renderBundle(buildPromptBundle(getState()));
-  renderHistory();
+  renderBundle(buildBundle(getState()));
+  renderLibrary();
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
   }
