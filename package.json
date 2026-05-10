@@ -1,6 +1,6 @@
 {
   "name": "prompt-muse-suno-v14-4-versionlabel",
-  "version": "14.4.0",
+  "version": "14.5.0",
   "private": true,
   "description": "GitHub-to-Vercel iPhone Suno prompt studio with lyrics-first generation, visible latest-version labels, and Vercel protected-preview manifest auth handling.",
   "scripts": {
@@ -8,6 +8,5 @@
     "test": "npm run check",
     "verify": "node scripts/verify.mjs",
     "brief": "node scripts/print-llm-brief.mjs"
-  },
-  "dependencies": {}
+  }
 }

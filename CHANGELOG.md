@@ -13,3 +13,6 @@
 - Added credentialed manifest link for protected Vercel previews.
 - Kept lyrics-first generation behavior.
 - Kept Vercel auto-detected `/api` functions.
+
+## v14.5.0
+- Updated visible app version label for GitHub to Vercel deployment test.
