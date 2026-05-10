@@ -1,4 +1,4 @@
-# Prompt Muse v14.4 — VersionLabel
+# Prompt Muse v14.4 - VersionLabel
 
 ## Purpose
 
@@ -7,8 +7,8 @@ Add an obvious in-app label showing the latest app version number. This makes it
 ## Visible labels added
 
 ```text
-Latest app version: v14.4.0
-Build: v14.4-versionlabel · LyricsFirst · ManifestAuthFix
+Latest app version: v14.5.3
+Build: v14.5.3-favorite-marker-fix  -  LyricsFirst  -  ManifestAuthFix
 ```
 
 The version appears in two places:

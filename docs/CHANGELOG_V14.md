@@ -2,7 +2,7 @@
 
 ## Added
 
-- GitHub → Vercel LLM Upgrade Console inside `index.html`.
+- GitHub to Vercel LLM Upgrade Console inside `index.html`.
 - `vercel.json` for Vercel project behavior and no-store HTML headers.
 - GitHub Actions quality workflow.
 - Pull request and upgrade issue templates.

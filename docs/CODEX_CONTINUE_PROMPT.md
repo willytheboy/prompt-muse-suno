@@ -1,4 +1,4 @@
-# Codex Continue Prompt — v13
+# Codex Continue Prompt - v13
 
 Use this prompt in Codex when continuing the app locally:
 

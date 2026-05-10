@@ -3,7 +3,7 @@
 You are updating the Prompt Muse for Suno GitHub repository.
 
 ## Mission
-Make a targeted improvement without breaking iPhone Safari reliability or the GitHub → Vercel deployment flow.
+Make a targeted improvement without breaking iPhone Safari reliability or the GitHub to Vercel deployment flow.
 
 ## Required first steps
 1. Read `AGENTS.md`.

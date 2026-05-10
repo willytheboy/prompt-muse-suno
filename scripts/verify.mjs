@@ -1,4 +1,4 @@
-﻿import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 
 const read = (file) => readFileSync(file, "utf8");
 
@@ -24,11 +24,19 @@ const pkg = JSON.parse(read("package.json"));
 const version = pkg.version || "unknown";
 const expectedVersion = `v${version}`;
 
+const forbidden = [
+  { label: "mojibake C2", pattern: /\u00c2/ },
+  { label: "mojibake E2", pattern: /\u00e2/ },
+  { label: "stale v14.4", pattern: /v14\.4/ },
+  { label: "unicode arrow", pattern: /\u2192/ },
+  { label: "unicode middle dot", pattern: /\u00b7/ },
+  { label: "unicode sparkle", pattern: /\u2728/ },
+  { label: "unicode star", pattern: /\u2605/ },
+  { label: "unicode em dash", pattern: /\u2014/ },
+  { label: "unicode ellipsis", pattern: /\u2026/ }
+];
+
 const checks = [
-  {
-    label: "visible version badge marker",
-    ok: index.includes("PM_VERSION_BADGE_START")
-  },
   {
     label: "current package version appears in index.html",
     ok: index.includes(expectedVersion) || index.includes(version)
@@ -36,6 +44,10 @@ const checks = [
   {
     label: "latest app version text",
     ok: /latest\s+app\s+version/i.test(index)
+  },
+  {
+    label: "version badge marker",
+    ok: index.includes("PM_VERSION_BADGE_START")
   },
   {
     label: "Prompt Muse app identity",
@@ -54,9 +66,17 @@ const checks = [
     ok: /lyrics/i.test(index)
   },
   {
+    label: "GitHub and Vercel text",
+    ok: /GitHub/i.test(index) && /Vercel/i.test(index)
+  },
+  {
     label: "manifest names Prompt Muse",
     ok: /Prompt Muse/i.test(manifest)
-  }
+  },
+  ...forbidden.map((item) => ({
+    label: `forbidden display token: ${item.label}`,
+    ok: !item.pattern.test(index)
+  }))
 ];
 
 const failed = checks.filter((check) => !check.ok);

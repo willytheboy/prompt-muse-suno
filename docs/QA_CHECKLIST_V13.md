@@ -1,4 +1,4 @@
-# QA Checklist — Prompt Muse v13
+# QA Checklist - Prompt Muse v13
 
 ## Startup
 
@@ -9,7 +9,7 @@
 
 ## Button-independent controls
 
-- [ ] Emergency command menu → Spark random idea changes title/output.
+- [ ] Emergency command menu  to  Spark random idea changes title/output.
 - [ ] Spark preset menu changes title/output.
 - [ ] Spark slider changes title/output.
 - [ ] Typing into title/core idea/hook auto-updates output.

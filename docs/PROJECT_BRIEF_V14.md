@@ -1,8 +1,8 @@
-# Prompt Muse v14 Project Brief — GitHub → Vercel Upgrade Interface
+# Prompt Muse v14 Project Brief - GitHub to Vercel Upgrade Interface
 
 ## Purpose
 
-Prompt Muse is an iPhone-first Suno prompt and lyric studio. v14 turns the app into a repository-first product that can be upgraded by any coding LLM through a predictable GitHub branch → pull request → Vercel preview → production merge workflow.
+Prompt Muse is an iPhone-first Suno prompt and lyric studio. v14 turns the app into a repository-first product that can be upgraded by any coding LLM through a predictable GitHub branch  to  pull request  to  Vercel preview  to  production merge workflow.
 
 ## Product goals
 

@@ -1,4 +1,4 @@
-# Manifest 401 Fix — Prompt Muse v14.3
+# Manifest 401 Fix - Prompt Muse v14.3
 
 ## Symptom
 

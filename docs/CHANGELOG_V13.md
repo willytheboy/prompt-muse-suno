@@ -1,4 +1,4 @@
-# Changelog — v13 InputDrive
+# Changelog - v13 InputDrive
 
 ## Reason for rebuild
 

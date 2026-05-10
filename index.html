@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#111827">
-<title>Prompt Muse v14.5.1 VersionDisplayFix + LyricsFirst for Suno</title>
+<title>Prompt Muse v14.5.3 FavoriteMarkerFix + LyricsFirst for Suno</title>
 <link rel="manifest" href="/manifest.webmanifest" crossorigin="use-credentials">
 <style>
 :root{
@@ -57,12 +57,12 @@ input[type=range]{padding:0;background:transparent;border:0;min-height:34px}
 <body>
 <main>
   <section class="hero">
-    <div class="kicker">Prompt Muse Â· v14.5.1 VersionDisplayFix Â· GitHub â†’ Vercel</div>
+    <div class="kicker">Prompt Muse  -  v14.5.3 FavoriteMarkerFix  -  GitHub to Vercel</div>
     <div class="versionbar" aria-label="Latest app version">
-      <span class="versionbadge">Latest app version: <strong>v14.5.1</strong></span>
-      <span class="versionnote">Build: v14.5.1-versiondisplayfix Â· LyricsFirst Â· ManifestAuthFix</span>
+      <span class="versionbadge">Latest app version: <strong>v14.5.3</strong></span>
+      <span class="versionnote">Build: v14.5.3-favorite-marker-fix  -  LyricsFirst  -  ManifestAuthFix</span>
     </div>
-    <h1>Suno prompt studio with a GitHub â†’ Vercel upgrade interface.</h1>
+    <h1>Suno prompt studio with a GitHub to Vercel upgrade interface.</h1>
     <p>Generation is lyrics-first: Spark and Generate fill the Suno Prompt / Lyrics field with real sectioned lyrics, while musical instructions stay in the Style field. This build also uses an authenticated manifest link for Vercel-protected previews and displays the latest app version in the header and diagnostics.</p>
   </section>
 
@@ -79,7 +79,7 @@ input[type=range]{padding:0;background:transparent;border:0;min-height:34px}
     <div class="status warn" id="statusPanel"><b id="statusText">JavaScript not started yet.</b><br><span id="heartbeat">heartbeat waiting</span></div>
     <div class="statrow">
       <div class="stat"><b id="tapCount">tap count 0</b><span>updates when any action works</span></div>
-      <div class="stat"><b id="appVersionLabel">v14.5.1</b><span>latest app version</span></div>
+      <div class="stat"><b id="appVersionLabel">v14.5.3</b><span>latest app version</span></div>
       <div class="stat"><b id="autoCount">auto-gen 0</b><span>updates even without buttons</span></div>
       <div class="stat"><b id="libraryCount">library 0</b><span>local or memory storage</span></div>
       <div class="stat"><b id="storageStatus">storage checking</b><span>localStorage guard</span></div>
@@ -91,7 +91,7 @@ input[type=range]{padding:0;background:transparent;border:0;min-height:34px}
     </div>
     <div class="actions">
       <button type="button" id="btnTapTest" onclick="return window.PM14&&PM14.tapTest&&PM14.tapTest(event)">Tap test</button>
-      <button type="button" id="btnSpark" class="primary" onclick="return window.PM14&&PM14.sparkClick&&PM14.sparkClick(event)">âœ¨ Spark idea + lyrics</button>
+      <button type="button" id="btnSpark" class="primary" onclick="return window.PM14&&PM14.sparkClick&&PM14.sparkClick(event)"> Spark idea + lyrics</button>
       <button type="button" id="btnGenerate" onclick="return window.PM14&&PM14.generateClick&&PM14.generateClick(event)">Generate full lyrics</button>
       <a href="#copyDock" class="action secondary" id="linkSpark" onclick="return window.PM14&&PM14.sparkClick&&PM14.sparkClick(event)">Spark link + lyrics</a>
       <input type="button" id="inputSpark" value="Spark input + lyrics" onclick="return window.PM14&&PM14.sparkClick&&PM14.sparkClick(event)">
@@ -196,7 +196,7 @@ sea light keeps calling me home</textarea><div class="counter" id="countPrompt">
       <div class="field third"><label for="filterInspired">Inspired by contains</label><input id="filterInspired" placeholder="Fairuz, Sade..."></div>
       <div class="field third"><label for="filterBpmMin">BPM min</label><input id="filterBpmMin" type="number" inputmode="numeric"></div>
       <div class="field third"><label for="filterBpmMax">BPM max</label><input id="filterBpmMax" type="number" inputmode="numeric"></div>
-      <div class="field third"><label for="librarySort">Sort</label><select id="librarySort"><option value="newest">Newest</option><option value="oldest">Oldest</option><option value="title">Title</option><option value="bpmLow">BPM low â†’ high</option><option value="bpmHigh">BPM high â†’ low</option></select></div>
+      <div class="field third"><label for="librarySort">Sort</label><select id="librarySort"><option value="newest">Newest</option><option value="oldest">Oldest</option><option value="title">Title</option><option value="bpmLow">BPM low  to  high</option><option value="bpmHigh">BPM high  to  low</option></select></div>
       <div class="field third"><label class="checkrow"><input id="filterFavorites" type="checkbox"> <span>Favorites only</span></label></div>
       <div class="field third"><label for="importFile">Import JSON</label><input id="importFile" type="file" accept="application/json,.json"></div>
     </div>
@@ -206,7 +206,7 @@ sea light keeps calling me home</textarea><div class="counter" id="countPrompt">
 
 
   <section class="card" id="upgradeConsole" aria-labelledby="upgradeConsoleTitle">
-    <h2 id="upgradeConsoleTitle">GitHub â†’ Vercel LLM upgrade console</h2>
+    <h2 id="upgradeConsoleTitle">GitHub to Vercel LLM upgrade console</h2>
     <p>This panel creates a precise handoff brief for Codex, Cursor, Claude, ChatGPT, or another coding LLM. The intended workflow is: edit in a GitHub branch, open a pull request, let Vercel create a preview deployment, test on iPhone, then merge to production.</p>
     <div class="grid">
       <div class="field half"><label for="repoUrl">GitHub repository URL</label><input id="repoUrl" placeholder="https://github.com/your-name/prompt-muse-suno"></div>
@@ -242,7 +242,7 @@ sea light keeps calling me home</textarea><div class="counter" id="countPrompt">
 (function(){
 'use strict';
 var APP_VERSION='14.4.0';
-var BUILD='v14.5.1-versiondisplayfix';
+var BUILD='v14.5.3-favorite-marker-fix';
 var state={tap:0,auto:0,library:[],lastHash:'',storageOK:false,heartbeat:0,ai:[],busy:false};
 var memoryStore={};
 function el(id){return document.getElementById(id)}
@@ -251,15 +251,15 @@ function setVal(id,v){var x=el(id);if(x){x.value=String(v==null?'':v)}}
 function text(id,v){var x=el(id);if(x)x.textContent=String(v)}
 function klass(id,k){var x=el(id);if(x)x.className=k}
 function showError(label,err){var box=el('errorBox');if(!box)return;box.style.display='block';box.textContent=String(label||'Error')+'\n'+String(err&&err.stack||err&&err.message||err||'unknown')}
-function log(msg){var x=el('eventLog');if(x)x.textContent=(new Date().toLocaleTimeString()+' Â· '+msg+'\n'+x.textContent).slice(0,7000)}
+function log(msg){var x=el('eventLog');if(x)x.textContent=(new Date().toLocaleTimeString()+'  -  '+msg+'\n'+x.textContent).slice(0,7000)}
 function status(msg,kind){text('statusText',msg);klass('statusPanel','status '+(kind||'good'));log('status: '+msg)}
 function esc(s){return String(s||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function uid(){return 'pm_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7)}
-function trim(s,n){s=String(s||''); if(!n||s.length<=n)return s; var cut=s.slice(0,Math.max(0,n-1)); var last=Math.max(cut.lastIndexOf('\n'),cut.lastIndexOf('. '),cut.lastIndexOf(', '),cut.lastIndexOf(' ')); if(last>Math.floor(n*.55))cut=cut.slice(0,last); return cut.replace(/[\s,;:.]+$/,'')+'â€¦'}
+function trim(s,n){s=String(s||''); if(!n||s.length<=n)return s; var cut=s.slice(0,Math.max(0,n-1)); var last=Math.max(cut.lastIndexOf('\n'),cut.lastIndexOf('. '),cut.lastIndexOf(', '),cut.lastIndexOf(' ')); if(last>Math.floor(n*.55))cut=cut.slice(0,last); return cut.replace(/[\s,;:.]+$/,'')+'...'}
 function storeGet(k){try{var t=localStorage.getItem(k);state.storageOK=true;text('storageStatus','storage OK');return t}catch(e){state.storageOK=false;text('storageStatus','memory fallback');return memoryStore[k]||null}}
 function storeSet(k,v){try{localStorage.setItem(k,v);state.storageOK=true;text('storageStatus','storage OK')}catch(e){state.storageOK=false;memoryStore[k]=v;text('storageStatus','memory fallback')}}
 function storeRemove(k){try{localStorage.removeItem(k)}catch(e){delete memoryStore[k]}}
-function bump(action){state.tap++; text('tapCount','tap count '+state.tap+' Â· '+BUILD); log('action: '+action)}
+function bump(action){state.tap++; text('tapCount','tap count '+state.tap+'  -  '+BUILD); log('action: '+action)}
 function limits(){var p=val('limitProfile'); if(p==='v4')return{title:80,style:200,prompt:3000,negative:500}; if(p==='simple')return{title:100,style:500,prompt:500,negative:300}; if(p==='conservative')return{title:80,style:200,prompt:3000,negative:400}; if(p==='manual')return{title:Number(val('manualTitleLimit'))||100,style:Number(val('manualStyleLimit'))||1000,prompt:Number(val('manualPromptLimit'))||5000,negative:Number(val('manualNegativeLimit'))||500}; return{title:100,style:1000,prompt:5000,negative:500}}
 function counter(id,countId,max){var n=val(id).length; var c=el(countId); if(!c)return; c.textContent=n+' / '+max; c.className='counter '+(n>max?'bad':n>max*.9?'warn':'ok')}
 function updateCounters(){var l=limits(); counter('outTitle','countTitle',l.title); counter('outStyle','countStyle',l.style); counter('outPrompt','countPrompt',l.prompt); counter('outNegative','countNegative',l.negative)}
@@ -289,7 +289,7 @@ function lyrics(){var mode=val('lyricMode'); var h=val('hookPhrase')||'sea light
 function negative(){return 'no direct artist names, no impersonation, no copied melody, no copyrighted hooks, no harsh clipping, no muddy bass, no novelty vocals, no chaotic arrangement'}
 function generate(silent){try{if(val('lyricMode')==='scaffold')setVal('lyricMode','full'); var l=limits(); var title=val('titleSeed')||'Untitled Suno Prompt'; var style=[val('genre'),val('style'),val('country'),val('bpm')+' BPM',val('songKey'),val('language'),val('vocalType'),'mood: '+val('mood'),'private inspiration translated into traits: '+traits(),'instruments: '+val('instruments'),'arrangement: '+val('arrangement'),'mix: warm premium stereo image, clear vocal center, tasteful low-end, no direct artist names','lyrics: use the separate Prompt / Lyrics field exactly as written; do not sing style instructions'].filter(Boolean).join('; '); var prompt=lyrics(); var neg=negative(); if(el('strictLimits')&&el('strictLimits').checked){title=trim(title,l.title);style=trim(style,l.style);prompt=trim(prompt,l.prompt);neg=trim(neg,l.negative)} setVal('outTitle',title); setVal('outStyle',style); setVal('outPrompt',prompt); setVal('outNegative',neg); updateCounters(); state.auto++; text('autoCount','auto-gen '+state.auto); if(!silent)status('Generated full Suno lyrics and fields.','good')}catch(e){showError('generate failed',e); status('Generate failed. See error box.','bad')}}
 function currentHash(){var ids=['titleSeed','hookPhrase','coreIdea','genre','style','country','bpm','songKey','language','vocalType','inspiredBy','manualTraits','instruments','arrangement','mood','lyricMode','pointOfView','rhymeFeel','lyricImages','avoidWords','limitProfile','strictLimits','manualTitleLimit','manualStyleLimit','manualPromptLimit','manualNegativeLimit']; return ids.map(function(id){var x=el(id);return id+'='+ (x?(x.type==='checkbox'?x.checked:x.value):'')}).join('|')}
-function autoTick(){try{state.heartbeat++; text('heartbeat','heartbeat '+state.heartbeat+' Â· '+new Date().toLocaleTimeString()); var h=currentHash(); if(h!==state.lastHash){state.lastHash=h; generate(true)}}catch(e){showError('auto tick failed',e)}}
+function autoTick(){try{state.heartbeat++; text('heartbeat','heartbeat '+state.heartbeat+'  -  '+new Date().toLocaleTimeString()); var h=currentHash(); if(h!==state.lastHash){state.lastHash=h; generate(true)}}catch(e){showError('auto tick failed',e)}}
 var sparks=[
  {title:'Ras Beirut Afterglow',hook:'sea light keeps calling me home',genre:'Mediterranean lounge pop',style:'Sunset terrace',country:'Lebanon / Ras Beirut',bpm:96,key:'A minor',lang:'English with elegant Arabic phrases',vocal:'warm intimate male vocal',refs:'Fairuz, Sade, Ziad Rahbani',images:'sea light, terrace candles, Ras Beirut evening, harbor glow, slow waves',instruments:'oud, nylon guitar, Rhodes, upright bass, soft trumpet, brushed percussion, darbuka, shakers, warm pads'},
  {title:'Mykonos Blue Hour',hook:'blue hour carries us away',genre:'Deep house',style:'Island chillout',country:'Greece / Mykonos',bpm:108,key:'D minor',lang:'English',vocal:'silky female vocal',refs:'Nora En Pure, RÃ¼fÃ¼s Du Sol, CafÃ© del Mar',images:'island moon, white stones, blue harbor, linen wind, midnight boats',instruments:'soft piano, deep house kick, warm bass, airy pads, hand percussion, distant sax'},
@@ -310,7 +310,7 @@ function restore(r){if(!r)return; setVal('outTitle',r.title);setVal('outStyle',r
 function filters(){return{k:val('filterKeyword').toLowerCase(),g:val('filterGenre'),s:val('filterStyle'),c:val('filterCountry'),i:val('filterInspired').toLowerCase(),min:Number(val('filterBpmMin'))||0,max:Number(val('filterBpmMax'))||999,fav:!!(el('filterFavorites')&&el('filterFavorites').checked),sort:val('librarySort')}}
 function filtered(){var f=filters(); var arr=state.library.filter(function(r){var hay=[r.title,r.stylePrompt,r.promptLyrics,r.negativePrompt,r.genre,r.style,r.country,r.inspiredBy,r.traits,r.coreIdea].join(' ').toLowerCase(); if(f.k&&hay.indexOf(f.k)<0)return false; if(f.g&&r.genre!==f.g)return false; if(f.s&&r.style!==f.s)return false; if(f.c&&r.country!==f.c)return false; if(f.i&&String(r.inspiredBy||'').toLowerCase().indexOf(f.i)<0)return false; if(f.fav&&!r.favorite)return false; var bpm=Number(r.bpm)||0; if(bpm<f.min||bpm>f.max)return false; return true}); arr.sort(function(a,b){if(f.sort==='oldest')return String(a.createdAt).localeCompare(String(b.createdAt)); if(f.sort==='title')return String(a.title).localeCompare(String(b.title)); if(f.sort==='bpmLow')return(Number(a.bpm)||0)-(Number(b.bpm)||0); if(f.sort==='bpmHigh')return(Number(b.bpm)||0)-(Number(a.bpm)||0); return String(b.createdAt).localeCompare(String(a.createdAt))}); return arr}
 function fillFilterOptions(){var gen=el('filterGenre'), sty=el('filterStyle'), cty=el('filterCountry'); [['genre',gen],['style',sty],['country',cty]].forEach(function(pair){var key=pair[0], sel=pair[1]; if(!sel)return; var cur=sel.value; var vals={}; state.library.forEach(function(r){if(r[key])vals[r[key]]=1}); var html='<option value="">Any</option>'; Object.keys(vals).sort().forEach(function(v){html+='<option>'+esc(v)+'</option>'}); sel.innerHTML=html; sel.value=cur})}
-function renderLibrary(){fillFilterOptions(); var arr=filtered(); var pick=el('libraryPicker'); if(pick){var h='<option value="">Choose saved prompt...</option>'; state.library.forEach(function(r){h+='<option value="'+esc(r.id)+'">'+esc(r.title)+' Â· '+esc(r.genre)+' Â· '+esc(r.bpm)+' BPM</option>'}); pick.innerHTML=h} var list=el('libraryList'); if(!list)return; if(!arr.length){list.innerHTML='<div class="empty">No saved prompts match the filters.</div>'; return} list.innerHTML=arr.map(function(r){return '<article class="item"><h3>'+esc(r.favorite?'â˜… ':'')+esc(r.title)+'</h3><p>'+esc(r.genre)+' Â· '+esc(r.style)+' Â· '+esc(r.country)+' Â· '+esc(r.bpm)+' BPM</p><p><span class="badge">Inspired: '+esc(r.inspiredBy||'none')+'</span><span class="badge">'+esc(r.limitProfile||'v55')+'</span></p><div class="actions"><button type="button" data-lib="load" data-id="'+esc(r.id)+'">Load</button><button type="button" data-lib="copy" data-id="'+esc(r.id)+'">Copy all</button><button type="button" data-lib="fav" data-id="'+esc(r.id)+'">'+(r.favorite?'Unfavorite':'Favorite')+'</button><button type="button" data-lib="dupe" data-id="'+esc(r.id)+'">Duplicate</button><button type="button" class="danger" data-lib="del" data-id="'+esc(r.id)+'">Delete</button></div></article>'}).join('')}
+function renderLibrary(){fillFilterOptions(); var arr=filtered(); var pick=el('libraryPicker'); if(pick){var h='<option value="">Choose saved prompt...</option>'; state.library.forEach(function(r){h+='<option value="'+esc(r.id)+'">'+esc(r.title)+'  -  '+esc(r.genre)+'  -  '+esc(r.bpm)+' BPM</option>'}); pick.innerHTML=h} var list=el('libraryList'); if(!list)return; if(!arr.length){list.innerHTML='<div class="empty">No saved prompts match the filters.</div>'; return} list.innerHTML=arr.map(function(r){return '<article class="item"><h3>'+esc(r.favorite?'* ':'')+esc(r.title)+'</h3><p>'+esc(r.genre)+'  -  '+esc(r.style)+'  -  '+esc(r.country)+'  -  '+esc(r.bpm)+' BPM</p><p><span class="badge">Inspired: '+esc(r.inspiredBy||'none')+'</span><span class="badge">'+esc(r.limitProfile||'v55')+'</span></p><div class="actions"><button type="button" data-lib="load" data-id="'+esc(r.id)+'">Load</button><button type="button" data-lib="copy" data-id="'+esc(r.id)+'">Copy all</button><button type="button" data-lib="fav" data-id="'+esc(r.id)+'">'+(r.favorite?'Unfavorite':'Favorite')+'</button><button type="button" data-lib="dupe" data-id="'+esc(r.id)+'">Duplicate</button><button type="button" class="danger" data-lib="del" data-id="'+esc(r.id)+'">Delete</button></div></article>'}).join('')}
 function findRec(id){return state.library.filter(function(r){return r.id===id})[0]}
 function copyText(t,msg){try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){status(msg||'Copied.','good')}).catch(function(){fallbackCopy(t,msg)})}else fallbackCopy(t,msg)}catch(e){fallbackCopy(t,msg)}}
 function fallbackCopy(t,msg){var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');status(msg||'Copied.','good')}catch(e){status('Copy blocked. Text selected in a temporary field; use manual copy.','warn')}setTimeout(function(){try{document.body.removeChild(ta)}catch(e){}},250)}
@@ -319,7 +319,7 @@ function download(name,textContent,type){var blob=new Blob([textContent],{type:t
 function exportJSON(){download('prompt-muse-suno-library-v14-3.json',JSON.stringify(state.library,null,2),'application/json'); status('Exported library JSON.','good')}
 function markdown(){var t='# '+val('outTitle')+'\n\n## Style\n\n'+val('outStyle')+'\n\n## Prompt / Lyrics\n\n'+val('outPrompt')+'\n\n## Negative / Exclude\n\n'+val('outNegative')+'\n'; download((val('outTitle')||'suno-prompt').toLowerCase().replace(/[^a-z0-9]+/g,'-')+'.md',t,'text/markdown')}
 function importJSON(){var f=el('importFile'); if(!f||!f.files||!f.files[0]){status('Choose a JSON file first.','warn');return} var reader=new FileReader(); reader.onload=function(){try{var arr=JSON.parse(reader.result); if(!Array.isArray(arr))throw new Error('JSON must be an array'); arr.forEach(function(r){r.id=r.id||uid(); state.library.push(r)}); persist(); renderLibrary(); status('Imported '+arr.length+' prompts.','good')}catch(e){showError('import failed',e); status('Import failed.','bad')}}; reader.readAsText(f.files[0])}
-function localPolish(){var base=record(); state.ai=[{kind:'Safe Commercial',title:base.title,style:base.stylePrompt+', release-friendly clarity, original phrasing, no imitation',prompt:base.promptLyrics,negative:base.negativePrompt+', no living-artist names in final prompt'},{kind:'Poetic',title:base.title+' â€” Poetic Cut',style:base.stylePrompt+', more image-led lyricism, graceful emotional restraint',prompt:base.promptLyrics.replace(/sea light/g,'silver sea light').replace(/the night/g,'the velvet night'),negative:base.negativePrompt},{kind:'Venue Ready',title:base.title+' â€” Venue Mix',style:base.stylePrompt+', low-intrusion hospitality playback, smooth transitions, warm playlist flow',prompt:base.promptLyrics.replace(/\[Bridge\][\s\S]*?\[Final Chorus\]/,'[Instrumental Break]\nKeep it smooth, elegant, and low-intrusion for hospitality playback.\n\n[Final Chorus]'),negative:base.negativePrompt}]; renderAI(); status('Created local polish variants.','good')}
+function localPolish(){var base=record(); state.ai=[{kind:'Safe Commercial',title:base.title,style:base.stylePrompt+', release-friendly clarity, original phrasing, no imitation',prompt:base.promptLyrics,negative:base.negativePrompt+', no living-artist names in final prompt'},{kind:'Poetic',title:base.title+' - Poetic Cut',style:base.stylePrompt+', more image-led lyricism, graceful emotional restraint',prompt:base.promptLyrics.replace(/sea light/g,'silver sea light').replace(/the night/g,'the velvet night'),negative:base.negativePrompt},{kind:'Venue Ready',title:base.title+' - Venue Mix',style:base.stylePrompt+', low-intrusion hospitality playback, smooth transitions, warm playlist flow',prompt:base.promptLyrics.replace(/\[Bridge\][\s\S]*?\[Final Chorus\]/,'[Instrumental Break]\nKeep it smooth, elegant, and low-intrusion for hospitality playback.\n\n[Final Chorus]'),negative:base.negativePrompt}]; renderAI(); status('Created local polish variants.','good')}
 function renderAI(){var box=el('aiResults'); if(!box)return; if(!state.ai.length){box.innerHTML='<div class="empty">No variants yet.</div>';return} box.innerHTML=state.ai.map(function(v,i){return '<article class="item"><h3>'+esc(v.kind)+': '+esc(v.title)+'</h3><p>'+esc(v.style.slice(0,160))+'</p><div class="actions"><button type="button" data-ai="apply" data-index="'+i+'">Apply</button><button type="button" data-ai="copy" data-index="'+i+'">Copy</button><button type="button" data-ai="save" data-index="'+i+'">Save</button></div></article>'}).join('')}
 function applyAI(i){var v=state.ai[Number(i)]; if(!v)return; setVal('outTitle',v.title);setVal('outStyle',v.style);setVal('outPrompt',v.prompt);setVal('outNegative',v.negative);updateCounters();status('Applied '+v.kind+' variant.','good')}
 function runCommand(cmd){if(!cmd)return; bump('command:'+cmd); if(cmd==='spark')spark(); else if(cmd==='generate')generate(false); else if(cmd==='lyrics'){setVal('lyricMode','full');generate(false);status('Full lyrics written.','good')} else if(cmd==='images')sparkImages(); else if(cmd==='copyAll')copyAll(); else if(cmd==='save')save(); else if(cmd==='polish')localPolish(); else if(cmd==='export')exportJSON(); else if(cmd==='llmBrief'){updateRepoConsole();status('LLM upgrade brief generated.','good')} else if(cmd==='gitCommands')copyGitCommands(); else if(cmd==='selftest')selfTest(); else if(cmd==='clear')clearEditor(); var cs=el('commandSelect'); if(cs)cs.value=''}
@@ -438,11 +438,20 @@ window.onunhandledrejection=function(e){showError('unhandled promise',e&&e.reaso
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 </script>
+
+
+
+
+
+
+
+
 <!-- PM_VERSION_BADGE_START -->
 <div id="pm-version-badge" aria-label="Prompt Muse app version" style="position:fixed;left:12px;bottom:12px;z-index:2147483647;padding:9px 12px;border-radius:999px;background:#111827;color:#fff;font:13px/1.2 system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;box-shadow:0 8px 22px rgba(0,0,0,.25);">
-  Prompt Muse · Latest app version: <strong>v14.5.1</strong>
+  Prompt Muse - Latest app version: <strong>v14.5.3</strong>
 </div>
 <!-- PM_VERSION_BADGE_END -->
+
 </body>
 </html>
 
