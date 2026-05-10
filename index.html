@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#111827">
-<title>Prompt Muse v14.1 GitHub → Vercel for Suno</title>
+<title>Prompt Muse v14.2 LyricsFirst for Suno</title>
 <link rel="manifest" href="manifest.webmanifest">
 <style>
 :root{
@@ -53,9 +53,9 @@ input[type=range]{padding:0;background:transparent;border:0;min-height:34px}
 <body>
 <main>
   <section class="hero">
-    <div class="kicker">Prompt Muse · v14.1 GitHub → Vercel · Vercel config fixed</div>
+    <div class="kicker">Prompt Muse · v14.2 LyricsFirst · GitHub → Vercel</div>
     <h1>Suno prompt studio with a GitHub → Vercel upgrade interface.</h1>
-    <p>Generation is automatic, and the project is now structured so any coding LLM can update files in GitHub and let Vercel deploy the result.</p>
+    <p>Generation is lyrics-first: Spark and Generate fill the Suno Prompt / Lyrics field with real sectioned lyrics, while musical instructions stay in the Style field.</p>
   </section>
 
   <noscript>
@@ -81,11 +81,11 @@ input[type=range]{padding:0;background:transparent;border:0;min-height:34px}
       <div class="field full"><label for="sparkSlider">Button-free Spark slider: move it to generate a new idea</label><input id="sparkSlider" type="range" min="0" max="100" value="0"></div>
     </div>
     <div class="actions">
-      <button type="button" id="btnTapTest">Tap test</button>
-      <button type="button" id="btnSpark" class="primary">✨ Spark idea</button>
-      <button type="button" id="btnGenerate">Generate fields</button>
-      <a href="#copyDock" class="action secondary" id="linkSpark">Spark link</a>
-      <input type="button" id="inputSpark" value="Spark input button">
+      <button type="button" id="btnTapTest" onclick="return window.PM14&&PM14.tapTest&&PM14.tapTest(event)">Tap test</button>
+      <button type="button" id="btnSpark" class="primary" onclick="return window.PM14&&PM14.sparkClick&&PM14.sparkClick(event)">✨ Spark idea + lyrics</button>
+      <button type="button" id="btnGenerate" onclick="return window.PM14&&PM14.generateClick&&PM14.generateClick(event)">Generate full lyrics</button>
+      <a href="#copyDock" class="action secondary" id="linkSpark" onclick="return window.PM14&&PM14.sparkClick&&PM14.sparkClick(event)">Spark link + lyrics</a>
+      <input type="button" id="inputSpark" value="Spark input + lyrics" onclick="return window.PM14&&PM14.sparkClick&&PM14.sparkClick(event)">
       <button type="button" id="btnLog" class="ghost">Show event log</button>
     </div>
     <pre id="eventLog"></pre>
@@ -115,14 +115,14 @@ input[type=range]{padding:0;background:transparent;border:0;min-height:34px}
   <section class="card" aria-labelledby="lyricsTitle">
     <h2 id="lyricsTitle">Lyrics writer</h2>
     <div class="grid">
-      <div class="field third"><label for="lyricMode">Lyric mode</label><select id="lyricMode"><option value="full">Full generated lyrics</option><option value="scaffold">Structure scaffold only</option><option value="instrumental">Instrumental prompt only</option></select></div>
+      <div class="field third"><label for="lyricMode">Prompt / Lyrics output</label><select id="lyricMode"><option value="full" selected>Full generated lyrics</option><option value="instrumental">Instrumental prompt only</option></select><p class="small">Use Full generated lyrics for Suno Custom Mode. Musical instructions stay in the Style field.</p></div>
       <div class="field third"><label for="pointOfView">Point of view</label><select id="pointOfView"><option>first person romantic</option><option>second person invitation</option><option>we/us shared memory</option><option>observational venue scene</option></select></div>
       <div class="field third"><label for="rhymeFeel">Rhyme feel</label><select id="rhymeFeel"><option>loose internal rhyme</option><option>simple end rhyme</option><option>minimal rhyme</option><option>chantable hook repetition</option></select></div>
       <div class="field half"><label for="lyricImages">Must-use lyric images</label><textarea id="lyricImages" class="short">sea light, terrace candles, Ras Beirut evening, harbor glow, slow waves</textarea></div>
       <div class="field half"><label for="avoidWords">Words to avoid inside lyrics</label><textarea id="avoidWords" class="short">copy, imitate, famous, celebrity, brand name</textarea></div>
     </div>
     <div class="actions">
-      <button type="button" id="btnLyrics" class="primary">Write lyrics now</button>
+      <button type="button" id="btnLyrics" class="primary" onclick="return window.PM14&&PM14.lyricsNow&&PM14.lyricsNow(event)">Write full lyrics now</button>
       <button type="button" id="btnImages">Spark lyric images</button>
     </div>
   </section>
@@ -275,9 +275,9 @@ function uniqueComma(s){var seen={},out=[]; String(s||'').split(',').forEach(fun
 function traits(){var refs=val('inspiredBy').split(','); var out=[]; refs.forEach(function(r){var k=r.trim().toLowerCase(); if(!k)return; var found=''; Object.keys(traitMap).forEach(function(m){if(!found&&k.indexOf(m)>=0)found=traitMap[m]}); out.push(found||('original traits from private reference: '+r.trim().replace(/[^a-zA-Z0-9 \-]/g,'')))}); if(val('manualTraits'))out.push(val('manualTraits')); return uniqueComma(out.join(', '))}
 function imageList(){var arr=val('lyricImages').split(',').map(function(x){return x.trim()}).filter(Boolean); var fallback=['sea light','terrace candles','harbor glow','slow waves','amber moon']; while(arr.length<5)arr.push(fallback[arr.length]); return arr.slice(0,7)}
 function cleanLyrics(s){var avoid=val('avoidWords').toLowerCase().split(',').map(function(x){return x.trim()}).filter(Boolean); avoid.forEach(function(a){try{s=s.replace(new RegExp('\\b'+a.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b','ig'),'')}catch(e){}}); return s.replace(/ {2,}/g,' ').replace(/\n{3,}/g,'\n\n')}
-function lyrics(){var mode=val('lyricMode'); var h=val('hookPhrase')||'sea light keeps calling me home'; var imgs=imageList(); var place=val('country')||'the coast'; if(mode==='instrumental')return '[Instrumental]\nCreate a complete instrumental arrangement around '+val('coreIdea')+'\n\n[Arrangement]\n'+val('arrangement')+'\n\n[Lead melody]\nUse a memorable, original motif shaped by '+imgs.slice(0,3).join(', ')+'.'; if(mode==='scaffold')return '[Intro]\nSet a warm coastal scene using '+imgs.slice(0,3).join(', ')+'.\n\n[Verse 1]\nFour concise singable lines with specific imagery.\n\n[Pre-Chorus]\nBuild toward the hook without overexplaining.\n\n[Chorus]\nUse this original hook phrase: '+h+'.\n\n[Bridge]\nCreate one intimate turn in perspective.\n\n[Final Chorus]\nRepeat the hook with a stronger emotional lift.'; var txt='[Intro]\nYa layl, '+imgs[0]+' on the water\n'+place+' breathing low\n\n[Verse 1]\nI found a corner where the '+imgs[0]+' leans\nYour shadow moved softly through '+imgs[1]+'\nA glass caught the moon and gave it back to me\nAnd every small silence knew what we meant\n\n[Pre-Chorus]\nYa habibi, the night is gentle when you stay\nMy heart keeps time with the tide and the bay\n\n[Chorus]\n'+h+'\n'+h+'\nWe let '+imgs[2]+' carry what words cannot say\n'+h+'\n\n[Verse 2]\nThe band plays low under '+imgs[3]+'\nOld stories open like windows in the breeze\nI hear your laugh where the shoreline glows\nAnd the city turns softer around our knees\n\n[Bridge]\nIf tomorrow comes too quickly\nLeave one light beside the sea\nI will follow the rhythm\nBack to where you wait for me\n\n[Final Chorus]\n'+h+'\n'+h+'\nThrough '+imgs[4]+' and the last gold of the day\n'+h+'\n\n[Outro]\nYa layl, keep us close\nLet the water sing us home'; return cleanLyrics(txt)}
+function lyrics(){var mode=val('lyricMode'); var h=val('hookPhrase')||'sea light keeps calling me home'; var imgs=imageList(); var place=val('country')||'the coast'; var pov=val('pointOfView')||'first person intimate'; var rhyme=val('rhymeFeel')||'light internal rhyme'; if(mode==='instrumental')return '[Instrumental]\n[Intro]\nA warm original lead motif enters over '+imgs[0]+'.\n\n[Main Theme]\nThe melody rises gently around '+imgs.slice(0,3).join(', ')+'.\n\n[Break]\nPercussion softens, bass breathes, and the hook melody returns without vocals.\n\n[Outro]\nLet the final motif fade like '+imgs[4]+'.'; var txt='[Intro]\nYa layl, '+imgs[0]+' on the water\n'+place+' breathing low\n\n[Verse 1]\nI found a corner where the '+imgs[0]+' leans\nYour shadow moved softly through '+imgs[1]+'\nA glass caught the moon and gave it back to me\nAnd every small silence knew what we mean\n\n[Pre-Chorus]\nYa habibi, stay a little closer\nThe tide is counting time for two\nMy heart is learning from the shoreline\nHow to come back home to you\n\n[Chorus]\n'+h+'\n'+h+'\nWe let '+imgs[2]+' carry what words cannot say\n'+h+'\n\n[Verse 2]\nThe band plays low under '+imgs[3]+'\nOld stories open in the evening breeze\nI hear your laugh where the harbor glows\nAnd the city turns softer around our knees\n\n[Bridge]\nIf tomorrow comes too quickly\nLeave one light beside the sea\nI will follow the rhythm\nBack to where you wait for me\n\n[Final Chorus]\n'+h+'\n'+h+'\nThrough '+imgs[4]+' and the last gold of the day\n'+h+'\n\n[Outro]\nYa layl, keep us close\nLet the water sing us home'; return cleanLyrics(txt)}
 function negative(){return 'no direct artist names, no impersonation, no copied melody, no copyrighted hooks, no harsh clipping, no muddy bass, no novelty vocals, no chaotic arrangement'}
-function generate(silent){try{var l=limits(); var title=val('titleSeed')||'Untitled Suno Prompt'; var style=[val('genre'),val('style'),val('country'),val('bpm')+' BPM',val('songKey'),val('language'),val('vocalType'),'mood: '+val('mood'),'private inspiration translated into traits: '+traits(),'instruments: '+val('instruments'),'arrangement: '+val('arrangement'),'mix: warm premium stereo image, clear vocal center, tasteful low-end, no direct artist names'].filter(Boolean).join('; '); var prompt=lyrics(); var neg=negative(); if(el('strictLimits')&&el('strictLimits').checked){title=trim(title,l.title);style=trim(style,l.style);prompt=trim(prompt,l.prompt);neg=trim(neg,l.negative)} setVal('outTitle',title); setVal('outStyle',style); setVal('outPrompt',prompt); setVal('outNegative',neg); updateCounters(); state.auto++; text('autoCount','auto-gen '+state.auto); if(!silent)status('Generated Suno fields.','good')}catch(e){showError('generate failed',e); status('Generate failed. See error box.','bad')}}
+function generate(silent){try{if(val('lyricMode')==='scaffold')setVal('lyricMode','full'); var l=limits(); var title=val('titleSeed')||'Untitled Suno Prompt'; var style=[val('genre'),val('style'),val('country'),val('bpm')+' BPM',val('songKey'),val('language'),val('vocalType'),'mood: '+val('mood'),'private inspiration translated into traits: '+traits(),'instruments: '+val('instruments'),'arrangement: '+val('arrangement'),'mix: warm premium stereo image, clear vocal center, tasteful low-end, no direct artist names','lyrics: use the separate Prompt / Lyrics field exactly as written; do not sing style instructions'].filter(Boolean).join('; '); var prompt=lyrics(); var neg=negative(); if(el('strictLimits')&&el('strictLimits').checked){title=trim(title,l.title);style=trim(style,l.style);prompt=trim(prompt,l.prompt);neg=trim(neg,l.negative)} setVal('outTitle',title); setVal('outStyle',style); setVal('outPrompt',prompt); setVal('outNegative',neg); updateCounters(); state.auto++; text('autoCount','auto-gen '+state.auto); if(!silent)status('Generated full Suno lyrics and fields.','good')}catch(e){showError('generate failed',e); status('Generate failed. See error box.','bad')}}
 function currentHash(){var ids=['titleSeed','hookPhrase','coreIdea','genre','style','country','bpm','songKey','language','vocalType','inspiredBy','manualTraits','instruments','arrangement','mood','lyricMode','pointOfView','rhymeFeel','lyricImages','avoidWords','limitProfile','strictLimits','manualTitleLimit','manualStyleLimit','manualPromptLimit','manualNegativeLimit']; return ids.map(function(id){var x=el(id);return id+'='+ (x?(x.type==='checkbox'?x.checked:x.value):'')}).join('|')}
 function autoTick(){try{state.heartbeat++; text('heartbeat','heartbeat '+state.heartbeat+' · '+new Date().toLocaleTimeString()); var h=currentHash(); if(h!==state.lastHash){state.lastHash=h; generate(true)}}catch(e){showError('auto tick failed',e)}}
 var sparks=[
@@ -288,7 +288,7 @@ var sparks=[
  {title:'Sunset Bar Amber Tide',hook:'amber tide pulls us closer',genre:'Latin jazz lounge',style:'Brass-led Latin warmth',country:'Mediterranean coast',bpm:104,key:'F major',lang:'English and Spanish touches',vocal:'airy background vocals',refs:'Buena Vista Social Club, Ibrahim Maalouf, Gotan Project',images:'amber tide, brass glow, terrace shadows, warm claps, slow dance',instruments:'trumpet, flugelhorn, marimba, congas, nylon guitar, upright bass, shakers'},
  {title:'Arabian Deep House Lanterns',hook:'lanterns rise over the water',genre:'Organic house',style:'Arabian deep house',country:'Global lounge',bpm:116,key:'D minor',lang:'English with elegant Arabic phrases',vocal:'silky female vocal',refs:'Black Coffee, Nora En Pure, Ibrahim Maalouf',images:'lanterns, oud line, desert blue, water glow, dawn rhythm',instruments:'deep house kick, oud riff, darbuka loop, warm bass, brass phrase, evolving pads'}
 ];
-function applyIdea(obj){setVal('titleSeed',obj.title);setVal('hookPhrase',obj.hook);setVal('genre',obj.genre);setVal('style',obj.style);setVal('country',obj.country);setVal('bpm',obj.bpm);setVal('songKey',obj.key);setVal('language',obj.lang);setVal('vocalType',obj.vocal);setVal('inspiredBy',obj.refs);setVal('lyricImages',obj.images);setVal('instruments',obj.instruments);setVal('coreIdea','A polished '+obj.genre+' track for '+obj.country+': original, memorable, venue-ready, emotionally warm, and safe to paste into Suno.');setVal('mood','romantic, premium, coastal, elegant, warm, playlist-friendly');state.lastHash='';generate(false);status('Sparked idea: '+obj.title,'good')}
+function applyIdea(obj){setVal('lyricMode','full');setVal('titleSeed',obj.title);setVal('hookPhrase',obj.hook);setVal('genre',obj.genre);setVal('style',obj.style);setVal('country',obj.country);setVal('bpm',obj.bpm);setVal('songKey',obj.key);setVal('language',obj.lang);setVal('vocalType',obj.vocal);setVal('inspiredBy',obj.refs);setVal('lyricImages',obj.images);setVal('instruments',obj.instruments);setVal('coreIdea','A polished '+obj.genre+' track for '+obj.country+': original, memorable, venue-ready, emotionally warm, and safe to paste into Suno.');setVal('mood','romantic, premium, coastal, elegant, warm, playlist-friendly');state.lastHash='';generate(false);status('Sparked idea: '+obj.title,'good')}
 function spark(){applyIdea(sparks[Math.floor(Math.random()*sparks.length)])}
 function sparkByTitle(t){var obj=sparks.filter(function(x){return x.title===t})[0]; if(obj)applyIdea(obj)}
 function sparkImages(){var sets=['sea light, terrace candles, Ras Beirut evening, harbor glow, slow waves','island moon, white stones, blue harbor, linen wind, midnight boats','blue hour, silver plates, small waves, candle glass, harbor salt','after midnight, city glow, velvet air, last dance, low bass','summer rain, open windows, oud line, wet stone, warm streetlights','amber lamps, old stairs, jasmine air, taxi lights, balcony shadows']; setVal('lyricImages',sets[Math.floor(Math.random()*sets.length)]); state.lastHash=''; generate(false); status('Lyric images sparked.','good')}
@@ -417,7 +417,12 @@ function bind(){
  document.querySelectorAll('#outTitle,#outStyle,#outPrompt,#outNegative').forEach(function(x){x.addEventListener('focus',function(){try{this.select()}catch(e){}})});
 }
 function init(){try{status('JavaScript ready. InputDrive active.','good'); loadLibrary(); bind(); renderLibrary(); renderAI(); generate(true); updateRepoConsole(); setInterval(autoTick,1000); setTimeout(autoTick,50); log('init complete '+BUILD)}catch(e){showError('startup failed',e);status('Startup failed. See red error box.','bad')}}
-window.PM13={runCommand:runCommand,spark:spark,generate:generate,selfTest:selfTest,save:save,copyAll:copyAll};
+function tapTest(ev){try{if(ev&&ev.preventDefault)ev.preventDefault();bump('tapTest-inline');status('Tap test received.','good')}catch(e){showError('tap test failed',e)}return false}
+function sparkClick(ev){try{if(ev&&ev.preventDefault)ev.preventDefault();bump('spark-inline');setVal('lyricMode','full');spark();return false}catch(e){showError('spark inline failed',e);return false}}
+function generateClick(ev){try{if(ev&&ev.preventDefault)ev.preventDefault();bump('generate-inline');setVal('lyricMode','full');generate(false);return false}catch(e){showError('generate inline failed',e);return false}}
+function lyricsNow(ev){try{if(ev&&ev.preventDefault)ev.preventDefault();bump('lyrics-inline');setVal('lyricMode','full');generate(false);status('Full generated lyrics written.','good');return false}catch(e){showError('lyrics inline failed',e);return false}}
+window.PM14={runCommand:runCommand,spark:spark,generate:generate,selfTest:selfTest,save:save,copyAll:copyAll,tapTest:tapTest,sparkClick:sparkClick,generateClick:generateClick,lyricsNow:lyricsNow};
+window.PM13=window.PM14;
 window.onerror=function(m,u,l,c,e){showError('global error line '+l,e||m);return false};
 window.onunhandledrejection=function(e){showError('unhandled promise',e&&e.reason)};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();

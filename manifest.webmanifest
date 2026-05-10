@@ -1,6 +1,6 @@
 {
-  "name": "Prompt Muse v14 GitHub Vercel for Suno",
-  "short_name": "Prompt Muse v14",
+  "name": "Prompt Muse v14.2 LyricsFirst",
+  "short_name": "Prompt Muse 14.2",
   "description": "iPhone-first Suno prompt and lyric studio with button-free fallbacks.",
   "start_url": "./index.html",
   "display": "standalone",
