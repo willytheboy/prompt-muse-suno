@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#111827">
-<title>Prompt Muse v14.5 DesktopUpdate + LyricsFirst for Suno</title>
+<title>Prompt Muse v14.5.1 VersionDisplayFix + LyricsFirst for Suno</title>
 <link rel="manifest" href="/manifest.webmanifest" crossorigin="use-credentials">
 <style>
 :root{
@@ -57,10 +57,10 @@ input[type=range]{padding:0;background:transparent;border:0;min-height:34px}
 <body>
 <main>
   <section class="hero">
-    <div class="kicker">Prompt Muse Â· v14.5 DesktopUpdate Â· GitHub â†’ Vercel</div>
+    <div class="kicker">Prompt Muse Â· v14.5.1 VersionDisplayFix Â· GitHub â†’ Vercel</div>
     <div class="versionbar" aria-label="Latest app version">
-      <span class="versionbadge">Latest app version: <strong>v14.5.0</strong></span>
-      <span class="versionnote">Build: v14.5-desktopupdate Â· LyricsFirst Â· ManifestAuthFix</span>
+      <span class="versionbadge">Latest app version: <strong>v14.5.1</strong></span>
+      <span class="versionnote">Build: v14.5.1-versiondisplayfix Â· LyricsFirst Â· ManifestAuthFix</span>
     </div>
     <h1>Suno prompt studio with a GitHub â†’ Vercel upgrade interface.</h1>
     <p>Generation is lyrics-first: Spark and Generate fill the Suno Prompt / Lyrics field with real sectioned lyrics, while musical instructions stay in the Style field. This build also uses an authenticated manifest link for Vercel-protected previews and displays the latest app version in the header and diagnostics.</p>
@@ -79,7 +79,7 @@ input[type=range]{padding:0;background:transparent;border:0;min-height:34px}
     <div class="status warn" id="statusPanel"><b id="statusText">JavaScript not started yet.</b><br><span id="heartbeat">heartbeat waiting</span></div>
     <div class="statrow">
       <div class="stat"><b id="tapCount">tap count 0</b><span>updates when any action works</span></div>
-      <div class="stat"><b id="appVersionLabel">v14.5.0</b><span>latest app version</span></div>
+      <div class="stat"><b id="appVersionLabel">v14.5.1</b><span>latest app version</span></div>
       <div class="stat"><b id="autoCount">auto-gen 0</b><span>updates even without buttons</span></div>
       <div class="stat"><b id="libraryCount">library 0</b><span>local or memory storage</span></div>
       <div class="stat"><b id="storageStatus">storage checking</b><span>localStorage guard</span></div>
@@ -242,7 +242,7 @@ sea light keeps calling me home</textarea><div class="counter" id="countPrompt">
 (function(){
 'use strict';
 var APP_VERSION='14.4.0';
-var BUILD='v14.5-desktopupdate';
+var BUILD='v14.5.1-versiondisplayfix';
 var state={tap:0,auto:0,library:[],lastHash:'',storageOK:false,heartbeat:0,ai:[],busy:false};
 var memoryStore={};
 function el(id){return document.getElementById(id)}
@@ -438,6 +438,12 @@ window.onunhandledrejection=function(e){showError('unhandled promise',e&&e.reaso
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 </script>
+<!-- PM_VERSION_BADGE_START -->
+<div id="pm-version-badge" aria-label="Prompt Muse app version" style="position:fixed;left:12px;bottom:12px;z-index:2147483647;padding:9px 12px;border-radius:999px;background:#111827;color:#fff;font:13px/1.2 system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;box-shadow:0 8px 22px rgba(0,0,0,.25);">
+  Prompt Muse · Latest app version: <strong>v14.5.1</strong>
+</div>
+<!-- PM_VERSION_BADGE_END -->
 </body>
 </html>
+
 

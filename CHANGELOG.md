@@ -16,3 +16,8 @@
 
 ## v14.5.0
 - Updated visible app version label for GitHub to Vercel deployment test.
+
+## v14.5.1
+- Restored visible latest app version label.
+- Added permanent version badge marker.
+- Updated verification script to check current package version instead of old v14.4 text.

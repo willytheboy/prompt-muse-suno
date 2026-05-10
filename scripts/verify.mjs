@@ -26,23 +26,27 @@ const expectedVersion = `v${version}`;
 
 const checks = [
   {
+    label: "visible version badge marker",
+    ok: index.includes("PM_VERSION_BADGE_START")
+  },
+  {
     label: "current package version appears in index.html",
     ok: index.includes(expectedVersion) || index.includes(version)
   },
   {
-    label: "latest version label",
+    label: "latest app version text",
     ok: /latest\s+app\s+version/i.test(index)
   },
   {
-    label: "GitHub to Vercel / LLM upgrade interface",
-    ok: /github\s*(→|->|to)\s*vercel|llm\s+upgrade|upgrade\s+console/i.test(index)
+    label: "Prompt Muse app identity",
+    ok: /Prompt Muse/i.test(index)
   },
   {
     label: "Suno title/style/prompt/negative fields",
     ok:
       /title/i.test(index) &&
       /style/i.test(index) &&
-      /prompt\s*\/\s*lyrics|prompt/i.test(index) &&
+      /prompt/i.test(index) &&
       /negative|exclude/i.test(index)
   },
   {

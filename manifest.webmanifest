@@ -1,5 +1,5 @@
 ﻿{
-  "name": "Prompt Muse v14.5 DesktopUpdate",
+  "name": "Prompt Muse v14.5.1 DesktopUpdate",
   "short_name": "Prompt Muse 14.4",
   "description": "iPhone-first Suno prompt and lyric studio with visible latest app version labels.",
   "start_url": "./index.html",
@@ -19,4 +19,5 @@
     }
   ]
 }
+
 
