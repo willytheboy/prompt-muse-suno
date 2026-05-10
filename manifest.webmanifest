@@ -1,7 +1,7 @@
-﻿{
-  "name": "Prompt Muse v14.5.3 DesktopUpdate",
-  "short_name": "Prompt Muse 14.4",
-  "description": "iPhone-first Suno prompt and lyric studio with visible latest app version labels.",
+{
+  "name": "Prompt Muse v14.6 AlbumBuilder",
+  "short_name": "Prompt Muse 14.6",
+  "description": "iPhone-first Suno prompt and lyric studio with full album builder and local album memory.",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0b1020",
@@ -19,5 +19,3 @@
     }
   ]
 }
-
-

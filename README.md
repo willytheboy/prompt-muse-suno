@@ -1,4 +1,4 @@
-# Prompt Muse v14.4 - GitHub to Vercel for Suno
+# Prompt Muse v14.4 — GitHub → Vercel for Suno
 
 Prompt Muse is an iPhone-first Suno prompt and lyric studio. v14.4 keeps the GitHub/Vercel-ready workflow and adds a visible latest-version label in the app header and diagnostics so users can confirm exactly which build is live.
 
@@ -13,7 +13,7 @@ It also stores prompts in a searchable local library by genre, style, inspired b
 
 ## v14 highlights
 
-- In-app GitHub to Vercel LLM Upgrade Console.
+- In-app GitHub → Vercel LLM Upgrade Console.
 - Ready-to-paste LLM upgrade brief generator.
 - Git command scaffold generator.
 - `vercel.json` for Vercel.
@@ -80,8 +80,13 @@ If it returns JSON with `ok: true`, the API folder is deployed correctly.
 This build displays the latest app version in the hero header and diagnostics panel:
 
 ```text
-Latest app version: v14.5.3
-Build: v14.5.3-favorite-marker-fix  -  LyricsFirst  -  ManifestAuthFix
+Latest app version: v14.4.0
+Build: v14.4-versionlabel · LyricsFirst · ManifestAuthFix
 ```
 
 Use this visible label to confirm that Vercel is serving the latest GitHub deployment rather than an older cached or protected preview.
+
+
+## v14.6 AlbumBuilder
+
+The app now includes a Full Album Builder modal. It creates 1 to 12 Suno-ready tracks from the current composition for a performing artist or band. It supports album formats such as consistent album, top hits, history of, best of, concept album, venue collection, debut album, live session collection, and remix pack. The app remembers artists, genres, album genres, lyric topics, and saved album plans in local storage.

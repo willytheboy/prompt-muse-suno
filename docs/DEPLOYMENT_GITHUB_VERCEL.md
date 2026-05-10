@@ -1,4 +1,4 @@
-# GitHub to Vercel deployment guide
+# GitHub → Vercel deployment guide
 
 ## Recommended setup
 

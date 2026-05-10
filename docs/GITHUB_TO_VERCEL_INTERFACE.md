@@ -1,4 +1,4 @@
-# GitHub to Vercel interface design
+# GitHub → Vercel interface design
 
 The interface is not an OAuth dashboard. It is a safe workflow layer that turns the app into a repo-managed product. It provides:
 

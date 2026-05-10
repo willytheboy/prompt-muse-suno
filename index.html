@@ -1,10 +1,10 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#111827">
-<title>Prompt Muse v14.5.3 FavoriteMarkerFix + LyricsFirst for Suno</title>
+<title>Prompt Muse v14.6 AlbumBuilder + LyricsFirst for Suno</title>
 <link rel="manifest" href="/manifest.webmanifest" crossorigin="use-credentials">
 <style>
 :root{
@@ -52,17 +52,22 @@ input[type=range]{padding:0;background:transparent;border:0;min-height:34px}
 .versionbadge{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(248,212,119,.55);background:rgba(248,212,119,.14);color:#fff7d6;border-radius:999px;padding:7px 11px;font-weight:900;font-size:13px;letter-spacing:.01em}
 .versionbadge strong{color:#f8d477}
 .versionnote{color:#cbd5e1;font-size:12px}
+
+/* Album Builder v14.6 */
+.album-mini{border:1px solid rgba(125,211,252,.28);background:rgba(15,23,42,.72);border-radius:16px;padding:12px;margin-top:12px}
+.pm-modal[hidden]{display:none!important}.pm-modal{position:fixed;inset:0;z-index:2147483000;background:rgba(2,6,23,.82);padding:12px;overflow:auto;-webkit-overflow-scrolling:touch}.pm-modal-panel{width:min(1120px,100%);margin:16px auto;background:#0f172a;border:1px solid var(--line);border-radius:22px;box-shadow:0 24px 70px rgba(0,0,0,.55);padding:16px}.pm-modal-head{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:12px}.pm-modal-head h2{margin:0}.album-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}.album-track{border:1px solid var(--line);border-radius:16px;background:#111827;padding:12px;margin:10px 0}.album-track h3{margin:0 0 6px}.album-track .meta{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px}.album-track .meta span{border:1px solid var(--line);border-radius:999px;padding:3px 7px}.album-track textarea{min-height:86px}.album-status{border-radius:14px;border:1px solid rgba(125,211,252,.35);background:#061221;padding:10px;color:#dbeafe;margin:10px 0}.album-memory{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.album-memory span{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:4px 8px;color:#cbd5e1}.album-output-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}@media(max-width:760px){.album-output-grid{grid-template-columns:1fr}.pm-modal{padding:6px}.pm-modal-panel{margin:6px auto;padding:12px}}
+
 </style>
 </head>
 <body>
 <main>
   <section class="hero">
-    <div class="kicker">Prompt Muse  -  v14.5.3 FavoriteMarkerFix  -  GitHub to Vercel</div>
+    <div class="kicker">Prompt Muse  -  v14.6 AlbumBuilder  -  GitHub  to  Vercel</div>
     <div class="versionbar" aria-label="Latest app version">
-      <span class="versionbadge">Latest app version: <strong>v14.5.3</strong></span>
-      <span class="versionnote">Build: v14.5.3-favorite-marker-fix  -  LyricsFirst  -  ManifestAuthFix</span>
+      <span class="versionbadge">Latest app version: <strong>v14.6.0</strong></span>
+      <span class="versionnote">Build: v14.6-album-builder  -  LyricsFirst  -  ManifestAuthFix</span>
     </div>
-    <h1>Suno prompt studio with a GitHub to Vercel upgrade interface.</h1>
+    <h1>Suno prompt studio with a GitHub  to  Vercel upgrade interface.</h1>
     <p>Generation is lyrics-first: Spark and Generate fill the Suno Prompt / Lyrics field with real sectioned lyrics, while musical instructions stay in the Style field. This build also uses an authenticated manifest link for Vercel-protected previews and displays the latest app version in the header and diagnostics.</p>
   </section>
 
@@ -79,7 +84,7 @@ input[type=range]{padding:0;background:transparent;border:0;min-height:34px}
     <div class="status warn" id="statusPanel"><b id="statusText">JavaScript not started yet.</b><br><span id="heartbeat">heartbeat waiting</span></div>
     <div class="statrow">
       <div class="stat"><b id="tapCount">tap count 0</b><span>updates when any action works</span></div>
-      <div class="stat"><b id="appVersionLabel">v14.5.3</b><span>latest app version</span></div>
+      <div class="stat"><b id="appVersionLabel">v14.6.0</b><span>latest app version</span></div>
       <div class="stat"><b id="autoCount">auto-gen 0</b><span>updates even without buttons</span></div>
       <div class="stat"><b id="libraryCount">library 0</b><span>local or memory storage</span></div>
       <div class="stat"><b id="storageStatus">storage checking</b><span>localStorage guard</span></div>
@@ -107,7 +112,7 @@ input[type=range]{padding:0;background:transparent;border:0;min-height:34px}
       <div class="field half"><label for="hookPhrase">Hook phrase</label><input id="hookPhrase" value="sea light keeps calling me home"></div>
       <div class="field full"><label for="coreIdea">Core idea</label><textarea id="coreIdea" class="short">A premium Mediterranean lounge song for a coastal Beirut venue: romantic, warm, elegant, singable, and commercially safe.</textarea></div>
       <div class="field third"><label for="genre">Genre</label><select id="genre"><option>Mediterranean lounge pop</option><option>Deep house</option><option>Acoustic beach lounge</option><option>Latin jazz lounge</option><option>Arabian fusion pop</option><option>Cinematic coastal ballad</option><option>Sophisti-pop jazz lounge</option><option>Organic house</option></select></div>
-      <div class="field third"><label for="style">Style</label><select id="style"><option>Sunset terrace</option><option>Beach cafÃ©</option><option>Late-night lounge</option><option>Luxury hotel bar</option><option>Island chillout</option><option>Brass-led Latin warmth</option><option>Arabian deep house</option></select></div>
+      <div class="field third"><label for="style">Style</label><select id="style"><option>Sunset terrace</option><option>Beach café</option><option>Late-night lounge</option><option>Luxury hotel bar</option><option>Island chillout</option><option>Brass-led Latin warmth</option><option>Arabian deep house</option></select></div>
       <div class="field third"><label for="country">Country / place</label><select id="country"><option>Lebanon / Ras Beirut</option><option>Greece / Mykonos</option><option>Mediterranean coast</option><option>Spain / Balearic</option><option>Brazil / Bossa coastline</option><option>Global lounge</option></select></div>
       <div class="field quarter"><label for="bpm">BPM</label><input id="bpm" type="number" inputmode="numeric" min="40" max="220" value="96"></div>
       <div class="field quarter"><label for="songKey">Key</label><select id="songKey"><option>A minor</option><option>D minor</option><option>E minor</option><option>G minor</option><option>C major</option><option>F major</option><option>G major</option></select></div>
@@ -185,6 +190,77 @@ sea light keeps calling me home</textarea><div class="counter" id="countPrompt">
     <div id="aiResults" class="list" style="margin-top:12px"><div class="empty">No variants yet.</div></div>
   </section>
 
+
+
+  <section class="card" id="albumBuilderCard" aria-labelledby="albumBuilderTitle">
+    <h2 id="albumBuilderTitle">Full album builder</h2>
+    <p>Create a 1 to 12 track album from the current composition for a performing artist or band. The Album Builder varies style, mood, genre, BPM, hooks, and full lyrics while keeping the album coherent and Suno-ready.</p>
+    <div class="album-mini">
+      <div class="grid">
+        <div class="field third"><label for="albumQuickArtist">Performing artist / band</label><input id="albumQuickArtist" list="albumArtistMemoryList" placeholder="Your artist or band name"></div>
+        <div class="field third"><label for="albumQuickType">Album format</label><select id="albumQuickType"><option value="consistent">Consistent album</option><option value="top-hits">Top hits collection</option><option value="history-of">History of the artist</option><option value="best-of">Best of album</option><option value="concept">Concept album</option><option value="venue">Venue / hospitality collection</option><option value="debut">Debut EP / album</option><option value="live-session">Live session collection</option><option value="remix-pack">Remix / alternate versions pack</option></select></div>
+        <div class="field third"><label for="albumQuickTracks">Tracks</label><input id="albumQuickTracks" type="number" min="1" max="12" value="8"></div>
+      </div>
+      <div class="actions">
+        <button type="button" class="primary" id="btnOpenAlbumBuilder" data-album-action="open">Open Album Builder modal</button>
+        <button type="button" id="btnQuickAlbum" data-album-action="quickGenerate">Quick generate album</button>
+        <select id="albumCardCommand" aria-label="Album action menu"><option value="">Album action menu...</option><option value="open">Open modal</option><option value="quickGenerate">Quick generate album</option><option value="saveAlbum">Save current album</option><option value="exportAlbum">Export album JSON</option><option value="addTracks">Add tracks to prompt library</option></select>
+      </div>
+      <div id="albumCardStatus" class="album-status">Album Builder ready. It remembers artists, genres, album genres, lyric topics, and saved album plans locally.</div>
+      <div id="albumCardSummary" class="small muted">No album generated yet.</div>
+    </div>
+  </section>
+
+  <div id="albumBuilderModal" class="pm-modal" hidden role="dialog" aria-modal="true" aria-labelledby="albumModalTitle">
+    <div class="pm-modal-panel">
+      <div class="pm-modal-head">
+        <div>
+          <h2 id="albumModalTitle">Album Builder - v14.6</h2>
+          <p>Generate a coherent album or collection from the current composition. Each track gets Title, Style, Prompt / Lyrics, and Negative / Exclude fields ready for Suno.</p>
+        </div>
+        <button type="button" class="secondary" data-album-action="close">Close</button>
+      </div>
+
+      <datalist id="albumArtistMemoryList"></datalist>
+      <datalist id="albumGenreMemoryList"></datalist>
+      <datalist id="albumTopicMemoryList"></datalist>
+
+      <div class="grid">
+        <div class="field half"><label for="albumArtist">Performing artist / band</label><input id="albumArtist" list="albumArtistMemoryList" placeholder="Original artist/band name"></div>
+        <div class="field half"><label for="albumTitle">Album title</label><input id="albumTitle" placeholder="Auto-filled from current song if empty"></div>
+        <div class="field third"><label for="albumType">Album type</label><select id="albumType"><option value="consistent">Build a consistent album</option><option value="top-hits">Top hits album</option><option value="history-of">History of the artist/band</option><option value="best-of">Best of album</option><option value="concept">Concept album</option><option value="venue">Venue / hospitality collection</option><option value="debut">Debut EP / album</option><option value="live-session">Live session collection</option><option value="remix-pack">Remix / alternate versions pack</option></select></div>
+        <div class="field third"><label for="albumTrackCount">Track count, 1 to 12</label><input id="albumTrackCount" type="number" min="1" max="12" value="8"></div>
+        <div class="field third"><label for="albumMoodArc">Mood arc</label><select id="albumMoodArc"><option value="cohesive">Cohesive and steady</option><option value="day-to-night">Day to night</option><option value="intimate-to-anthemic">Intimate to anthemic</option><option value="warm-to-euphoric">Warm to euphoric</option><option value="cinematic">Cinematic narrative arc</option><option value="club-energy">Lounge to club energy</option></select></div>
+        <div class="field third"><label for="albumVariation">Variation strength</label><select id="albumVariation"><option value="35">Subtle</option><option value="55" selected>Balanced</option><option value="75">Bold</option><option value="90">Experimental</option></select></div>
+        <div class="field third"><label for="albumEra">Era / release posture</label><select id="albumEra"><option>Modern release</option><option>Classic retrospective</option><option>Summer season</option><option>Late-night live room</option><option>Festival / club cut</option><option>Luxury hospitality playlist</option></select></div>
+        <div class="field third"><label for="albumAudience">Target listener / use</label><select id="albumAudience"><option>Artist release</option><option>Suno exploration</option><option>Venue playlist</option><option>Restaurant / lounge</option><option>Beach club</option><option>Streaming single campaign</option></select></div>
+        <div class="field half"><label for="albumGenrePool">Album genres / subgenres</label><textarea id="albumGenrePool" class="short" placeholder="Mediterranean lounge pop, deep house, Latin jazz lounge, acoustic beach lounge"></textarea></div>
+        <div class="field half"><label for="albumStylePool">Style and mood palette</label><textarea id="albumStylePool" class="short" placeholder="sunset terrace, late-night lounge, beach cafe, cinematic coastal, organic house"></textarea></div>
+        <div class="field half"><label for="albumTopics">Lyric topics and images</label><textarea id="albumTopics" class="short" placeholder="sea light, terrace candles, harbor glow, lost love, homecoming, midnight drive"></textarea></div>
+        <div class="field half"><label for="albumNotes">Album notes / constraints</label><textarea id="albumNotes" class="short" placeholder="Keep artist names out of Suno-facing prompts. Make choruses memorable. Maintain original identity."></textarea></div>
+      </div>
+
+      <div class="album-toolbar">
+        <button type="button" class="secondary" data-album-action="seed">Seed from current composition</button>
+        <button type="button" class="primary" data-album-action="generate">Generate album</button>
+        <button type="button" data-album-action="saveAlbum">Save album</button>
+        <button type="button" data-album-action="loadLast">Load last album</button>
+        <button type="button" data-album-action="copyAlbum">Copy album plan</button>
+        <button type="button" data-album-action="exportAlbum">Export album JSON</button>
+        <button type="button" data-album-action="addTracks">Add all tracks to prompt library</button>
+      </div>
+      <div class="field half"><label for="albumModalCommand">Native album action menu</label><select id="albumModalCommand"><option value="">Choose album action...</option><option value="seed">Seed from current composition</option><option value="generate">Generate album</option><option value="saveAlbum">Save album</option><option value="loadLast">Load last album</option><option value="copyAlbum">Copy album plan</option><option value="exportAlbum">Export album JSON</option><option value="addTracks">Add all tracks to prompt library</option></select></div>
+      <div id="albumStatus" class="album-status">Ready. Artist, genre, album, and topic memory will update when you generate or save.</div>
+      <div id="albumMemory" class="album-memory"></div>
+      <div class="grid" style="margin-top:12px">
+        <div class="field half"><label for="albumLibraryPicker">Saved albums</label><select id="albumLibraryPicker"><option value="">No saved albums yet</option></select></div>
+        <div class="field half"><label for="albumSearch">Search saved albums</label><input id="albumSearch" placeholder="artist, album, genre, topic"></div>
+      </div>
+      <div id="albumOutput" class="list" style="margin-top:12px"><div class="empty">Generate an album to see 1 to 12 Suno-ready tracks.</div></div>
+    </div>
+  </div>
+
+
   <section class="card" id="library" aria-labelledby="libraryTitle">
     <h2 id="libraryTitle">Searchable prompt library</h2>
     <div class="grid">
@@ -206,7 +282,7 @@ sea light keeps calling me home</textarea><div class="counter" id="countPrompt">
 
 
   <section class="card" id="upgradeConsole" aria-labelledby="upgradeConsoleTitle">
-    <h2 id="upgradeConsoleTitle">GitHub to Vercel LLM upgrade console</h2>
+    <h2 id="upgradeConsoleTitle">GitHub  to  Vercel LLM upgrade console</h2>
     <p>This panel creates a precise handoff brief for Codex, Cursor, Claude, ChatGPT, or another coding LLM. The intended workflow is: edit in a GitHub branch, open a pull request, let Vercel create a preview deployment, test on iPhone, then merge to production.</p>
     <div class="grid">
       <div class="field half"><label for="repoUrl">GitHub repository URL</label><input id="repoUrl" placeholder="https://github.com/your-name/prompt-muse-suno"></div>
@@ -241,8 +317,8 @@ sea light keeps calling me home</textarea><div class="counter" id="countPrompt">
 <script>
 (function(){
 'use strict';
-var APP_VERSION='14.4.0';
-var BUILD='v14.5.3-favorite-marker-fix';
+var APP_VERSION='14.6.0';
+var BUILD='v14.6-album-builder';
 var state={tap:0,auto:0,library:[],lastHash:'',storageOK:false,heartbeat:0,ai:[],busy:false};
 var memoryStore={};
 function el(id){return document.getElementById(id)}
@@ -266,7 +342,7 @@ function updateCounters(){var l=limits(); counter('outTitle','countTitle',l.titl
 var traitMap={
  'fairuz':'Levantine poetic restraint, dignified melodic phrasing, place-based nostalgia',
  'sade':'silky late-night restraint, elegant soul-jazz smoothness, spacious romantic groove',
- 'ziad rahbani':'urban Beirut jazz harmony, Rhodes-led cafÃ© sophistication, conversational warmth',
+ 'ziad rahbani':'urban Beirut jazz harmony, Rhodes-led café sophistication, conversational warmth',
  'daft punk':'clean electronic pulse, robotic-tight groove, glossy synth discipline',
  'black coffee':'organic Afro-house depth, patient percussion, warm club hypnosis',
  'rufus du sol':'wide emotional pads, melodic electronic lift, festival-scale atmosphere',
@@ -292,9 +368,9 @@ function currentHash(){var ids=['titleSeed','hookPhrase','coreIdea','genre','sty
 function autoTick(){try{state.heartbeat++; text('heartbeat','heartbeat '+state.heartbeat+'  -  '+new Date().toLocaleTimeString()); var h=currentHash(); if(h!==state.lastHash){state.lastHash=h; generate(true)}}catch(e){showError('auto tick failed',e)}}
 var sparks=[
  {title:'Ras Beirut Afterglow',hook:'sea light keeps calling me home',genre:'Mediterranean lounge pop',style:'Sunset terrace',country:'Lebanon / Ras Beirut',bpm:96,key:'A minor',lang:'English with elegant Arabic phrases',vocal:'warm intimate male vocal',refs:'Fairuz, Sade, Ziad Rahbani',images:'sea light, terrace candles, Ras Beirut evening, harbor glow, slow waves',instruments:'oud, nylon guitar, Rhodes, upright bass, soft trumpet, brushed percussion, darbuka, shakers, warm pads'},
- {title:'Mykonos Blue Hour',hook:'blue hour carries us away',genre:'Deep house',style:'Island chillout',country:'Greece / Mykonos',bpm:108,key:'D minor',lang:'English',vocal:'silky female vocal',refs:'Nora En Pure, RÃ¼fÃ¼s Du Sol, CafÃ© del Mar',images:'island moon, white stones, blue harbor, linen wind, midnight boats',instruments:'soft piano, deep house kick, warm bass, airy pads, hand percussion, distant sax'},
+ {title:'Mykonos Blue Hour',hook:'blue hour carries us away',genre:'Deep house',style:'Island chillout',country:'Greece / Mykonos',bpm:108,key:'D minor',lang:'English',vocal:'silky female vocal',refs:'Nora En Pure, Rüfüs Du Sol, Café del Mar',images:'island moon, white stones, blue harbor, linen wind, midnight boats',instruments:'soft piano, deep house kick, warm bass, airy pads, hand percussion, distant sax'},
  {title:'The Loft After Midnight',hook:'after midnight we move like velvet',genre:'Sophisti-pop jazz lounge',style:'Late-night lounge',country:'Global lounge',bpm:102,key:'E minor',lang:'English',vocal:'warm intimate male vocal',refs:'Sade, Jamiroquai, Massive Attack',images:'velvet air, taxi lights, low bass, glass reflections, city glow',instruments:'Rhodes, muted guitar, fretless bass, brushed drums, synth pad, sax accents'},
- {title:'Feluka Moonlit Table',hook:'the moon sits softly at our table',genre:'Acoustic beach lounge',style:'Beach cafÃ©',country:'Lebanon / Ras Beirut',bpm:88,key:'G minor',lang:'English with elegant Arabic phrases',vocal:'soft duet',refs:'Fairuz, CesÃ¡ria Ã‰vora, Buena Vista Social Club',images:'silver plates, fishing lights, moonlit table, salt breeze, old stories',instruments:'nylon guitar, oud, upright bass, light bongos, soft trumpet, handclaps'},
+ {title:'Feluka Moonlit Table',hook:'the moon sits softly at our table',genre:'Acoustic beach lounge',style:'Beach café',country:'Lebanon / Ras Beirut',bpm:88,key:'G minor',lang:'English with elegant Arabic phrases',vocal:'soft duet',refs:'Fairuz, Cesária Évora, Buena Vista Social Club',images:'silver plates, fishing lights, moonlit table, salt breeze, old stories',instruments:'nylon guitar, oud, upright bass, light bongos, soft trumpet, handclaps'},
  {title:'Sunset Bar Amber Tide',hook:'amber tide pulls us closer',genre:'Latin jazz lounge',style:'Brass-led Latin warmth',country:'Mediterranean coast',bpm:104,key:'F major',lang:'English and Spanish touches',vocal:'airy background vocals',refs:'Buena Vista Social Club, Ibrahim Maalouf, Gotan Project',images:'amber tide, brass glow, terrace shadows, warm claps, slow dance',instruments:'trumpet, flugelhorn, marimba, congas, nylon guitar, upright bass, shakers'},
  {title:'Arabian Deep House Lanterns',hook:'lanterns rise over the water',genre:'Organic house',style:'Arabian deep house',country:'Global lounge',bpm:116,key:'D minor',lang:'English with elegant Arabic phrases',vocal:'silky female vocal',refs:'Black Coffee, Nora En Pure, Ibrahim Maalouf',images:'lanterns, oud line, desert blue, water glow, dawn rhythm',instruments:'deep house kick, oud riff, darbuka loop, warm bass, brass phrase, evolving pads'}
 ];
@@ -316,7 +392,7 @@ function copyText(t,msg){try{if(navigator.clipboard&&navigator.clipboard.writeTe
 function fallbackCopy(t,msg){var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');status(msg||'Copied.','good')}catch(e){status('Copy blocked. Text selected in a temporary field; use manual copy.','warn')}setTimeout(function(){try{document.body.removeChild(ta)}catch(e){}},250)}
 function copyAll(){var t='TITLE:\n'+val('outTitle')+'\n\nSTYLE:\n'+val('outStyle')+'\n\nPROMPT / LYRICS:\n'+val('outPrompt')+'\n\nNEGATIVE / EXCLUDE:\n'+val('outNegative'); copyText(t,'Copied all Suno fields.')} 
 function download(name,textContent,type){var blob=new Blob([textContent],{type:type||'text/plain'}); var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(function(){URL.revokeObjectURL(a.href);try{document.body.removeChild(a)}catch(e){}},200)}
-function exportJSON(){download('prompt-muse-suno-library-v14-3.json',JSON.stringify(state.library,null,2),'application/json'); status('Exported library JSON.','good')}
+function exportJSON(){download('prompt-muse-suno-library-v14-6.json',JSON.stringify(state.library,null,2),'application/json'); status('Exported library JSON.','good')}
 function markdown(){var t='# '+val('outTitle')+'\n\n## Style\n\n'+val('outStyle')+'\n\n## Prompt / Lyrics\n\n'+val('outPrompt')+'\n\n## Negative / Exclude\n\n'+val('outNegative')+'\n'; download((val('outTitle')||'suno-prompt').toLowerCase().replace(/[^a-z0-9]+/g,'-')+'.md',t,'text/markdown')}
 function importJSON(){var f=el('importFile'); if(!f||!f.files||!f.files[0]){status('Choose a JSON file first.','warn');return} var reader=new FileReader(); reader.onload=function(){try{var arr=JSON.parse(reader.result); if(!Array.isArray(arr))throw new Error('JSON must be an array'); arr.forEach(function(r){r.id=r.id||uid(); state.library.push(r)}); persist(); renderLibrary(); status('Imported '+arr.length+' prompts.','good')}catch(e){showError('import failed',e); status('Import failed.','bad')}}; reader.readAsText(f.files[0])}
 function localPolish(){var base=record(); state.ai=[{kind:'Safe Commercial',title:base.title,style:base.stylePrompt+', release-friendly clarity, original phrasing, no imitation',prompt:base.promptLyrics,negative:base.negativePrompt+', no living-artist names in final prompt'},{kind:'Poetic',title:base.title+' - Poetic Cut',style:base.stylePrompt+', more image-led lyricism, graceful emotional restraint',prompt:base.promptLyrics.replace(/sea light/g,'silver sea light').replace(/the night/g,'the velvet night'),negative:base.negativePrompt},{kind:'Venue Ready',title:base.title+' - Venue Mix',style:base.stylePrompt+', low-intrusion hospitality playback, smooth transitions, warm playlist flow',prompt:base.promptLyrics.replace(/\[Bridge\][\s\S]*?\[Final Chorus\]/,'[Instrumental Break]\nKeep it smooth, elegant, and low-intrusion for hospitality playback.\n\n[Final Chorus]'),negative:base.negativePrompt}]; renderAI(); status('Created local polish variants.','good')}
@@ -439,20 +515,104 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 })();
 </script>
 
+<script>
+(function(){
+'use strict';
+var ALBUM_VERSION='14.6.0';
+var ALBUM_BUILD='v14.6-album-builder';
+var ALBUM_KEY='promptMuseAlbumLibraryV146';
+var MEMORY_KEY='promptMuseAlbumMemoryV146';
+var PROMPT_LIBRARY_KEY='promptMuseV14Library';
+var currentAlbum=null;
+var albums=[];
+var memory={artists:{},genres:{},styles:{},topics:{},albumTitles:{}};
+var roles=['Opener','Lead single','Deep cut','Ballad','Dance cut','Acoustic version','Late-night track','Instrumental interlude','Feature-style duet','Club mix','Final anthem','Outro'];
+var typeNotes={
+  consistent:'cohesive album identity, recurring motifs, unified vocal tone, connected lyrics',
+  'top-hits':'high-hook singles, memorable choruses, strong radio-ready openings, clean structures',
+  'history-of':'chronological style shifts, early raw version, mature middle period, refined final era',
+  'best-of':'signature moods, strongest hooks, polished identity, greatest-moments sequencing',
+  concept:'narrative album arc, recurring images, emotional development, cinematic continuity',
+  venue:'playlist flow, hospitality-safe dynamics, smooth transitions, daypart energy curve',
+  debut:'clear artist identity, bold introduction, varied but focused first statement',
+  'live-session':'organic performance feel, live-room warmth, human dynamics, less programmed polish',
+  'remix-pack':'alternate versions of one composition, tempo changes, genre flips, repeated motif'
+};
+var genreFallback=['Mediterranean lounge pop','Deep house','Acoustic beach lounge','Latin jazz lounge','Arabian fusion pop','Cinematic coastal ballad','Sophisti-pop jazz lounge','Organic house'];
+var styleFallback=['Sunset terrace','Beach cafe','Late-night lounge','Luxury hotel bar','Island chillout','Brass-led Latin warmth','Arabian deep house','Cinematic coastal'];
+var topicFallback=['sea light','terrace candles','harbor glow','midnight drive','homecoming','island moon','old photograph','summer goodbye','Ras Beirut evening','blue hour','soft rain','last dance'];
+var keys=['A minor','D minor','E minor','G minor','C major','F major','G major','B minor'];
 
-
-
-
-
+function q(id){return document.getElementById(id)}
+function val(id){var x=q(id);return x?String(x.value||''):''}
+function setv(id,v){var x=q(id);if(x)x.value=v==null?'':String(v)}
+function text(id,v){var x=q(id);if(x)x.textContent=v==null?'':String(v)}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function uid(){return 'alb_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8)}
+function splitList(s,fallback){var out=String(s||'').split(/[\n,]+/).map(function(x){return x.trim()}).filter(Boolean);return out.length?out:fallback.slice()}
+function pick(arr,i,shift){if(!arr||!arr.length)return'';return arr[(i+(shift||0))%arr.length]}
+function clamp(n,min,max){n=Number(n)||0;return Math.max(min,Math.min(max,n))}
+function storageGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function storageSet(k,v){try{localStorage.setItem(k,v);return true}catch(e){return false}}
+function albumStatus(msg){text('albumStatus',msg);text('albumCardStatus',msg);var s=q('albumStatus');if(s)s.className='album-status'}
+function maybeMainStatus(msg){text('statusText',msg)}
+function copy(textValue,msg){var value=String(textValue||'');if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(value).then(function(){albumStatus(msg||'Copied.')}).catch(function(){fallbackCopy(value,msg)})}else fallbackCopy(value,msg)}
+function fallbackCopy(value,msg){var t=document.createElement('textarea');t.value=value;t.style.position='fixed';t.style.left='-9999px';document.body.appendChild(t);t.focus();t.select();try{document.execCommand('copy');albumStatus(msg||'Copied.')}catch(e){albumStatus('Copy blocked. Select the field manually.')}document.body.removeChild(t)}
+function download(name,content,type){var a=document.createElement('a');var blob=new Blob([content],{type:type||'application/json'});a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);document.body.removeChild(a)},200)}
+function getPromptLibrary(){try{var raw=storageGet(PROMPT_LIBRARY_KEY)||'[]';var arr=JSON.parse(raw);return Array.isArray(arr)?arr:[]}catch(e){return[]}}
+function savePromptLibrary(arr){storageSet(PROMPT_LIBRARY_KEY,JSON.stringify(arr));text('libraryCount','library '+arr.length)}
+function remember(bucket,value){String(value||'').split(/[,\n]+/).map(function(x){return x.trim()}).filter(Boolean).forEach(function(v){bucket[v]=(bucket[v]||0)+1})}
+function loadMemory(){try{var raw=storageGet(MEMORY_KEY);if(raw){var parsed=JSON.parse(raw);if(parsed&&typeof parsed==='object')memory=Object.assign(memory,parsed)}}catch(e){}; getPromptLibrary().forEach(function(r){remember(memory.artists,r.artist||r.performingArtist||r.inspiredBy);remember(memory.genres,r.genre);remember(memory.styles,r.style);remember(memory.topics,r.lyricTopic||r.coreIdea)})}
+function saveMemory(){storageSet(MEMORY_KEY,JSON.stringify(memory))}
+function renderMemory(){[['albumArtistMemoryList',memory.artists],['albumGenreMemoryList',memory.genres],['albumTopicMemoryList',memory.topics]].forEach(function(pair){var dl=q(pair[0]);if(!dl)return;dl.innerHTML=Object.keys(pair[1]||{}).sort().slice(0,60).map(function(v){return '<option value="'+esc(v)+'"></option>'}).join('')});var chunks=[];Object.keys(memory.artists||{}).sort().slice(0,6).forEach(function(v){chunks.push('<span>artist: '+esc(v)+'</span>')});Object.keys(memory.genres||{}).sort().slice(0,6).forEach(function(v){chunks.push('<span>genre: '+esc(v)+'</span>')});Object.keys(memory.topics||{}).sort().slice(0,6).forEach(function(v){chunks.push('<span>topic: '+esc(v).slice(0,40)+'</span>')});var m=q('albumMemory');if(m)m.innerHTML=chunks.join('')||'<span>No memory yet</span>'}
+function loadAlbums(){try{var arr=JSON.parse(storageGet(ALBUM_KEY)||'[]');albums=Array.isArray(arr)?arr:[]}catch(e){albums=[]}renderAlbumPicker()}
+function saveAlbums(){storageSet(ALBUM_KEY,JSON.stringify(albums));renderAlbumPicker()}
+function renderAlbumPicker(){var sel=q('albumLibraryPicker');if(!sel)return;var search=val('albumSearch').toLowerCase();var list=albums.filter(function(a){var hay=[a.artist,a.albumTitle,a.albumType,a.genrePool,a.topicPool].join(' ').toLowerCase();return !search||hay.indexOf(search)>=0});sel.innerHTML='<option value="">Choose saved album...</option>'+list.map(function(a){return '<option value="'+esc(a.id)+'">'+esc(a.albumTitle)+' - '+esc(a.artist)+' - '+a.tracks.length+' tracks</option>'}).join('')}
+function seedFromCurrent(){setv('albumArtist',val('albumQuickArtist')||val('albumArtist')||'Original Performing Artist');setv('albumTitle',val('albumTitle')||makeAlbumTitle(val('titleSeed')||val('outTitle')||'Untitled Composition'));setv('albumType',val('albumQuickType')||val('albumType')||'consistent');setv('albumTrackCount',val('albumQuickTracks')||val('albumTrackCount')||'8');setv('albumGenrePool',val('albumGenrePool')||[val('genre'),'Deep house','Acoustic beach lounge','Latin jazz lounge'].filter(Boolean).join(', '));setv('albumStylePool',val('albumStylePool')||[val('style'),val('mood'),'late-night lounge','sunset terrace'].filter(Boolean).join(', '));setv('albumTopics',val('albumTopics')||[val('lyricImages'),val('hookPhrase'),'homecoming, blue hour, terrace candles'].filter(Boolean).join(', '));setv('albumNotes',val('albumNotes')||'Keep direct artist names out of Suno-facing prompts. Preserve the performing artist identity while making each track original.');albumStatus('Seeded Album Builder from current composition.');return false}
+function makeAlbumTitle(base){base=String(base||'Untitled').replace(/\s+copy$/i,'').trim();var endings=['Sessions','Variations','Collected Lights','Blue Hour','Afterglow','Notebook','Album'];return base+' '+pick(endings,base.length,0)}
+function currentBase(){return{title:val('titleSeed')||val('outTitle')||'Untitled Song',hook:val('hookPhrase')||'the night keeps calling me home',genre:val('genre')||'Mediterranean lounge pop',style:val('style')||'Sunset terrace',country:val('country')||'Mediterranean coast',bpm:Number(val('bpm'))||96,key:val('songKey')||'A minor',language:val('language')||'English',vocal:val('vocalType')||'warm intimate vocal',inspiredBy:val('inspiredBy'),traits:val('manualTraits'),instruments:val('instruments'),arrangement:val('arrangement'),mood:val('mood'),coreIdea:val('coreIdea')}}
+function trackRole(i,total,type){if(type==='top-hits')return pick(['Lead single','Second single','Streaming hook','Radio chorus','Dance single','Ballad single','Fan favorite','Final single'],i);if(type==='history-of')return pick(['Early era','Breakthrough era','Mature era','Experimental era','Return era','Legacy era'],i);if(type==='best-of')return pick(['Signature opener','Classic highlight','Dance favorite','Deep emotional cut','Acoustic favorite','Closing anthem'],i);if(type==='venue')return pick(['Arrival','Lunch terrace','Sunset','Dinner mood','Late lounge','After-hours','Closing calm'],i);if(type==='remix-pack')return pick(['Original version','Acoustic version','Deep house version','Latin lounge version','Cinematic version','Club version','Sunset reprise'],i);return roles[i%roles.length]}
+function arcMood(i,total,arc){var ratio=total<=1?0:i/(total-1);if(arc==='day-to-night')return pick(['morning shimmer','afternoon warmth','golden hour','blue hour','late-night velvet','afterglow calm'],Math.round(ratio*5));if(arc==='intimate-to-anthemic')return pick(['intimate','restrained','rising','open-hearted','anthemic','final release'],Math.round(ratio*5));if(arc==='warm-to-euphoric')return pick(['warm','glowing','lifted','euphoric','club-ready','soft resolution'],Math.round(ratio*5));if(arc==='cinematic')return pick(['opening scene','conflict','memory','turning point','wide-screen peak','credits outro'],Math.round(ratio*5));if(arc==='club-energy')return pick(['lounge pulse','deeper groove','sunset lift','club pulse','peak hour','cooldown'],Math.round(ratio*5));return pick(['cohesive','warm','romantic','polished','reflective','resolved'],i)}
+function bpmFor(base,i,total,type,variation){var spread=Math.round(4+variation/6);var wave=((i%5)-2)*Math.max(2,Math.round(spread/3));if(type==='venue')wave=Math.round((i/(Math.max(total-1,1)))*18)-6;if(type==='remix-pack')wave=[0,-12,10,4,-8,18,-4,12][i%8];return clamp(base+wave,60,132)}
+function titleFor(base,i,type,topic,mood){var stem=String(base.title||'Untitled').replace(/\s+(afterglow|sessions|blue hour|album)$/i,'').trim();var templates={consistent:['{stem} in {topic}','{topic} Afterglow','The {mood} Letter','Harbor of {topic}'], 'top-hits':['{topic} Keeps Calling','Tonight in {topic}','One More {mood} Night','The Hook of {topic}'], 'history-of':['Early {topic}','Breakthrough {mood}','The {topic} Years','Return to {topic}'], 'best-of':['Best of {topic}','Signature {mood}','The {topic} Song','Collected {topic}'], concept:['Chapter {n}: {topic}','The {mood} Scene','Map of {topic}','Final {topic}'], venue:['{mood} Terrace','{topic} at Table {n}','Sunset {topic}','After Hours {mood}'], debut:['First {topic}','Hello {mood}','The {topic} Introduction','New Light'], 'live-session':['{topic} Live Room','One Take {mood}','Session {n}: {topic}','Warm Room'], 'remix-pack':['{stem} - {mood} Mix','{stem} - {topic} Version','{stem} - Track {n} Rework']};var t=pick(templates[type]||templates.consistent,i);return t.replace('{stem}',stem).replace('{topic}',cap(topic)).replace('{mood}',cap(mood)).replace('{n}',String(i+1))}
+function cap(s){s=String(s||'light').trim();return s.charAt(0).toUpperCase()+s.slice(1)}
+function hookFor(base,title,topic,mood,type){var clean=String(base.hook||'the night keeps calling me home').trim();if(type==='remix-pack')return clean;var hooks=['I keep finding '+topic+' in the sound','let the '+mood+' night carry me','every road returns to '+topic,clean,'we rise where the '+topic+' glows'];return pick(hooks,title.length,0)}
+function stylePrompt(track,settings,base){var notes=typeNotes[settings.type]||typeNotes.consistent;return [track.genre+'; '+track.style+'; '+track.country+'; '+track.bpm+' BPM; '+track.key+'; '+base.language+'; '+base.vocal,'album role: '+track.role,'mood: '+track.mood,'instruments: '+track.instruments,'production: '+notes,'arrangement: '+track.arrangement,'artist-safe: original composition, no direct artist names, no imitation, no copied melody'].join('; ')}
+function negativePrompt(){return 'no direct artist names, no impersonation, no copied melody, no copyrighted hooks, no muddy bass, no harsh clipping, no rushed ending, no spoken instructions in lyrics'}
+function lyricsFor(track,base,settings){var topic=track.topic;var hook=track.hook;var place=track.country;var phrase=base.language.toLowerCase().indexOf('arabic')>=0?'Ya layl, ':'Tonight, ';if(base.language.toLowerCase().indexOf('french')>=0)phrase='Ce soir, ';if(base.language.toLowerCase().indexOf('spanish')>=0)phrase='Esta noche, ';var verseA=['I kept a small light burning near the door','Your name moved softly through the room','The city leaned close to hear us breathe','Every glass held one more piece of moon'];var verseB=['We changed the rhythm but we kept the flame','A quiet street became a silver stage','The tide remembered what we could not say','And every heartbeat found the same refrain'];if(settings.type==='history-of'){verseA=['We started with a borrowed room and rain','A paper map, a chorus, and a dream','The first applause was distant as a train','But every mile was teaching us to sing'];verseB=['The years made gold around the older scars','We learned the silence between every chord','Now all the nights are gathered into stars','And every song remembers what came before']}if(settings.type==='top-hits'){verseA=['The first line lands before the lights go down','A clean kick moves the floor beneath our feet','Your shadow turns and everybody knows','This chorus came to live out in the street'];verseB=['We make it simple so the night can hold','A melody the room already knows','Your hands go high, the blue lights turn to gold','And every voice comes back before it goes']}if(settings.type==='venue'){verseA=['The tables glow beneath a gentle sky','A waiter smiles, the harbor answers low','The evening opens like a quiet wine','And all the little conversations flow'];verseB=['The room gets warmer as the candles lean','A bassline walks behind the silverware','The sea keeps time beyond the balcony','And every chorus softens in the air']}return ['[Intro]',phrase+topic+' on the water',place+' breathing low','','[Verse 1]',verseA[0],verseA[1],verseA[2],verseA[3],'','[Pre-Chorus]','I follow the '+track.mood+' line back to you','The band plays low, but the feeling breaks through','','[Chorus]',hook,hook,'We let '+topic+' carry what words cannot say',hook,'','[Verse 2]',verseB[0],verseB[1],verseB[2],verseB[3],'','[Bridge]','If the night forgets our names','The melody will know','If the road begins again','We will take it slow','','[Final Chorus]',hook,hook,'Every room becomes a memory when the last lights glow',hook].join('\n')}
+function arrangementFor(role,type){if(type==='remix-pack')return 'short motif intro, direct groove entry, hook-forward chorus, alternate bridge, final lift, clean outro';if(role.indexOf('Interlude')>=0)return 'atmospheric intro, instrumental lead melody, short vocal refrain, cinematic outro';if(role.indexOf('Ballad')>=0)return 'intimate intro, verse, pre-chorus, wide chorus, stripped bridge, final chorus, slow outro';return 'short intro, verse, pre-chorus, memorable chorus, second verse, bridge, final chorus, clean outro'}
+function generateAlbum(){seedIfEmpty();var base=currentBase();var count=clamp(Number(val('albumTrackCount')||val('albumQuickTracks')||8),1,12);var type=val('albumType')||val('albumQuickType')||'consistent';var settings={type:type,arc:val('albumMoodArc')||'cohesive',variation:Number(val('albumVariation')||55),era:val('albumEra'),audience:val('albumAudience')};var genres=splitList(val('albumGenrePool'),genreFallback);var styles=splitList(val('albumStylePool'),styleFallback);var topics=splitList(val('albumTopics'),topicFallback);var albumTitle=val('albumTitle')||makeAlbumTitle(base.title);var artist=val('albumArtist')||val('albumQuickArtist')||'Original Performing Artist';var tracks=[];for(var i=0;i<count;i++){var role=trackRole(i,count,type);var mood=arcMood(i,count,settings.arc);var topic=pick(topics,i,Math.round(settings.variation/10));var genre=pick(genres,i,settings.variation>70?i:0);var style=pick(styles,i,settings.variation>45?i:0);var bpm=bpmFor(base.bpm,i,count,type,settings.variation);var key=pick(keys,i,0);var title=titleFor(base,i,type,topic,mood);var hook=hookFor(base,title,topic,mood,type);var track={id:uid(),trackNumber:i+1,role:role,title:title,artist:artist,albumTitle:albumTitle,albumType:type,genre:genre,style:style,country:base.country,bpm:bpm,key:key,mood:mood,topic:topic,hook:hook,instruments:base.instruments,arrangement:arrangementFor(role,type),inspiredBy:base.inspiredBy,traits:base.traits};track.stylePrompt=stylePrompt(track,settings,base);track.promptLyrics=lyricsFor(track,base,settings);track.negativePrompt=negativePrompt();tracks.push(track)}currentAlbum={id:uid(),createdAt:new Date().toISOString(),artist:artist,albumTitle:albumTitle,albumType:type,trackCount:count,genrePool:genres.join(', '),stylePool:styles.join(', '),topicPool:topics.join(', '),moodArc:settings.arc,variation:settings.variation,era:settings.era,audience:settings.audience,baseComposition:base.title,notes:val('albumNotes'),tracks:tracks};updateMemory(currentAlbum);renderAlbum(currentAlbum);albumStatus('Generated '+count+' track album: '+albumTitle+' by '+artist+'.');maybeMainStatus('Album generated: '+albumTitle);return currentAlbum}
+function seedIfEmpty(){if(!val('albumArtist')&&!val('albumTitle')&&!val('albumGenrePool'))seedFromCurrent()}
+function updateMemory(album){remember(memory.artists,album.artist);remember(memory.genres,album.genrePool);remember(memory.styles,album.stylePool);remember(memory.topics,album.topicPool);remember(memory.albumTitles,album.albumTitle);saveMemory();renderMemory()}
+function albumAsText(album){if(!album)return'';var lines=['# '+album.albumTitle,'Artist / band: '+album.artist,'Album type: '+album.albumType,'Tracks: '+album.tracks.length,'Mood arc: '+album.moodArc,'','','## Track list'];album.tracks.forEach(function(t){lines.push('',String(t.trackNumber)+'. '+t.title+' - '+t.role+' - '+t.genre+' - '+t.bpm+' BPM','Style: '+t.stylePrompt,'Negative: '+t.negativePrompt,'Lyrics:\n'+t.promptLyrics)});return lines.join('\n')}
+function renderAlbum(album){var out=q('albumOutput');if(!out)return;if(!album){out.innerHTML='<div class="empty">Generate an album to see 1 to 12 Suno-ready tracks.</div>';return}text('albumCardSummary',album.albumTitle+' - '+album.artist+' - '+album.tracks.length+' tracks - '+album.albumType);out.innerHTML='<div class="album-status"><b>'+esc(album.albumTitle)+'</b><br>'+esc(album.artist)+' - '+album.tracks.length+' tracks - '+esc(album.albumType)+' - '+esc(album.moodArc)+'</div>'+album.tracks.map(function(t,idx){return '<article class="album-track"><h3>'+t.trackNumber+'. '+esc(t.title)+'</h3><div class="meta"><span>'+esc(t.role)+'</span><span>'+esc(t.genre)+'</span><span>'+esc(t.style)+'</span><span>'+esc(t.bpm)+' BPM</span><span>'+esc(t.key)+'</span><span>'+esc(t.mood)+'</span></div><div class="album-output-grid" style="margin-top:10px"><div><label>Title</label><textarea class="short" readonly>'+esc(t.title)+'</textarea></div><div><label>Negative / Exclude</label><textarea class="short" readonly>'+esc(t.negativePrompt)+'</textarea></div><div><label>Style</label><textarea readonly>'+esc(t.stylePrompt)+'</textarea></div><div><label>Prompt / Lyrics</label><textarea readonly>'+esc(t.promptLyrics)+'</textarea></div></div><div class="actions"><button type="button" data-album-action="loadTrack" data-track="'+idx+'">Load into main composer</button><button type="button" data-album-action="saveTrack" data-track="'+idx+'">Save track to prompt library</button><button type="button" data-album-action="copyTrackAll" data-track="'+idx+'">Copy all Suno fields</button><button type="button" data-album-action="copyTrackLyrics" data-track="'+idx+'">Copy lyrics</button></div></article>'}).join('')}
+function saveAlbum(){if(!currentAlbum)generateAlbum();var existing=albums.filter(function(a){return a.id!==currentAlbum.id});albums=[currentAlbum].concat(existing);saveAlbums();albumStatus('Saved album: '+currentAlbum.albumTitle);return false}
+function loadAlbumById(id){var a=albums.filter(function(x){return x.id===id})[0];if(!a)return;currentAlbum=a;setv('albumArtist',a.artist);setv('albumTitle',a.albumTitle);setv('albumType',a.albumType);setv('albumTrackCount',a.tracks.length);setv('albumGenrePool',a.genrePool);setv('albumStylePool',a.stylePool);setv('albumTopics',a.topicPool);renderAlbum(a);albumStatus('Loaded album: '+a.albumTitle)}
+function loadLast(){if(albums[0])loadAlbumById(albums[0].id);else albumStatus('No saved album yet.');return false}
+function trackToRecord(t){return{id:uid(),createdAt:new Date().toISOString(),title:t.title,genre:t.genre,style:t.style,country:t.country,bpm:t.bpm,artist:t.artist,performingArtist:t.artist,albumTitle:t.albumTitle,albumType:t.albumType,trackNumber:t.trackNumber,lyricTopic:t.topic,stylePrompt:t.stylePrompt,promptLyrics:t.promptLyrics,negativePrompt:t.negativePrompt,inspiredBy:t.inspiredBy,traits:t.traits,coreIdea:'Album track '+t.trackNumber+' from '+t.albumTitle+' by '+t.artist,limitProfile:'v55',favorite:false}}
+function addTrack(idx){if(!currentAlbum)return;var t=currentAlbum.tracks[Number(idx)];if(!t)return;var arr=getPromptLibrary();arr.unshift(trackToRecord(t));savePromptLibrary(arr);albumStatus('Added track to prompt library: '+t.title)}
+function addAllTracks(){if(!currentAlbum)generateAlbum();var arr=getPromptLibrary();currentAlbum.tracks.slice().reverse().forEach(function(t){arr.unshift(trackToRecord(t))});savePromptLibrary(arr);albumStatus('Added '+currentAlbum.tracks.length+' album tracks to prompt library. Refresh library if needed.');return false}
+function loadTrack(idx){if(!currentAlbum)return;var t=currentAlbum.tracks[Number(idx)];if(!t)return;setv('titleSeed',t.title);setv('hookPhrase',t.hook);setv('genre',t.genre);setv('style',t.style);setv('country',t.country);setv('bpm',t.bpm);setv('songKey',t.key);setv('mood',t.mood+', '+t.role+', '+t.albumTitle);setv('outTitle',t.title);setv('outStyle',t.stylePrompt);setv('outPrompt',t.promptLyrics);setv('outNegative',t.negativePrompt);albumStatus('Loaded track into main composer: '+t.title);location.hash='#copyDock'}
+function copyTrack(idx,lyricsOnly){if(!currentAlbum)return;var t=currentAlbum.tracks[Number(idx)];if(!t)return;if(lyricsOnly)copy(t.promptLyrics,'Copied track lyrics.');else copy('TITLE:\n'+t.title+'\n\nSTYLE:\n'+t.stylePrompt+'\n\nPROMPT / LYRICS:\n'+t.promptLyrics+'\n\nNEGATIVE / EXCLUDE:\n'+t.negativePrompt,'Copied all Suno fields for track.')} 
+function exportAlbum(){if(!currentAlbum)generateAlbum();download('prompt-muse-album-'+currentAlbum.albumTitle.toLowerCase().replace(/[^a-z0-9]+/g,'-')+'.json',JSON.stringify(currentAlbum,null,2),'application/json');albumStatus('Exported album JSON.');return false}
+function copyAlbum(){if(!currentAlbum)generateAlbum();copy(albumAsText(currentAlbum),'Copied album plan.');return false}
+function openModal(){var m=q('albumBuilderModal');if(m)m.hidden=false;seedFromCurrent();renderMemory();return false}
+function closeModal(){var m=q('albumBuilderModal');if(m)m.hidden=true;return false}
+function quickGenerate(){setv('albumArtist',val('albumQuickArtist')||val('albumArtist')||'Original Performing Artist');setv('albumType',val('albumQuickType')||val('albumType')||'consistent');setv('albumTrackCount',val('albumQuickTracks')||val('albumTrackCount')||'8');generateAlbum();openModal();return false}
+function action(name,el){if(name==='open')return openModal();if(name==='close')return closeModal();if(name==='seed')return seedFromCurrent();if(name==='generate')return generateAlbum();if(name==='quickGenerate')return quickGenerate();if(name==='saveAlbum')return saveAlbum();if(name==='loadLast')return loadLast();if(name==='copyAlbum')return copyAlbum();if(name==='exportAlbum')return exportAlbum();if(name==='addTracks')return addAllTracks();if(name==='loadTrack')return loadTrack(el.getAttribute('data-track'));if(name==='saveTrack')return addTrack(el.getAttribute('data-track'));if(name==='copyTrackAll')return copyTrack(el.getAttribute('data-track'),false);if(name==='copyTrackLyrics')return copyTrack(el.getAttribute('data-track'),true)}
+function bind(){document.addEventListener('click',function(e){var btn=e.target.closest('[data-album-action]');if(!btn)return;var a=btn.getAttribute('data-album-action');try{e.preventDefault();action(a,btn)}catch(err){albumStatus('Album action failed: '+err.message)}});['albumCardCommand','albumModalCommand'].forEach(function(id){var x=q(id);if(x)x.addEventListener('change',function(){if(x.value){action(x.value,x);x.value=''}})});var p=q('albumLibraryPicker');if(p)p.addEventListener('change',function(){loadAlbumById(p.value)});var s=q('albumSearch');if(s)s.addEventListener('input',renderAlbumPicker);['albumArtist','albumGenrePool','albumStylePool','albumTopics'].forEach(function(id){var x=q(id);if(x)x.addEventListener('change',function(){remember(memory.artists,id==='albumArtist'?val(id):'');if(id==='albumGenrePool')remember(memory.genres,val(id));if(id==='albumStylePool')remember(memory.styles,val(id));if(id==='albumTopics')remember(memory.topics,val(id));saveMemory();renderMemory()})})}
+function init(){loadMemory();loadAlbums();renderMemory();bind();albumStatus('Album Builder ready. '+albums.length+' saved albums in memory. Build '+ALBUM_BUILD+'.')}
+window.PMAlbum={open:openModal,generate:generateAlbum,save:saveAlbum,export:exportAlbum,addAllTracks:addAllTracks,loadTrack:loadTrack,version:ALBUM_VERSION};
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
 
 
 <!-- PM_VERSION_BADGE_START -->
 <div id="pm-version-badge" aria-label="Prompt Muse app version" style="position:fixed;left:12px;bottom:12px;z-index:2147483647;padding:9px 12px;border-radius:999px;background:#111827;color:#fff;font:13px/1.2 system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;box-shadow:0 8px 22px rgba(0,0,0,.25);">
-  Prompt Muse - Latest app version: <strong>v14.5.3</strong>
+  Prompt Muse - Latest app version: <strong>v14.6.0</strong>
 </div>
 <!-- PM_VERSION_BADGE_END -->
 
 </body>
 </html>
-
-

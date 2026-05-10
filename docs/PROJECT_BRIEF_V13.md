@@ -1,4 +1,4 @@
-# Project Brief - Prompt Muse v13 InputDrive for Suno
+# Project Brief — Prompt Muse v13 InputDrive for Suno
 
 ## Product goal
 

@@ -22,10 +22,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;ba
 (function(){
 var n=0,h=0;
 function e(id){return document.getElementById(id)}
-function log(msg){n++; e('count').textContent='count '+n; e('log').textContent=new Date().toLocaleTimeString()+'  -  '+msg+'\n'+e('log').textContent}
+function log(msg){n++; e('count').textContent='count '+n; e('log').textContent=new Date().toLocaleTimeString()+' · '+msg+'\n'+e('log').textContent}
 function bind(id,event,msg){var x=e(id); if(x)x.addEventListener(event,function(ev){if(id==='link')ev.preventDefault(); log(msg+' via '+event)})}
 e('ready').textContent='JavaScript started. v13 diagnostics active.'; e('ready').className='ok';
-setInterval(function(){h++; e('heartbeat').textContent='heartbeat '+h+'  -  '+new Date().toLocaleTimeString()},1000);
+setInterval(function(){h++; e('heartbeat').textContent='heartbeat '+h+' · '+new Date().toLocaleTimeString()},1000);
 bind('btn','click','button'); bind('btn','touchend','button'); bind('link','click','link'); bind('link','touchend','link'); bind('inputBtn','click','input button'); bind('inputBtn','touchend','input button'); bind('selectTest','change','select'); bind('rangeTest','input','range'); bind('textTest','input','text input');
 window.onerror=function(m,u,l,c,err){e('ready').textContent='Error line '+l+': '+m; e('ready').className='bad'; log('error '+m)};
 })();

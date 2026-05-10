@@ -1,91 +1,107 @@
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync, existsSync } from 'node:fs';
 
-const read = (file) => readFileSync(file, "utf8");
-
-const requiredFiles = [
-  "index.html",
-  "manifest.webmanifest",
-  "package.json",
-  "vercel.json",
-  "api/polish.js"
+const required = [
+  'index.html',
+  'diagnose.html',
+  'reset-cache.html',
+  'manifest.webmanifest',
+  'vercel.json',
+  'api/polish.js',
+  'api/health.js',
+  'AGENTS.md',
+  'llm/UPGRADE_PROMPT.md',
+  'llm/ALBUM_BUILDER_UPGRADE_PROMPT.md',
+  'docs/ALBUM_BUILDER_V14_6.md',
+  '.github/workflows/quality.yml'
 ];
 
-const missingFiles = requiredFiles.filter((file) => !existsSync(file));
-
-if (missingFiles.length) {
-  console.error("Missing required files:");
-  for (const file of missingFiles) console.error(`- ${file}`);
-  process.exit(1);
+let failures = 0;
+for (const file of required) {
+  if (!existsSync(file)) {
+    console.error(`Missing required file: ${file}`);
+    failures++;
+  }
 }
 
-const index = read("index.html");
-const manifest = read("manifest.webmanifest");
-const pkg = JSON.parse(read("package.json"));
-const version = pkg.version || "unknown";
-const expectedVersion = `v${version}`;
+const index = readFileSync('index.html', 'utf8');
+const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
+const manifest = readFileSync('manifest.webmanifest', 'utf8');
+const expected = `v${pkg.version}`;
+
+try {
+  const vercelConfig = JSON.parse(readFileSync('vercel.json', 'utf8'));
+  if (vercelConfig.functions) {
+    console.error('vercel.json must not define functions; Vercel should auto-detect /api functions.');
+    failures++;
+  }
+} catch (error) {
+  console.error('Could not parse vercel.json:', error.message);
+  failures++;
+}
+
+const requiredTokens = [
+  ['current version label', expected],
+  ['AlbumBuilder label', 'AlbumBuilder'],
+  ['latest version label', 'Latest app version'],
+  ['album builder card', 'Full album builder'],
+  ['album modal', 'albumBuilderModal'],
+  ['album type dropdown', 'albumType'],
+  ['album track count', 'albumTrackCount'],
+  ['album memory key', 'promptMuseAlbumMemoryV146'],
+  ['four field title output', 'outTitle'],
+  ['four field style output', 'outStyle'],
+  ['four field prompt output', 'outPrompt'],
+  ['four field negative output', 'outNegative'],
+  ['lyrics-first option', 'Full generated lyrics'],
+  ['inline spark fallback', 'sparkClick'],
+  ['PM14 global helper', 'window.PM14'],
+  ['PMAlbum global helper', 'window.PMAlbum'],
+  ['authenticated manifest link', 'crossorigin="use-credentials"'],
+  ['manifest Prompt Muse', 'Prompt Muse']
+];
+for (const [name, token] of requiredTokens) {
+  const haystack = name === 'manifest Prompt Muse' ? manifest : index;
+  if (!haystack.includes(token)) {
+    console.error(`Missing check token: ${name}`);
+    failures++;
+  }
+}
 
 const forbidden = [
-  { label: "mojibake C2", pattern: /\u00c2/ },
-  { label: "mojibake E2", pattern: /\u00e2/ },
-  { label: "stale v14.4", pattern: /v14\.4/ },
-  { label: "unicode arrow", pattern: /\u2192/ },
-  { label: "unicode middle dot", pattern: /\u00b7/ },
-  { label: "unicode sparkle", pattern: /\u2728/ },
-  { label: "unicode star", pattern: /\u2605/ },
-  { label: "unicode em dash", pattern: /\u2014/ },
-  { label: "unicode ellipsis", pattern: /\u2026/ }
+  ['stale v14.4', /v14\.4/],
+  ['stale v14.5', /v14\.5/],
+  ['mojibake C2', /\u00c2/],
+  ['mojibake E2', /\u00e2/],
+  ['unicode arrow', /\u2192/],
+  ['unicode middle dot', /\u00b7/],
+  ['unicode sparkle', /\u2728/],
+  ['unicode star', /\u2605/],
+  ['unicode em dash', /\u2014/],
+  ['unicode ellipsis', /\u2026/],
+  ['service worker registration', /serviceWorker\.register/],
+  ['visible scaffold option', /Structure scaffold only/]
 ];
-
-const checks = [
-  {
-    label: "current package version appears in index.html",
-    ok: index.includes(expectedVersion) || index.includes(version)
-  },
-  {
-    label: "latest app version text",
-    ok: /latest\s+app\s+version/i.test(index)
-  },
-  {
-    label: "version badge marker",
-    ok: index.includes("PM_VERSION_BADGE_START")
-  },
-  {
-    label: "Prompt Muse app identity",
-    ok: /Prompt Muse/i.test(index)
-  },
-  {
-    label: "Suno title/style/prompt/negative fields",
-    ok:
-      /title/i.test(index) &&
-      /style/i.test(index) &&
-      /prompt/i.test(index) &&
-      /negative|exclude/i.test(index)
-  },
-  {
-    label: "lyrics generation language",
-    ok: /lyrics/i.test(index)
-  },
-  {
-    label: "GitHub and Vercel text",
-    ok: /GitHub/i.test(index) && /Vercel/i.test(index)
-  },
-  {
-    label: "manifest names Prompt Muse",
-    ok: /Prompt Muse/i.test(manifest)
-  },
-  ...forbidden.map((item) => ({
-    label: `forbidden display token: ${item.label}`,
-    ok: !item.pattern.test(index)
-  }))
-];
-
-const failed = checks.filter((check) => !check.ok);
-
-if (failed.length) {
-  for (const check of failed) {
-    console.error(`Missing check token: ${check.label}`);
+for (const [name, pattern] of forbidden) {
+  if (pattern.test(index)) {
+    console.error(`Forbidden token present: ${name}`);
+    failures++;
   }
-  process.exit(1);
 }
 
-console.log(`Prompt Muse verification passed for ${expectedVersion}.`);
+const scripts = [...index.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
+if (!scripts.length) {
+  console.error('No inline app scripts found.');
+  failures++;
+} else {
+  scripts.forEach((script, i) => {
+    try {
+      new Function(script);
+    } catch (error) {
+      console.error(`Inline app script ${i + 1} syntax failed:`, error.message);
+      failures++;
+    }
+  });
+}
+
+if (failures) process.exit(1);
+console.log(`Prompt Muse verification passed for ${expected}.`);

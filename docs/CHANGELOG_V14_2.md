@@ -16,5 +16,5 @@ v14.2 makes the app lyrics-first for Suno Custom Mode. Spark and Generate now de
 ## How to use
 
 1. Keep **Prompt / Lyrics output** set to **Full generated lyrics**.
-2. Use **Spark idea + lyrics**, **Generate full lyrics**, or **Emergency command menu  to  Write full lyrics**.
+2. Use **Spark idea + lyrics**, **Generate full lyrics**, or **Emergency command menu → Write full lyrics**.
 3. Copy **Title**, **Style**, **Prompt / Lyrics**, and **Negative / Exclude** separately into Suno.
