@@ -1,9 +1,15 @@
 # Changelog
 
-## v14.0.0 — GitHub → Vercel
+## v14.4.0 — VersionLabel
 
-Repo-ready upgrade workflow, in-app LLM Upgrade Console, Vercel config, GitHub Actions, PR templates, and LLM handoff files.
+- Added a visible latest app version label in the hero header.
+- Added a diagnostics stat for the latest app version.
+- Updated build constant to `v14.4-versionlabel`.
+- Updated package and manifest metadata to v14.4.0.
+- Preserved LyricsFirst behavior and the v14.3 manifest authentication fix.
 
-## v13.0.0 — InputDrive
+## v14.3.0 — ManifestAuthFix + LyricsFirst
 
-Moved away from button-dependent controls and added native menu/range/text fallback controls.
+- Added credentialed manifest link for protected Vercel previews.
+- Kept lyrics-first generation behavior.
+- Kept Vercel auto-detected `/api` functions.

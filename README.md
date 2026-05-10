@@ -1,6 +1,6 @@
-# Prompt Muse v14 — GitHub → Vercel for Suno
+# Prompt Muse v14.4 — GitHub → Vercel for Suno
 
-Prompt Muse is an iPhone-first Suno prompt and lyric studio. v14 converts the app into a GitHub/Vercel-ready project so any coding LLM can upgrade it safely through a branch, PR, Vercel preview, and production merge workflow.
+Prompt Muse is an iPhone-first Suno prompt and lyric studio. v14.4 keeps the GitHub/Vercel-ready workflow and adds a visible latest-version label in the app header and diagnostics so users can confirm exactly which build is live.
 
 ## What the app creates
 
@@ -63,7 +63,7 @@ docs/DEPLOYMENT_GITHUB_VERCEL.md
 ```
 
 
-## v14.2 Vercel deploy fix
+## v14.3 Vercel deploy fix
 
 This build removes the explicit `functions` block from `vercel.json`. Vercel now auto-detects Node.js functions placed in `/api`, including `/api/polish.js` and `/api/health.js`.
 
@@ -74,3 +74,14 @@ https://YOUR-APP.vercel.app/api/health
 ```
 
 If it returns JSON with `ok: true`, the API folder is deployed correctly.
+
+## v14.4 version label update
+
+This build displays the latest app version in the hero header and diagnostics panel:
+
+```text
+Latest app version: v14.4.0
+Build: v14.4-versionlabel · LyricsFirst · ManifestAuthFix
+```
+
+Use this visible label to confirm that Vercel is serving the latest GitHub deployment rather than an older cached or protected preview.

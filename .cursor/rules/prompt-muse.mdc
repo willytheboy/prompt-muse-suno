@@ -1,0 +1,6 @@
+---
+description: Prompt Muse Suno app rules
+alwaysApply: true
+---
+
+Follow `AGENTS.md`. Preserve iPhone reliability, no service worker, no browser-side secrets, and keep artist names out of Suno-facing prompts. Run `npm test` after edits.

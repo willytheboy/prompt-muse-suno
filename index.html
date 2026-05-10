@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#111827">
-<title>Prompt Muse v14.2 LyricsFirst for Suno</title>
-<link rel="manifest" href="manifest.webmanifest">
+<title>Prompt Muse v14.4 VersionLabel + LyricsFirst for Suno</title>
+<link rel="manifest" href="/manifest.webmanifest" crossorigin="use-credentials">
 <style>
 :root{
   --bg:#0b1020; --panel:#121a2f; --panel2:#18223c; --text:#f8fafc; --muted:#b8c3d6;
@@ -48,14 +48,22 @@ button:active,.action:active,input[type=button]:active{transform:translateY(1px)
 input[type=range]{padding:0;background:transparent;border:0;min-height:34px}
 .checkrow{display:flex;gap:8px;align-items:flex-start;color:var(--muted);font-size:13px}.checkrow input{width:auto;min-height:auto;margin-top:3px}
 .codebox{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.45;background:#020617;color:#e2e8f0;border:1px solid var(--line);border-radius:14px;padding:12px;white-space:pre-wrap;overflow:auto;min-height:160px}.codebox.smallbox{min-height:84px}.pilllink{color:#111827;background:#f8d477;border-radius:999px;padding:2px 7px;font-weight:900;text-decoration:none}
+.versionbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:12px 0 0}
+.versionbadge{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(248,212,119,.55);background:rgba(248,212,119,.14);color:#fff7d6;border-radius:999px;padding:7px 11px;font-weight:900;font-size:13px;letter-spacing:.01em}
+.versionbadge strong{color:#f8d477}
+.versionnote{color:#cbd5e1;font-size:12px}
 </style>
 </head>
 <body>
 <main>
   <section class="hero">
-    <div class="kicker">Prompt Muse · v14.2 LyricsFirst · GitHub → Vercel</div>
+    <div class="kicker">Prompt Muse · v14.4 VersionLabel · GitHub → Vercel</div>
+    <div class="versionbar" aria-label="Latest app version">
+      <span class="versionbadge">Latest app version: <strong>v14.4.0</strong></span>
+      <span class="versionnote">Build: v14.4-versionlabel · LyricsFirst · ManifestAuthFix</span>
+    </div>
     <h1>Suno prompt studio with a GitHub → Vercel upgrade interface.</h1>
-    <p>Generation is lyrics-first: Spark and Generate fill the Suno Prompt / Lyrics field with real sectioned lyrics, while musical instructions stay in the Style field.</p>
+    <p>Generation is lyrics-first: Spark and Generate fill the Suno Prompt / Lyrics field with real sectioned lyrics, while musical instructions stay in the Style field. This build also uses an authenticated manifest link for Vercel-protected previews and displays the latest app version in the header and diagnostics.</p>
   </section>
 
   <noscript>
@@ -71,6 +79,7 @@ input[type=range]{padding:0;background:transparent;border:0;min-height:34px}
     <div class="status warn" id="statusPanel"><b id="statusText">JavaScript not started yet.</b><br><span id="heartbeat">heartbeat waiting</span></div>
     <div class="statrow">
       <div class="stat"><b id="tapCount">tap count 0</b><span>updates when any action works</span></div>
+      <div class="stat"><b id="appVersionLabel">v14.4.0</b><span>latest app version</span></div>
       <div class="stat"><b id="autoCount">auto-gen 0</b><span>updates even without buttons</span></div>
       <div class="stat"><b id="libraryCount">library 0</b><span>local or memory storage</span></div>
       <div class="stat"><b id="storageStatus">storage checking</b><span>localStorage guard</span></div>
@@ -232,7 +241,8 @@ sea light keeps calling me home</textarea><div class="counter" id="countPrompt">
 <script>
 (function(){
 'use strict';
-var BUILD='v14.1-vercel-fix';
+var APP_VERSION='14.4.0';
+var BUILD='v14.4-versionlabel';
 var state={tap:0,auto:0,library:[],lastHash:'',storageOK:false,heartbeat:0,ai:[],busy:false};
 var memoryStore={};
 function el(id){return document.getElementById(id)}
@@ -306,7 +316,7 @@ function copyText(t,msg){try{if(navigator.clipboard&&navigator.clipboard.writeTe
 function fallbackCopy(t,msg){var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');status(msg||'Copied.','good')}catch(e){status('Copy blocked. Text selected in a temporary field; use manual copy.','warn')}setTimeout(function(){try{document.body.removeChild(ta)}catch(e){}},250)}
 function copyAll(){var t='TITLE:\n'+val('outTitle')+'\n\nSTYLE:\n'+val('outStyle')+'\n\nPROMPT / LYRICS:\n'+val('outPrompt')+'\n\nNEGATIVE / EXCLUDE:\n'+val('outNegative'); copyText(t,'Copied all Suno fields.')} 
 function download(name,textContent,type){var blob=new Blob([textContent],{type:type||'text/plain'}); var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(function(){URL.revokeObjectURL(a.href);try{document.body.removeChild(a)}catch(e){}},200)}
-function exportJSON(){download('prompt-muse-suno-library-v14-1.json',JSON.stringify(state.library,null,2),'application/json'); status('Exported library JSON.','good')}
+function exportJSON(){download('prompt-muse-suno-library-v14-3.json',JSON.stringify(state.library,null,2),'application/json'); status('Exported library JSON.','good')}
 function markdown(){var t='# '+val('outTitle')+'\n\n## Style\n\n'+val('outStyle')+'\n\n## Prompt / Lyrics\n\n'+val('outPrompt')+'\n\n## Negative / Exclude\n\n'+val('outNegative')+'\n'; download((val('outTitle')||'suno-prompt').toLowerCase().replace(/[^a-z0-9]+/g,'-')+'.md',t,'text/markdown')}
 function importJSON(){var f=el('importFile'); if(!f||!f.files||!f.files[0]){status('Choose a JSON file first.','warn');return} var reader=new FileReader(); reader.onload=function(){try{var arr=JSON.parse(reader.result); if(!Array.isArray(arr))throw new Error('JSON must be an array'); arr.forEach(function(r){r.id=r.id||uid(); state.library.push(r)}); persist(); renderLibrary(); status('Imported '+arr.length+' prompts.','good')}catch(e){showError('import failed',e); status('Import failed.','bad')}}; reader.readAsText(f.files[0])}
 function localPolish(){var base=record(); state.ai=[{kind:'Safe Commercial',title:base.title,style:base.stylePrompt+', release-friendly clarity, original phrasing, no imitation',prompt:base.promptLyrics,negative:base.negativePrompt+', no living-artist names in final prompt'},{kind:'Poetic',title:base.title+' — Poetic Cut',style:base.stylePrompt+', more image-led lyricism, graceful emotional restraint',prompt:base.promptLyrics.replace(/sea light/g,'silver sea light').replace(/the night/g,'the velvet night'),negative:base.negativePrompt},{kind:'Venue Ready',title:base.title+' — Venue Mix',style:base.stylePrompt+', low-intrusion hospitality playback, smooth transitions, warm playlist flow',prompt:base.promptLyrics.replace(/\[Bridge\][\s\S]*?\[Final Chorus\]/,'[Instrumental Break]\nKeep it smooth, elegant, and low-intrusion for hospitality playback.\n\n[Final Chorus]'),negative:base.negativePrompt}]; renderAI(); status('Created local polish variants.','good')}
@@ -416,7 +426,7 @@ function bind(){
  document.addEventListener('click',function(e){var c=e.target.closest('[data-copy]'); if(c){bump('copy:'+c.getAttribute('data-copy'));copyText(val(c.getAttribute('data-copy')),'Copied field.');return} var lib=e.target.closest('[data-lib]'); if(lib){var id=lib.getAttribute('data-id'), act=lib.getAttribute('data-lib'), r=findRec(id); bump('lib:'+act); if(!r)return; if(act==='load')restore(r); if(act==='copy')copyText('TITLE:\n'+r.title+'\n\nSTYLE:\n'+r.stylePrompt+'\n\nPROMPT / LYRICS:\n'+r.promptLyrics+'\n\nNEGATIVE / EXCLUDE:\n'+r.negativePrompt,'Copied library item.'); if(act==='fav'){r.favorite=!r.favorite;persist();renderLibrary()} if(act==='dupe'){var d=JSON.parse(JSON.stringify(r));d.id=uid();d.title=d.title+' copy';d.createdAt=new Date().toISOString();state.library.unshift(d);persist();renderLibrary()} if(act==='del'){state.library=state.library.filter(function(x){return x.id!==id});persist();renderLibrary()}} var ai=e.target.closest('[data-ai]'); if(ai){var idx=ai.getAttribute('data-index'), act2=ai.getAttribute('data-ai'); bump('ai:'+act2); if(act2==='apply')applyAI(idx); if(act2==='copy'){var v=state.ai[Number(idx)]; if(v)copyText('TITLE:\n'+v.title+'\n\nSTYLE:\n'+v.style+'\n\nPROMPT / LYRICS:\n'+v.prompt+'\n\nNEGATIVE / EXCLUDE:\n'+v.negative,'Copied AI variant.')} if(act2==='save'){applyAI(idx);save()}}});
  document.querySelectorAll('#outTitle,#outStyle,#outPrompt,#outNegative').forEach(function(x){x.addEventListener('focus',function(){try{this.select()}catch(e){}})});
 }
-function init(){try{status('JavaScript ready. InputDrive active.','good'); loadLibrary(); bind(); renderLibrary(); renderAI(); generate(true); updateRepoConsole(); setInterval(autoTick,1000); setTimeout(autoTick,50); log('init complete '+BUILD)}catch(e){showError('startup failed',e);status('Startup failed. See red error box.','bad')}}
+function init(){try{text('appVersionLabel','v'+APP_VERSION);status('JavaScript ready. InputDrive active.','good'); loadLibrary(); bind(); renderLibrary(); renderAI(); generate(true); updateRepoConsole(); setInterval(autoTick,1000); setTimeout(autoTick,50); log('init complete '+BUILD)}catch(e){showError('startup failed',e);status('Startup failed. See red error box.','bad')}}
 function tapTest(ev){try{if(ev&&ev.preventDefault)ev.preventDefault();bump('tapTest-inline');status('Tap test received.','good')}catch(e){showError('tap test failed',e)}return false}
 function sparkClick(ev){try{if(ev&&ev.preventDefault)ev.preventDefault();bump('spark-inline');setVal('lyricMode','full');spark();return false}catch(e){showError('spark inline failed',e);return false}}
 function generateClick(ev){try{if(ev&&ev.preventDefault)ev.preventDefault();bump('generate-inline');setVal('lyricMode','full');generate(false);return false}catch(e){showError('generate inline failed',e);return false}}
