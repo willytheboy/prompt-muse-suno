@@ -1,70 +1,63 @@
-# Prompt Muse v3 for Suno
+# Prompt Muse v14 — GitHub → Vercel for Suno
 
-Prompt Muse v3 is an iPhone-first static PWA for generating Suno-ready prompt fields from artist inspirations while keeping artist names out of the Suno-facing output.
+Prompt Muse is an iPhone-first Suno prompt and lyric studio. v14 converts the app into a GitHub/Vercel-ready project so any coding LLM can upgrade it safely through a branch, PR, Vercel preview, and production merge workflow.
 
-## What v3 adds
+## What the app creates
 
-- Four-field Suno copy dock:
-  - Title
-  - Prompt / Lyrics
-  - Style
-  - Negative Prompt
-- Individual copy buttons for each field.
-- One-tap copy of all Suno fields.
-- Searchable local prompt library.
-- Library filters for:
-  - Genre
-  - Style
-  - Inspired by
-  - Country / market
-  - BPM min/max
-  - Favorites
-  - Free-text search
-- Load, duplicate, favorite, delete, export, and import saved prompts.
-- Local-only storage using `localStorage`; no backend is required.
-- Offline support after first load through the service worker.
+- Title
+- Style
+- Prompt / Lyrics
+- Negative / Exclude
 
-## Deploy to Netlify
+It also stores prompts in a searchable local library by genre, style, inspired by, country/place, BPM, favorites, and keyword.
 
-1. Unzip the app package.
-2. Make sure `index.html` is directly inside the folder you deploy.
-3. Drag the unzipped folder into Netlify Drop or a Netlify manual deploy area.
-4. Open the live URL on iPhone Safari.
-5. Tap Share → Add to Home Screen.
+## v14 highlights
 
-## Deploy to Vercel CLI
+- In-app GitHub → Vercel LLM Upgrade Console.
+- Ready-to-paste LLM upgrade brief generator.
+- Git command scaffold generator.
+- `vercel.json` for Vercel.
+- GitHub Actions quality workflow.
+- PR and issue templates.
+- `AGENTS.md` and LLM instruction pack.
+- No service worker cache.
 
-```bash
-cd suno-iphone-prompt-studio-v3
-npm i -g vercel
-vercel --prod
-```
+## Deploy from GitHub to Vercel
 
-Use these settings if prompted:
+1. Create a GitHub repo.
+2. Upload all project files with `index.html` at the root.
+3. Import the repo into Vercel.
+4. Framework preset: `Other`.
+5. Build command: leave blank.
+6. Output directory: `.`.
+7. Test the Vercel preview on iPhone before merging PRs.
 
-- Framework preset: Other
-- Build command: leave blank
-- Output directory: `.`
-
-## Local testing
+## Scripts
 
 ```bash
-cd suno-iphone-prompt-studio-v3
-python3 -m http.server 8080
+npm test
+npm run verify
+npm run brief
 ```
 
-Then open `http://localhost:8080`.
+## Optional AI polish backend
 
-## Safety model
-
-The app keeps artist names as private inspiration metadata for search and recall. The generated Suno fields translate those names into musical traits such as vocal texture, groove, instrumentation, production character, arrangement shape, and mood. This reduces direct imitation requests and keeps prompts easier to use commercially.
-
-## Storage note
-
-The prompt library is saved locally in the browser under:
+Set these in Vercel only, never in browser code:
 
 ```text
-promptMuseSunoLibrary.v3
+OPENAI_API_KEY=...
+OPENAI_MODEL=gpt-5.5
 ```
 
-Use the Export Library JSON button before clearing browser storage, changing devices, or redeploying under a different domain.
+## Key files
+
+```text
+index.html
+diagnose.html
+reset-cache.html
+vercel.json
+AGENTS.md
+.github/workflows/quality.yml
+llm/UPGRADE_PROMPT.md
+docs/DEPLOYMENT_GITHUB_VERCEL.md
+```

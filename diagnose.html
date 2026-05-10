@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prompt Muse v13 Diagnostics</title>
+<style>
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#0b1020;color:#f8fafc;margin:0;padding:18px;line-height:1.45}button,a,input,select{font:inherit;font-size:18px;margin:8px 0;padding:14px 16px;border-radius:12px;border:1px solid #64748b;background:#1f2937;color:#fff;display:block;width:100%;text-align:left;text-decoration:none}a{background:#334155}.box{border:1px solid #64748b;background:#111827;border-radius:14px;padding:14px;margin:12px 0}pre{white-space:pre-wrap;background:#020617;border:1px solid #334155;border-radius:12px;padding:12px;min-height:120px}.ok{color:#34d399}.bad{color:#fb7185}
+</style>
+</head>
+<body>
+<h1>Prompt Muse v13 Diagnostics</h1>
+<div class="box"><b id="ready">JavaScript not started.</b><br><span id="heartbeat">heartbeat waiting</span><br><span id="count">count 0</span></div>
+<button type="button" id="btn">Button test</button>
+<a href="#" id="link">Link test</a>
+<input type="button" id="inputBtn" value="Input button test">
+<label for="selectTest">Select test</label><select id="selectTest"><option value="">Choose...</option><option value="one">Select option one</option><option value="two">Select option two</option></select>
+<label for="rangeTest">Range test</label><input type="range" id="rangeTest" min="0" max="10" value="0">
+<label for="textTest">Text input test</label><input id="textTest" placeholder="type here">
+<pre id="log"></pre>
+<p><a href="index.html">Back to app</a></p>
+<script>
+(function(){
+var n=0,h=0;
+function e(id){return document.getElementById(id)}
+function log(msg){n++; e('count').textContent='count '+n; e('log').textContent=new Date().toLocaleTimeString()+' · '+msg+'\n'+e('log').textContent}
+function bind(id,event,msg){var x=e(id); if(x)x.addEventListener(event,function(ev){if(id==='link')ev.preventDefault(); log(msg+' via '+event)})}
+e('ready').textContent='JavaScript started. v13 diagnostics active.'; e('ready').className='ok';
+setInterval(function(){h++; e('heartbeat').textContent='heartbeat '+h+' · '+new Date().toLocaleTimeString()},1000);
+bind('btn','click','button'); bind('btn','touchend','button'); bind('link','click','link'); bind('link','touchend','link'); bind('inputBtn','click','input button'); bind('inputBtn','touchend','input button'); bind('selectTest','change','select'); bind('rangeTest','input','range'); bind('textTest','input','text input');
+window.onerror=function(m,u,l,c,err){e('ready').textContent='Error line '+l+': '+m; e('ready').className='bad'; log('error '+m)};
+})();
+</script>
+</body>
+</html>

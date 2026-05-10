@@ -1,356 +1,427 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0b0f1d" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-title" content="Prompt Muse" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>Prompt Muse v3 for Suno</title>
-  <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="apple-touch-icon" href="icons/icon-192.png" />
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<title>Prompt Muse v14 GitHub → Vercel for Suno</title>
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+:root{
+  --bg:#0b1020; --panel:#121a2f; --panel2:#18223c; --text:#f8fafc; --muted:#b8c3d6;
+  --line:rgba(255,255,255,.14); --accent:#f8d477; --accent2:#7dd3fc; --good:#34d399; --bad:#fb7185; --warn:#fbbf24;
+  --radius:18px; --shadow:0 14px 38px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{min-height:100%;background:var(--bg);-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:linear-gradient(180deg,#0b1020,#10172a 38%,#111827);color:var(--text);line-height:1.45}
+main{width:min(1120px,100%);margin:0 auto;padding:18px 14px 56px}
+.hero{padding:22px 0 10px}
+.kicker{color:var(--accent2);font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:12px}
+h1{margin:6px 0 8px;font-size:clamp(28px,7vw,56px);line-height:1.02;letter-spacing:-.04em}
+p{margin:8px 0;color:var(--muted)}
+small,.small{font-size:12px;color:var(--muted)}
+.card{background:rgba(18,26,47,.92);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin:14px 0}
+.card h2{margin:0 0 12px;font-size:21px}.card h3{margin:0 0 8px;font-size:16px}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}.field{grid-column:span 12}.half{grid-column:span 6}.third{grid-column:span 4}.quarter{grid-column:span 3}.full{grid-column:1/-1}
+@media(max-width:760px){.half,.third,.quarter{grid-column:span 12}.grid{gap:10px}.card{padding:14px}}
+label{display:block;color:#dce7f6;font-weight:700;font-size:13px;margin:0 0 6px}
+input,select,textarea,button{font:inherit}
+input,select,textarea{width:100%;background:#0f172a;border:1px solid var(--line);border-radius:14px;color:var(--text);padding:12px;outline:none;min-height:46px}
+textarea{min-height:88px;resize:vertical;white-space:pre-wrap}.tall{min-height:190px}.short{min-height:54px}
+input:focus,select:focus,textarea:focus{border-color:var(--accent2);box-shadow:0 0 0 3px rgba(125,211,252,.17)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}.inline{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+button,.action,input[type=button]{appearance:none;-webkit-appearance:none;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:#1f2937;color:var(--text);padding:12px 16px;font-weight:800;min-height:46px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;touch-action:manipulation;-webkit-tap-highlight-color:rgba(248,212,119,.28)}
+.primary{background:linear-gradient(135deg,#f8d477,#fb923c);color:#111827;border:0}.secondary{background:#263244}.danger{background:#4c1824;color:#fee2e2}.ghost{background:transparent}.wide{width:100%}
+button:active,.action:active,input[type=button]:active{transform:translateY(1px);filter:brightness(1.12)}
+.status{border-radius:16px;border:1px solid var(--line);padding:12px;background:#0f172a}.status.good{border-color:rgba(52,211,153,.5)}.status.bad{border-color:rgba(251,113,133,.55)}.status.warn{border-color:rgba(251,191,36,.55)}
+.statrow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}.stat{padding:10px;border:1px solid var(--line);border-radius:14px;background:#0f172a}.stat b{display:block;color:#fff}.stat span{font-size:12px;color:var(--muted)}
+@media(max-width:760px){.statrow{grid-template-columns:repeat(2,1fr)}}
+.counter{font-size:12px;color:var(--muted);margin:5px 0 8px}.counter.ok{color:var(--good)}.counter.warn{color:var(--warn)}.counter.bad{color:var(--bad);font-weight:800}
+.copygrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.copygrid .full{grid-column:1/-1}@media(max-width:760px){.copygrid{grid-template-columns:1fr}}
+.badge{display:inline-block;font-size:12px;padding:4px 8px;border:1px solid var(--line);border-radius:999px;color:var(--muted);margin:2px 4px 2px 0}
+.list{display:grid;gap:10px}.item{border:1px solid var(--line);border-radius:16px;padding:12px;background:#0f172a}.item h3{margin:0 0 6px}.item p{font-size:13px;margin:4px 0}.empty{border:1px dashed var(--line);padding:16px;border-radius:16px;color:var(--muted);text-align:center}
+#errorBox{display:none;white-space:pre-wrap;border:1px solid rgba(251,113,133,.55);background:#3f1722;color:#ffe4e6;border-radius:16px;padding:12px;margin:12px 0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;overflow:auto}
+#eventLog{display:none;white-space:pre-wrap;border:1px solid var(--line);background:#020617;border-radius:16px;padding:12px;max-height:240px;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:#cbd5e1}
+.noscript{border:2px solid #fbbf24;background:#3f2d0b;color:#fff;padding:12px;border-radius:16px;margin:14px 0}
+.hr{height:1px;background:var(--line);margin:14px 0}.muted{color:var(--muted)}
+input[type=range]{padding:0;background:transparent;border:0;min-height:34px}
+.checkrow{display:flex;gap:8px;align-items:flex-start;color:var(--muted);font-size:13px}.checkrow input{width:auto;min-height:auto;margin-top:3px}
+.codebox{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.45;background:#020617;color:#e2e8f0;border:1px solid var(--line);border-radius:14px;padding:12px;white-space:pre-wrap;overflow:auto;min-height:160px}.codebox.smallbox{min-height:84px}.pilllink{color:#111827;background:#f8d477;border-radius:999px;padding:2px 7px;font-weight:900;text-decoration:none}
+</style>
 </head>
 <body>
-  <div class="app-shell">
-    <header class="hero">
-      <div>
-        <p class="eyebrow">Unofficial iPhone prompt studio · v3 Suno copy dock + searchable library</p>
-        <h1>Prompt Muse <span>for Suno</span></h1>
-        <p class="hero-copy">Generate artist-inspired but artist-safe Suno fields, copy each field instantly, and save every prompt into a searchable local library.</p>
-      </div>
-      <div class="header-actions">
-        <button class="ghost small" id="installHelpBtn" type="button">iPhone install</button>
-        <button class="ghost small" id="aboutBtn" type="button">About v3</button>
-      </div>
-    </header>
+<main>
+  <section class="hero">
+    <div class="kicker">Prompt Muse · v14 GitHub → Vercel · repo-ready</div>
+    <h1>Suno prompt studio with a GitHub → Vercel upgrade interface.</h1>
+    <p>Generation is automatic, and the project is now structured so any coding LLM can update files in GitHub and let Vercel deploy the result.</p>
+  </section>
 
-    <main>
-      <section class="card notice" id="installHelp" hidden>
-        <h2>Add to iPhone Home Screen</h2>
-        <p>Deploy this folder to Vercel, Netlify, or GitHub Pages. Open the live URL in Safari, tap <strong>Share</strong>, then choose <strong>Add to Home Screen</strong>. The app stores your library locally on the device.</p>
-      </section>
-
-      <section class="card notice" id="aboutPanel" hidden>
-        <h2>What changed in v3</h2>
-        <p>v3 adds a four-field Suno copy dock for <strong>Title</strong>, <strong>Prompt/Lyrics</strong>, <strong>Style</strong>, and <strong>Negative Prompt</strong>, plus a searchable prompt library with filters for genre, style, inspired by, country/market, and BPM.</p>
-      </section>
-
-      <section class="card status-card">
-        <div>
-          <strong>Artist-safe mode is ON.</strong>
-          <p>Artist names remain private in the library metadata and inspiration notes. Suno-ready fields convert them into traits such as vocal texture, groove, production, instrumentation, arrangement, and mood.</p>
-        </div>
-        <label class="switch-row">
-          <input type="checkbox" id="artistSafeMode" checked />
-          <span>Safe</span>
-        </label>
-      </section>
-
-      <form id="promptForm" class="stack" autocomplete="off">
-        <section class="card">
-          <div class="section-title-row">
-            <h2>1. Song identity</h2>
-            <span id="editBadge" class="badge muted">New prompt</span>
-          </div>
-          <div class="grid two">
-            <label>
-              Title to copy into Suno
-              <input id="title" name="title" placeholder="Ras Beirut Afterglow" />
-            </label>
-            <label>
-              Use case
-              <select id="useCase" name="useCase">
-                <option>Single / release candidate</option>
-                <option>Venue background playlist</option>
-                <option>Restaurant dinner set</option>
-                <option>Beach sunset set</option>
-                <option>Instagram reel / short video</option>
-                <option>Luxury brand ambience</option>
-                <option>Human vocalist demo</option>
-                <option>Sync / cue candidate</option>
-              </select>
-            </label>
-          </div>
-          <label>
-            Core idea / prompt brief
-            <textarea id="coreIdea" rows="3" placeholder="A warm Mediterranean lounge track for golden-hour dining by the sea in Ras Beirut."></textarea>
-          </label>
-          <div class="grid two">
-            <label>
-              Hook phrase or refrain
-              <input id="hookPhrase" placeholder="Sporting Club by the sea" />
-            </label>
-            <label>
-              Output format
-              <select id="promptMode">
-                <option value="lyric-scaffold">Lyrics / structure scaffold</option>
-                <option value="instrumental-structure">Instrumental structure</option>
-                <option value="full-writing-brief">Full writing brief</option>
-                <option value="minimal-suno">Minimal Suno prompt</option>
-              </select>
-            </label>
-          </div>
-        </section>
-
-        <section class="card">
-          <h2>2. Genre, style, country, BPM</h2>
-          <div class="grid two">
-            <label>
-              Genre
-              <select id="genre"></select>
-            </label>
-            <label>
-              Custom genre detail
-              <input id="customGenre" placeholder="e.g. brass-led Latin Mediterranean lounge" />
-            </label>
-          </div>
-          <div class="grid two">
-            <label>
-              Style / vibe
-              <select id="style"></select>
-            </label>
-            <label>
-              Custom style detail
-              <input id="customStyle" placeholder="e.g. moonlit terrace, low-glow luxury, analog warmth" />
-            </label>
-          </div>
-          <div class="grid three">
-            <label>
-              Country / market
-              <select id="country"></select>
-            </label>
-            <label>
-              BPM
-              <input id="bpm" inputmode="numeric" placeholder="104" />
-            </label>
-            <label>
-              Key
-              <input id="songKey" placeholder="A minor" />
-            </label>
-          </div>
-          <div class="grid two">
-            <label>
-              Custom country / place
-              <input id="customCountry" placeholder="e.g. Ras Beirut, Lebanon" />
-            </label>
-            <label>
-              Energy
-              <select id="energy"></select>
-            </label>
-          </div>
-          <div>
-            <p class="label-like">Mood tags</p>
-            <div id="moodChips" class="chips"></div>
-          </div>
-        </section>
-
-        <section class="card">
-          <div class="section-title-row">
-            <h2>3. Artist inspirations</h2>
-            <div class="button-row compact">
-              <button class="secondary small" id="presetArtistsBtn" type="button">Sporting trio</button>
-              <button class="secondary small" id="addArtistBtn" type="button">+ Add</button>
-            </div>
-          </div>
-          <p class="hint">Use real artist names only as private inspiration metadata. They are searchable in the library, but not inserted into the Suno-ready style or prompt fields.</p>
-          <div id="artistRows" class="artist-rows"></div>
-        </section>
-
-        <section class="card">
-          <h2>4. Musical controls</h2>
-          <div class="grid two">
-            <label>
-              Vocal direction
-              <select id="vocalDirection"></select>
-            </label>
-            <label>
-              Language
-              <select id="language"></select>
-            </label>
-          </div>
-          <label>
-            Instruments / textures
-            <textarea id="instruments" rows="3" placeholder="oud, nylon guitar, Rhodes, brushed drums, soft trumpet, sea ambience"></textarea>
-          </label>
-          <label>
-            Arrangement arc
-            <textarea id="arrangement" rows="3" placeholder="gentle intro → verse → pre-chorus lift → memorable chorus → bridge → final chorus → elegant outro"></textarea>
-          </label>
-          <label>
-            Negative prompt / avoid list
-            <textarea id="negativePrompt" rows="3" placeholder="no direct artist names, no copied hooks, no harsh EDM drops, no muddy low end"></textarea>
-          </label>
-        </section>
-
-        <div class="sticky-actions">
-          <button class="primary" id="generateBtn" type="submit">Generate Suno fields</button>
-          <button class="secondary" id="sparkBtn" type="button">Spark idea</button>
-        </div>
-      </form>
-
-      <section class="card output-card" id="outputSection" aria-live="polite">
-        <div class="section-title-row">
-          <h2>Suno copy dock</h2>
-          <span id="qualityBadge" class="badge">Ready</span>
-        </div>
-        <p class="hint">Copy these fields one by one into Suno. Title, Prompt, Style, and Negative Prompt are kept separate for faster iPhone workflow.</p>
-
-        <div class="score-grid">
-          <div class="score-card"><span id="originalityScore">—</span><small>Originality</small></div>
-          <div class="score-card"><span id="sunoScore">—</span><small>Suno clarity</small></div>
-          <div class="score-card"><span id="libraryScore">—</span><small>Library detail</small></div>
-        </div>
-
-        <div class="field-grid">
-          <label class="copy-field">
-            <span>Title</span>
-            <input id="sunoTitleOutput" readonly />
-            <button class="secondary small" data-copy-output="sunoTitleOutput" type="button">Copy title</button>
-          </label>
-          <label class="copy-field">
-            <span>Style</span>
-            <textarea id="sunoStyleOutput" rows="10" readonly></textarea>
-            <button class="secondary small" data-copy-output="sunoStyleOutput" type="button">Copy style</button>
-          </label>
-          <label class="copy-field">
-            <span>Prompt / lyrics</span>
-            <textarea id="sunoPromptOutput" rows="13" readonly></textarea>
-            <button class="secondary small" data-copy-output="sunoPromptOutput" type="button">Copy prompt</button>
-          </label>
-          <label class="copy-field">
-            <span>Negative prompt</span>
-            <textarea id="sunoNegativeOutput" rows="6" readonly></textarea>
-            <button class="secondary small" data-copy-output="sunoNegativeOutput" type="button">Copy negative</button>
-          </label>
-        </div>
-
-        <details class="advanced-output">
-          <summary>Show full prompt packet, private inspiration notes, and QA</summary>
-          <div class="tabs" role="tablist" aria-label="Extended outputs">
-            <button class="tab active" data-tab="packet" type="button">Packet</button>
-            <button class="tab" data-tab="notes" type="button">Notes</button>
-            <button class="tab" data-tab="qa" type="button">QA</button>
-          </div>
-          <div class="tab-panel active" id="panel-packet">
-            <textarea id="packetOutput" rows="16" readonly></textarea>
-            <div class="button-row"><button class="secondary" data-copy-output="packetOutput" type="button">Copy packet</button></div>
-          </div>
-          <div class="tab-panel" id="panel-notes">
-            <textarea id="privateNotesOutput" rows="14" readonly></textarea>
-            <div class="button-row"><button class="secondary" data-copy-output="privateNotesOutput" type="button">Copy notes</button></div>
-          </div>
-          <div class="tab-panel" id="panel-qa">
-            <textarea id="qaOutput" rows="14" readonly></textarea>
-            <div class="button-row"><button class="secondary" data-copy-output="qaOutput" type="button">Copy QA</button></div>
-          </div>
-        </details>
-
-        <div class="button-row wrap">
-          <button class="primary" id="copySunoFieldsBtn" type="button">Copy all Suno fields</button>
-          <button class="secondary" id="saveLibraryBtn" type="button">Save to library</button>
-          <button class="secondary" id="saveAsNewBtn" type="button">Save as new</button>
-          <button class="secondary" id="downloadMdBtn" type="button">Download .md</button>
-          <button class="ghost" id="newPromptBtn" type="button">New prompt</button>
-        </div>
-      </section>
-
-      <section class="card library-card">
-        <div class="section-title-row">
-          <h2>Searchable prompt library</h2>
-          <span id="libraryCount" class="badge muted">0 saved</span>
-        </div>
-        <div class="library-controls">
-          <label class="wide">
-            Search everything
-            <input id="librarySearch" placeholder="title, hook, instrument, note, artist inspiration..." />
-          </label>
-          <label>
-            Genre
-            <select id="filterGenre"><option value="">All genres</option></select>
-          </label>
-          <label>
-            Style
-            <select id="filterStyle"><option value="">All styles</option></select>
-          </label>
-          <label>
-            Inspired by
-            <select id="filterInspired"><option value="">All inspirations</option></select>
-          </label>
-          <label>
-            Country
-            <select id="filterCountry"><option value="">All countries</option></select>
-          </label>
-          <label>
-            BPM min
-            <input id="filterBpmMin" inputmode="numeric" placeholder="80" />
-          </label>
-          <label>
-            BPM max
-            <input id="filterBpmMax" inputmode="numeric" placeholder="124" />
-          </label>
-          <label>
-            Sort
-            <select id="librarySort">
-              <option value="updated-desc">Recently updated</option>
-              <option value="created-desc">Newest created</option>
-              <option value="title-asc">Title A–Z</option>
-              <option value="bpm-asc">BPM low → high</option>
-              <option value="bpm-desc">BPM high → low</option>
-              <option value="genre-asc">Genre A–Z</option>
-            </select>
-          </label>
-          <label class="checkbox-row">
-            <input id="favoritesOnly" type="checkbox" />
-            Favorites only
-          </label>
-        </div>
-        <div class="button-row wrap">
-          <button class="secondary small" id="clearFiltersBtn" type="button">Clear filters</button>
-          <button class="secondary small" id="exportLibraryBtn" type="button">Export library JSON</button>
-          <label class="secondary small import-label" for="importLibraryInput">Import JSON</label>
-          <input id="importLibraryInput" type="file" accept="application/json" hidden />
-          <button class="danger small" id="clearLibraryBtn" type="button">Clear library</button>
-        </div>
-        <div id="activeFilters" class="filter-chips"></div>
-        <div id="libraryList" class="library-list"></div>
-      </section>
-    </main>
-  </div>
-
-  <template id="artistRowTemplate">
-    <div class="artist-row">
-      <label>
-        Artist / reference
-        <input class="artist-name" placeholder="e.g. Fairuz, Sade, Black Coffee" />
-      </label>
-      <label>
-        What to borrow
-        <select class="artist-aspect">
-          <option value="overall">Overall vibe</option>
-          <option value="vocal">Vocal texture</option>
-          <option value="groove">Groove / rhythm</option>
-          <option value="production">Production / mix</option>
-          <option value="arrangement">Arrangement</option>
-          <option value="instrumentation">Instrumentation</option>
-          <option value="lyric">Lyric attitude</option>
-          <option value="performance">Performance energy</option>
-        </select>
-      </label>
-      <label>
-        Influence
-        <input class="artist-intensity" type="range" min="1" max="5" value="3" />
-        <output class="artist-intensity-label">balanced</output>
-      </label>
-      <label class="full">
-        Private notes
-        <input class="artist-notes" placeholder="e.g. silky restraint, but do not imitate" />
-      </label>
-      <button class="ghost small remove-artist" type="button">Remove</button>
+  <noscript>
+    <div class="noscript">
+      JavaScript is disabled or blocked. The app cannot generate dynamically, but the default fields below remain editable so you can manually copy them into Suno.
     </div>
-  </template>
+  </noscript>
 
-  <script src="app.js"></script>
+  <div id="errorBox"></div>
+
+  <section class="card" aria-labelledby="diagTitle">
+    <h2 id="diagTitle">Device diagnostics</h2>
+    <div class="status warn" id="statusPanel"><b id="statusText">JavaScript not started yet.</b><br><span id="heartbeat">heartbeat waiting</span></div>
+    <div class="statrow">
+      <div class="stat"><b id="tapCount">tap count 0</b><span>updates when any action works</span></div>
+      <div class="stat"><b id="autoCount">auto-gen 0</b><span>updates even without buttons</span></div>
+      <div class="stat"><b id="libraryCount">library 0</b><span>local or memory storage</span></div>
+      <div class="stat"><b id="storageStatus">storage checking</b><span>localStorage guard</span></div>
+    </div>
+    <div class="grid" style="margin-top:12px">
+      <div class="field half"><label for="commandSelect">Emergency command menu</label><select id="commandSelect"><option value="">Choose an action...</option><option value="spark">Spark random idea</option><option value="generate">Generate now</option><option value="lyrics">Write full lyrics</option><option value="images">Spark lyric images</option><option value="copyAll">Copy all fields</option><option value="save">Save to library</option><option value="polish">Create local polish variants</option><option value="export">Export library JSON</option><option value="llmBrief">Generate LLM upgrade brief</option><option value="gitCommands">Copy Git commands</option><option value="selftest">Run self-test</option><option value="clear">Clear editor</option></select></div>
+      <div class="field half"><label for="ideaPreset">Spark by native preset menu</label><select id="ideaPreset"><option value="">Pick a prepared idea...</option><option value="Ras Beirut Afterglow">Ras Beirut Afterglow</option><option value="Mykonos Blue Hour">Mykonos Blue Hour</option><option value="The Loft After Midnight">The Loft After Midnight</option><option value="Feluka Moonlit Table">Feluka Moonlit Table</option><option value="Sunset Bar Amber Tide">Sunset Bar Amber Tide</option><option value="Arabian Deep House Lanterns">Arabian Deep House Lanterns</option></select></div>
+      <div class="field full"><label for="sparkSlider">Button-free Spark slider: move it to generate a new idea</label><input id="sparkSlider" type="range" min="0" max="100" value="0"></div>
+    </div>
+    <div class="actions">
+      <button type="button" id="btnTapTest">Tap test</button>
+      <button type="button" id="btnSpark" class="primary">✨ Spark idea</button>
+      <button type="button" id="btnGenerate">Generate fields</button>
+      <a href="#copyDock" class="action secondary" id="linkSpark">Spark link</a>
+      <input type="button" id="inputSpark" value="Spark input button">
+      <button type="button" id="btnLog" class="ghost">Show event log</button>
+    </div>
+    <pre id="eventLog"></pre>
+  </section>
+
+  <section class="card" aria-labelledby="editorTitle">
+    <h2 id="editorTitle">Creative brief</h2>
+    <div class="grid">
+      <div class="field half"><label for="titleSeed">Title</label><input id="titleSeed" value="Ras Beirut Afterglow"></div>
+      <div class="field half"><label for="hookPhrase">Hook phrase</label><input id="hookPhrase" value="sea light keeps calling me home"></div>
+      <div class="field full"><label for="coreIdea">Core idea</label><textarea id="coreIdea" class="short">A premium Mediterranean lounge song for a coastal Beirut venue: romantic, warm, elegant, singable, and commercially safe.</textarea></div>
+      <div class="field third"><label for="genre">Genre</label><select id="genre"><option>Mediterranean lounge pop</option><option>Deep house</option><option>Acoustic beach lounge</option><option>Latin jazz lounge</option><option>Arabian fusion pop</option><option>Cinematic coastal ballad</option><option>Sophisti-pop jazz lounge</option><option>Organic house</option></select></div>
+      <div class="field third"><label for="style">Style</label><select id="style"><option>Sunset terrace</option><option>Beach café</option><option>Late-night lounge</option><option>Luxury hotel bar</option><option>Island chillout</option><option>Brass-led Latin warmth</option><option>Arabian deep house</option></select></div>
+      <div class="field third"><label for="country">Country / place</label><select id="country"><option>Lebanon / Ras Beirut</option><option>Greece / Mykonos</option><option>Mediterranean coast</option><option>Spain / Balearic</option><option>Brazil / Bossa coastline</option><option>Global lounge</option></select></div>
+      <div class="field quarter"><label for="bpm">BPM</label><input id="bpm" type="number" inputmode="numeric" min="40" max="220" value="96"></div>
+      <div class="field quarter"><label for="songKey">Key</label><select id="songKey"><option>A minor</option><option>D minor</option><option>E minor</option><option>G minor</option><option>C major</option><option>F major</option><option>G major</option></select></div>
+      <div class="field quarter"><label for="language">Language</label><select id="language"><option>English with elegant Arabic phrases</option><option>English</option><option>Arabic</option><option>French and English</option><option>Spanish and English</option><option>Instrumental</option></select></div>
+      <div class="field quarter"><label for="vocalType">Vocal type</label><select id="vocalType"><option>warm intimate male vocal</option><option>silky female vocal</option><option>soft duet</option><option>airy background vocals</option><option>instrumental lead melody</option></select></div>
+      <div class="field half"><label for="inspiredBy">Inspired by, for private library search only</label><input id="inspiredBy" value="Fairuz, Sade, Ziad Rahbani"></div>
+      <div class="field half"><label for="manualTraits">Manual traits to borrow</label><input id="manualTraits" value="premium live lounge feel, warm analog polish, restrained romance"></div>
+      <div class="field half"><label for="instruments">Instruments</label><textarea id="instruments" class="short">oud, nylon guitar, Rhodes, upright bass, soft trumpet, brushed percussion, darbuka, shakers, warm pads</textarea></div>
+      <div class="field half"><label for="arrangement">Arrangement</label><textarea id="arrangement" class="short">short atmospheric intro, verse, pre-chorus, memorable chorus, second verse, instrumental bridge, final chorus, ocean-soft outro</textarea></div>
+      <div class="field full"><label for="mood">Mood tags</label><input id="mood" value="romantic, elegant, coastal, warm, late sunset, premium hospitality"></div>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="lyricsTitle">
+    <h2 id="lyricsTitle">Lyrics writer</h2>
+    <div class="grid">
+      <div class="field third"><label for="lyricMode">Lyric mode</label><select id="lyricMode"><option value="full">Full generated lyrics</option><option value="scaffold">Structure scaffold only</option><option value="instrumental">Instrumental prompt only</option></select></div>
+      <div class="field third"><label for="pointOfView">Point of view</label><select id="pointOfView"><option>first person romantic</option><option>second person invitation</option><option>we/us shared memory</option><option>observational venue scene</option></select></div>
+      <div class="field third"><label for="rhymeFeel">Rhyme feel</label><select id="rhymeFeel"><option>loose internal rhyme</option><option>simple end rhyme</option><option>minimal rhyme</option><option>chantable hook repetition</option></select></div>
+      <div class="field half"><label for="lyricImages">Must-use lyric images</label><textarea id="lyricImages" class="short">sea light, terrace candles, Ras Beirut evening, harbor glow, slow waves</textarea></div>
+      <div class="field half"><label for="avoidWords">Words to avoid inside lyrics</label><textarea id="avoidWords" class="short">copy, imitate, famous, celebrity, brand name</textarea></div>
+    </div>
+    <div class="actions">
+      <button type="button" id="btnLyrics" class="primary">Write lyrics now</button>
+      <button type="button" id="btnImages">Spark lyric images</button>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="limitsTitle">
+    <h2 id="limitsTitle">Suno character limits</h2>
+    <div class="grid">
+      <div class="field half"><label for="limitProfile">Limit profile</label><select id="limitProfile"><option value="v55">Suno v5/v5.5 Custom Mode: title 100, style 1000, lyrics 5000</option><option value="v4">Legacy v4: title 80, style 200, lyrics 3000</option><option value="simple">Simple prompt: prompt 500</option><option value="conservative">Conservative iPhone fallback</option><option value="manual">Manual limits</option></select></div>
+      <div class="field half"><label class="checkrow"><input id="strictLimits" type="checkbox" checked> <span>Strictly compress fields before saving/copying</span></label></div>
+      <div class="field quarter"><label for="manualTitleLimit">Manual title</label><input id="manualTitleLimit" type="number" value="100"></div>
+      <div class="field quarter"><label for="manualStyleLimit">Manual style</label><input id="manualStyleLimit" type="number" value="1000"></div>
+      <div class="field quarter"><label for="manualPromptLimit">Manual prompt</label><input id="manualPromptLimit" type="number" value="5000"></div>
+      <div class="field quarter"><label for="manualNegativeLimit">Manual negative</label><input id="manualNegativeLimit" type="number" value="500"></div>
+    </div>
+  </section>
+
+  <section class="card" id="copyDock" aria-labelledby="copyTitle">
+    <h2 id="copyTitle">Suno copy dock</h2>
+    <p>Buttons are optional. The four fields are plain textareas, so on iPhone you can tap a field, Select All, and Copy even if button taps are blocked.</p>
+    <div class="actions">
+      <button type="button" id="btnCopyAll" class="primary">Copy all Suno fields</button>
+      <button type="button" id="btnSave" class="secondary">Save to library</button>
+      <button type="button" id="btnMarkdown">Download Markdown</button>
+    </div>
+    <div class="copygrid" style="margin-top:12px">
+      <div><label for="outTitle">Title</label><textarea id="outTitle" class="short">Ras Beirut Afterglow</textarea><div class="counter" id="countTitle">0 / 100</div><button type="button" data-copy="outTitle">Copy title</button></div>
+      <div><label for="outNegative">Negative / Exclude</label><textarea id="outNegative" class="short">no direct artist names, no impersonation, no copied melody, no copyrighted hooks, no muddy bass, no harsh clipping</textarea><div class="counter" id="countNegative">0 / 500</div><button type="button" data-copy="outNegative">Copy negative</button></div>
+      <div class="full"><label for="outStyle">Style</label><textarea id="outStyle" class="tall">Mediterranean lounge pop; sunset terrace; Lebanon / Ras Beirut; 96 BPM; A minor; English with elegant Arabic phrases; warm intimate male vocal; mood: romantic, elegant, coastal, warm, late sunset, premium hospitality</textarea><div class="counter" id="countStyle">0 / 1000</div><button type="button" data-copy="outStyle">Copy style</button></div>
+      <div class="full"><label for="outPrompt">Prompt / Lyrics</label><textarea id="outPrompt" class="tall">[Intro]
+Ya layl, sea light on the water
+Ras Beirut breathing low
+
+[Verse 1]
+I found a corner where the sea light leans
+Your shadow moved softly through terrace candles
+A glass caught the moon and gave it back to me
+And every small silence knew what we meant
+
+[Chorus]
+sea light keeps calling me home
+sea light keeps calling me home
+We let harbor glow carry what words cannot say
+sea light keeps calling me home</textarea><div class="counter" id="countPrompt">0 / 5000</div><button type="button" data-copy="outPrompt">Copy prompt / lyrics</button></div>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="polishTitle">
+    <h2 id="polishTitle">Local polish variants</h2>
+    <p>This creates local, no-network variants. Use the backend only after the front-end interaction layer is proven stable.</p>
+    <div class="actions"><button type="button" id="btnPolish" class="primary">Create local polish variants</button></div>
+    <div id="aiResults" class="list" style="margin-top:12px"><div class="empty">No variants yet.</div></div>
+  </section>
+
+  <section class="card" id="library" aria-labelledby="libraryTitle">
+    <h2 id="libraryTitle">Searchable prompt library</h2>
+    <div class="grid">
+      <div class="field half"><label for="libraryPicker">Load by native library menu</label><select id="libraryPicker"><option value="">Choose saved prompt...</option></select></div>
+      <div class="field half"><label for="filterKeyword">Keyword search</label><input id="filterKeyword" placeholder="title, lyric, instrument, note, metadata"></div>
+      <div class="field third"><label for="filterGenre">Genre</label><select id="filterGenre"><option value="">Any</option></select></div>
+      <div class="field third"><label for="filterStyle">Style</label><select id="filterStyle"><option value="">Any</option></select></div>
+      <div class="field third"><label for="filterCountry">Country/place</label><select id="filterCountry"><option value="">Any</option></select></div>
+      <div class="field third"><label for="filterInspired">Inspired by contains</label><input id="filterInspired" placeholder="Fairuz, Sade..."></div>
+      <div class="field third"><label for="filterBpmMin">BPM min</label><input id="filterBpmMin" type="number" inputmode="numeric"></div>
+      <div class="field third"><label for="filterBpmMax">BPM max</label><input id="filterBpmMax" type="number" inputmode="numeric"></div>
+      <div class="field third"><label for="librarySort">Sort</label><select id="librarySort"><option value="newest">Newest</option><option value="oldest">Oldest</option><option value="title">Title</option><option value="bpmLow">BPM low → high</option><option value="bpmHigh">BPM high → low</option></select></div>
+      <div class="field third"><label class="checkrow"><input id="filterFavorites" type="checkbox"> <span>Favorites only</span></label></div>
+      <div class="field third"><label for="importFile">Import JSON</label><input id="importFile" type="file" accept="application/json,.json"></div>
+    </div>
+    <div class="actions"><button type="button" id="btnExport">Export library JSON</button><button type="button" id="btnImport">Import selected JSON</button><button type="button" id="btnClearLibrary" class="danger">Clear library</button></div>
+    <div id="libraryList" class="list" style="margin-top:12px"><div class="empty">No saved prompts yet.</div></div>
+  </section>
+
+
+  <section class="card" id="upgradeConsole" aria-labelledby="upgradeConsoleTitle">
+    <h2 id="upgradeConsoleTitle">GitHub → Vercel LLM upgrade console</h2>
+    <p>This panel creates a precise handoff brief for Codex, Cursor, Claude, ChatGPT, or another coding LLM. The intended workflow is: edit in a GitHub branch, open a pull request, let Vercel create a preview deployment, test on iPhone, then merge to production.</p>
+    <div class="grid">
+      <div class="field half"><label for="repoUrl">GitHub repository URL</label><input id="repoUrl" placeholder="https://github.com/your-name/prompt-muse-suno"></div>
+      <div class="field half"><label for="vercelUrl">Vercel production URL</label><input id="vercelUrl" placeholder="https://prompt-muse-suno.vercel.app"></div>
+      <div class="field third"><label for="branchName">Upgrade branch name</label><input id="branchName" value="upgrade/v15-next"></div>
+      <div class="field third"><label for="targetVersion">Target version</label><input id="targetVersion" value="v15"></div>
+      <div class="field third"><label for="llmName">LLM / agent</label><select id="llmName"><option>Codex</option><option>Cursor</option><option>Claude</option><option>ChatGPT</option><option>Gemini</option><option>Any coding LLM</option></select></div>
+      <div class="field full"><label for="upgradeGoal">Upgrade goal</label><textarea id="upgradeGoal" class="short">Improve iPhone reliability, keep input-driven controls, preserve the four Suno fields, and add only changes that pass the smoke tests.</textarea></div>
+      <div class="field half"><label for="upgradeConstraints">Hard constraints</label><textarea id="upgradeConstraints" class="short">No service worker until button stability is proven. Do not expose API keys in browser code. Keep artist names out of Suno-facing prompts. Preserve library export/import compatibility.</textarea></div>
+      <div class="field half"><label for="testPlan">Required test plan</label><textarea id="testPlan" class="short">Run npm test. Open index.html. Confirm heartbeat. Use Emergency command menu, Spark slider, and textareas. Test /diagnose.html. Deploy preview through Vercel and test on iPhone Safari before merging.</textarea></div>
+    </div>
+    <div class="actions">
+      <button type="button" id="btnBuildLLMBrief" class="primary">Generate LLM upgrade brief</button>
+      <button type="button" id="btnCopyLLMBrief">Copy LLM brief</button>
+      <button type="button" id="btnDownloadLLMBrief">Download brief .md</button>
+      <button type="button" id="btnCopyGitCommands">Copy Git commands</button>
+    </div>
+    <div class="grid" style="margin-top:12px">
+      <div class="field full"><label for="llmBriefOut">Ready-to-paste LLM upgrade brief</label><textarea id="llmBriefOut" class="tall"></textarea></div>
+      <div class="field full"><label for="gitCommandsOut">GitHub branch / PR command scaffold</label><textarea id="gitCommandsOut" class="short"></textarea></div>
+    </div>
+    <p class="small">Repo package files added for this workflow: <span class="badge">AGENTS.md</span><span class="badge">vercel.json</span><span class="badge">.github/workflows/quality.yml</span><span class="badge">llm/UPGRADE_PROMPT.md</span><span class="badge">docs/DEPLOYMENT_GITHUB_VERCEL.md</span></p>
+  </section>
+
+  <section class="card" aria-labelledby="resetTitle">
+    <h2 id="resetTitle">Reset and troubleshooting</h2>
+    <p>Use this if an old deployment or Home Screen app is interfering.</p>
+    <div class="actions"><button type="button" id="btnResetCache" class="danger">Reset caches/service workers</button><button type="button" id="btnResetStorage" class="danger">Reset local storage</button><a class="action" href="diagnose.html">Open diagnostic page</a></div>
+  </section>
+</main>
+
+<script>
+(function(){
+'use strict';
+var BUILD='v14-github-vercel';
+var state={tap:0,auto:0,library:[],lastHash:'',storageOK:false,heartbeat:0,ai:[],busy:false};
+var memoryStore={};
+function el(id){return document.getElementById(id)}
+function val(id){var x=el(id);return x?String(x.value||''):''}
+function setVal(id,v){var x=el(id);if(x){x.value=String(v==null?'':v)}}
+function text(id,v){var x=el(id);if(x)x.textContent=String(v)}
+function klass(id,k){var x=el(id);if(x)x.className=k}
+function showError(label,err){var box=el('errorBox');if(!box)return;box.style.display='block';box.textContent=String(label||'Error')+'\n'+String(err&&err.stack||err&&err.message||err||'unknown')}
+function log(msg){var x=el('eventLog');if(x)x.textContent=(new Date().toLocaleTimeString()+' · '+msg+'\n'+x.textContent).slice(0,7000)}
+function status(msg,kind){text('statusText',msg);klass('statusPanel','status '+(kind||'good'));log('status: '+msg)}
+function esc(s){return String(s||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function uid(){return 'pm_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7)}
+function trim(s,n){s=String(s||''); if(!n||s.length<=n)return s; var cut=s.slice(0,Math.max(0,n-1)); var last=Math.max(cut.lastIndexOf('\n'),cut.lastIndexOf('. '),cut.lastIndexOf(', '),cut.lastIndexOf(' ')); if(last>Math.floor(n*.55))cut=cut.slice(0,last); return cut.replace(/[\s,;:.]+$/,'')+'…'}
+function storeGet(k){try{var t=localStorage.getItem(k);state.storageOK=true;text('storageStatus','storage OK');return t}catch(e){state.storageOK=false;text('storageStatus','memory fallback');return memoryStore[k]||null}}
+function storeSet(k,v){try{localStorage.setItem(k,v);state.storageOK=true;text('storageStatus','storage OK')}catch(e){state.storageOK=false;memoryStore[k]=v;text('storageStatus','memory fallback')}}
+function storeRemove(k){try{localStorage.removeItem(k)}catch(e){delete memoryStore[k]}}
+function bump(action){state.tap++; text('tapCount','tap count '+state.tap+' · '+BUILD); log('action: '+action)}
+function limits(){var p=val('limitProfile'); if(p==='v4')return{title:80,style:200,prompt:3000,negative:500}; if(p==='simple')return{title:100,style:500,prompt:500,negative:300}; if(p==='conservative')return{title:80,style:200,prompt:3000,negative:400}; if(p==='manual')return{title:Number(val('manualTitleLimit'))||100,style:Number(val('manualStyleLimit'))||1000,prompt:Number(val('manualPromptLimit'))||5000,negative:Number(val('manualNegativeLimit'))||500}; return{title:100,style:1000,prompt:5000,negative:500}}
+function counter(id,countId,max){var n=val(id).length; var c=el(countId); if(!c)return; c.textContent=n+' / '+max; c.className='counter '+(n>max?'bad':n>max*.9?'warn':'ok')}
+function updateCounters(){var l=limits(); counter('outTitle','countTitle',l.title); counter('outStyle','countStyle',l.style); counter('outPrompt','countPrompt',l.prompt); counter('outNegative','countNegative',l.negative)}
+var traitMap={
+ 'fairuz':'Levantine poetic restraint, dignified melodic phrasing, place-based nostalgia',
+ 'sade':'silky late-night restraint, elegant soul-jazz smoothness, spacious romantic groove',
+ 'ziad rahbani':'urban Beirut jazz harmony, Rhodes-led café sophistication, conversational warmth',
+ 'daft punk':'clean electronic pulse, robotic-tight groove, glossy synth discipline',
+ 'black coffee':'organic Afro-house depth, patient percussion, warm club hypnosis',
+ 'rufus du sol':'wide emotional pads, melodic electronic lift, festival-scale atmosphere',
+ 'nora en pure':'sunlit deep-house flow, piano-led coastal optimism',
+ 'ibrahim maalouf':'expressive warm trumpet lines, Mediterranean brass color',
+ 'khruangbin':'minimal global-funk pocket, warm guitar motifs, spacious groove',
+ 'gotan project':'tango-lounge drama, bandoneon-like phrasing, cinematic pulse',
+ 'umm kulthum':'grand Arabic melodic arc, patient emotional build, ornamented vocal dignity',
+ 'oumkalthoum':'grand Arabic melodic arc, patient emotional build, ornamented vocal dignity',
+ 'buena vista social club':'live-room Latin warmth, relaxed percussion, vintage acoustic charm',
+ 'cesaria evora':'barefoot island melancholy, lilting coastal sway',
+ 'massive attack':'downtempo shadow, restrained bass pressure, cinematic texture',
+ 'jamiroquai':'acid-jazz funk pocket, syncopated bass, polished dance energy'
+};
+function uniqueComma(s){var seen={},out=[]; String(s||'').split(',').forEach(function(p){p=p.trim();var k=p.toLowerCase();if(p&&!seen[k]){seen[k]=1;out.push(p)}});return out.join(', ')}
+function traits(){var refs=val('inspiredBy').split(','); var out=[]; refs.forEach(function(r){var k=r.trim().toLowerCase(); if(!k)return; var found=''; Object.keys(traitMap).forEach(function(m){if(!found&&k.indexOf(m)>=0)found=traitMap[m]}); out.push(found||('original traits from private reference: '+r.trim().replace(/[^a-zA-Z0-9 \-]/g,'')))}); if(val('manualTraits'))out.push(val('manualTraits')); return uniqueComma(out.join(', '))}
+function imageList(){var arr=val('lyricImages').split(',').map(function(x){return x.trim()}).filter(Boolean); var fallback=['sea light','terrace candles','harbor glow','slow waves','amber moon']; while(arr.length<5)arr.push(fallback[arr.length]); return arr.slice(0,7)}
+function cleanLyrics(s){var avoid=val('avoidWords').toLowerCase().split(',').map(function(x){return x.trim()}).filter(Boolean); avoid.forEach(function(a){try{s=s.replace(new RegExp('\\b'+a.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b','ig'),'')}catch(e){}}); return s.replace(/ {2,}/g,' ').replace(/\n{3,}/g,'\n\n')}
+function lyrics(){var mode=val('lyricMode'); var h=val('hookPhrase')||'sea light keeps calling me home'; var imgs=imageList(); var place=val('country')||'the coast'; if(mode==='instrumental')return '[Instrumental]\nCreate a complete instrumental arrangement around '+val('coreIdea')+'\n\n[Arrangement]\n'+val('arrangement')+'\n\n[Lead melody]\nUse a memorable, original motif shaped by '+imgs.slice(0,3).join(', ')+'.'; if(mode==='scaffold')return '[Intro]\nSet a warm coastal scene using '+imgs.slice(0,3).join(', ')+'.\n\n[Verse 1]\nFour concise singable lines with specific imagery.\n\n[Pre-Chorus]\nBuild toward the hook without overexplaining.\n\n[Chorus]\nUse this original hook phrase: '+h+'.\n\n[Bridge]\nCreate one intimate turn in perspective.\n\n[Final Chorus]\nRepeat the hook with a stronger emotional lift.'; var txt='[Intro]\nYa layl, '+imgs[0]+' on the water\n'+place+' breathing low\n\n[Verse 1]\nI found a corner where the '+imgs[0]+' leans\nYour shadow moved softly through '+imgs[1]+'\nA glass caught the moon and gave it back to me\nAnd every small silence knew what we meant\n\n[Pre-Chorus]\nYa habibi, the night is gentle when you stay\nMy heart keeps time with the tide and the bay\n\n[Chorus]\n'+h+'\n'+h+'\nWe let '+imgs[2]+' carry what words cannot say\n'+h+'\n\n[Verse 2]\nThe band plays low under '+imgs[3]+'\nOld stories open like windows in the breeze\nI hear your laugh where the shoreline glows\nAnd the city turns softer around our knees\n\n[Bridge]\nIf tomorrow comes too quickly\nLeave one light beside the sea\nI will follow the rhythm\nBack to where you wait for me\n\n[Final Chorus]\n'+h+'\n'+h+'\nThrough '+imgs[4]+' and the last gold of the day\n'+h+'\n\n[Outro]\nYa layl, keep us close\nLet the water sing us home'; return cleanLyrics(txt)}
+function negative(){return 'no direct artist names, no impersonation, no copied melody, no copyrighted hooks, no harsh clipping, no muddy bass, no novelty vocals, no chaotic arrangement'}
+function generate(silent){try{var l=limits(); var title=val('titleSeed')||'Untitled Suno Prompt'; var style=[val('genre'),val('style'),val('country'),val('bpm')+' BPM',val('songKey'),val('language'),val('vocalType'),'mood: '+val('mood'),'private inspiration translated into traits: '+traits(),'instruments: '+val('instruments'),'arrangement: '+val('arrangement'),'mix: warm premium stereo image, clear vocal center, tasteful low-end, no direct artist names'].filter(Boolean).join('; '); var prompt=lyrics(); var neg=negative(); if(el('strictLimits')&&el('strictLimits').checked){title=trim(title,l.title);style=trim(style,l.style);prompt=trim(prompt,l.prompt);neg=trim(neg,l.negative)} setVal('outTitle',title); setVal('outStyle',style); setVal('outPrompt',prompt); setVal('outNegative',neg); updateCounters(); state.auto++; text('autoCount','auto-gen '+state.auto); if(!silent)status('Generated Suno fields.','good')}catch(e){showError('generate failed',e); status('Generate failed. See error box.','bad')}}
+function currentHash(){var ids=['titleSeed','hookPhrase','coreIdea','genre','style','country','bpm','songKey','language','vocalType','inspiredBy','manualTraits','instruments','arrangement','mood','lyricMode','pointOfView','rhymeFeel','lyricImages','avoidWords','limitProfile','strictLimits','manualTitleLimit','manualStyleLimit','manualPromptLimit','manualNegativeLimit']; return ids.map(function(id){var x=el(id);return id+'='+ (x?(x.type==='checkbox'?x.checked:x.value):'')}).join('|')}
+function autoTick(){try{state.heartbeat++; text('heartbeat','heartbeat '+state.heartbeat+' · '+new Date().toLocaleTimeString()); var h=currentHash(); if(h!==state.lastHash){state.lastHash=h; generate(true)}}catch(e){showError('auto tick failed',e)}}
+var sparks=[
+ {title:'Ras Beirut Afterglow',hook:'sea light keeps calling me home',genre:'Mediterranean lounge pop',style:'Sunset terrace',country:'Lebanon / Ras Beirut',bpm:96,key:'A minor',lang:'English with elegant Arabic phrases',vocal:'warm intimate male vocal',refs:'Fairuz, Sade, Ziad Rahbani',images:'sea light, terrace candles, Ras Beirut evening, harbor glow, slow waves',instruments:'oud, nylon guitar, Rhodes, upright bass, soft trumpet, brushed percussion, darbuka, shakers, warm pads'},
+ {title:'Mykonos Blue Hour',hook:'blue hour carries us away',genre:'Deep house',style:'Island chillout',country:'Greece / Mykonos',bpm:108,key:'D minor',lang:'English',vocal:'silky female vocal',refs:'Nora En Pure, Rüfüs Du Sol, Café del Mar',images:'island moon, white stones, blue harbor, linen wind, midnight boats',instruments:'soft piano, deep house kick, warm bass, airy pads, hand percussion, distant sax'},
+ {title:'The Loft After Midnight',hook:'after midnight we move like velvet',genre:'Sophisti-pop jazz lounge',style:'Late-night lounge',country:'Global lounge',bpm:102,key:'E minor',lang:'English',vocal:'warm intimate male vocal',refs:'Sade, Jamiroquai, Massive Attack',images:'velvet air, taxi lights, low bass, glass reflections, city glow',instruments:'Rhodes, muted guitar, fretless bass, brushed drums, synth pad, sax accents'},
+ {title:'Feluka Moonlit Table',hook:'the moon sits softly at our table',genre:'Acoustic beach lounge',style:'Beach café',country:'Lebanon / Ras Beirut',bpm:88,key:'G minor',lang:'English with elegant Arabic phrases',vocal:'soft duet',refs:'Fairuz, Cesária Évora, Buena Vista Social Club',images:'silver plates, fishing lights, moonlit table, salt breeze, old stories',instruments:'nylon guitar, oud, upright bass, light bongos, soft trumpet, handclaps'},
+ {title:'Sunset Bar Amber Tide',hook:'amber tide pulls us closer',genre:'Latin jazz lounge',style:'Brass-led Latin warmth',country:'Mediterranean coast',bpm:104,key:'F major',lang:'English and Spanish touches',vocal:'airy background vocals',refs:'Buena Vista Social Club, Ibrahim Maalouf, Gotan Project',images:'amber tide, brass glow, terrace shadows, warm claps, slow dance',instruments:'trumpet, flugelhorn, marimba, congas, nylon guitar, upright bass, shakers'},
+ {title:'Arabian Deep House Lanterns',hook:'lanterns rise over the water',genre:'Organic house',style:'Arabian deep house',country:'Global lounge',bpm:116,key:'D minor',lang:'English with elegant Arabic phrases',vocal:'silky female vocal',refs:'Black Coffee, Nora En Pure, Ibrahim Maalouf',images:'lanterns, oud line, desert blue, water glow, dawn rhythm',instruments:'deep house kick, oud riff, darbuka loop, warm bass, brass phrase, evolving pads'}
+];
+function applyIdea(obj){setVal('titleSeed',obj.title);setVal('hookPhrase',obj.hook);setVal('genre',obj.genre);setVal('style',obj.style);setVal('country',obj.country);setVal('bpm',obj.bpm);setVal('songKey',obj.key);setVal('language',obj.lang);setVal('vocalType',obj.vocal);setVal('inspiredBy',obj.refs);setVal('lyricImages',obj.images);setVal('instruments',obj.instruments);setVal('coreIdea','A polished '+obj.genre+' track for '+obj.country+': original, memorable, venue-ready, emotionally warm, and safe to paste into Suno.');setVal('mood','romantic, premium, coastal, elegant, warm, playlist-friendly');state.lastHash='';generate(false);status('Sparked idea: '+obj.title,'good')}
+function spark(){applyIdea(sparks[Math.floor(Math.random()*sparks.length)])}
+function sparkByTitle(t){var obj=sparks.filter(function(x){return x.title===t})[0]; if(obj)applyIdea(obj)}
+function sparkImages(){var sets=['sea light, terrace candles, Ras Beirut evening, harbor glow, slow waves','island moon, white stones, blue harbor, linen wind, midnight boats','blue hour, silver plates, small waves, candle glass, harbor salt','after midnight, city glow, velvet air, last dance, low bass','summer rain, open windows, oud line, wet stone, warm streetlights','amber lamps, old stairs, jasmine air, taxi lights, balcony shadows']; setVal('lyricImages',sets[Math.floor(Math.random()*sets.length)]); state.lastHash=''; generate(false); status('Lyric images sparked.','good')}
+function record(){return{id:uid(),createdAt:new Date().toISOString(),favorite:false,title:val('outTitle'),stylePrompt:val('outStyle'),promptLyrics:val('outPrompt'),negativePrompt:val('outNegative'),genre:val('genre'),style:val('style'),country:val('country'),bpm:Number(val('bpm'))||0,key:val('songKey'),language:val('language'),inspiredBy:val('inspiredBy'),traits:traits(),coreIdea:val('coreIdea'),hookPhrase:val('hookPhrase'),limitProfile:val('limitProfile')}}
+function save(){var r=record(); state.library.unshift(r); persist(); renderLibrary(); status('Saved to library: '+r.title,'good')}
+function persist(){storeSet('promptMuseV14Library',JSON.stringify(state.library)); text('libraryCount','library '+state.library.length)}
+function loadLibrary(){var raw=storeGet('promptMuseV14Library')||storeGet('promptMuseV12Library')||'[]'; try{var arr=JSON.parse(raw); state.library=Array.isArray(arr)?arr:[]}catch(e){state.library=[]} text('libraryCount','library '+state.library.length)}
+function restore(r){if(!r)return; setVal('outTitle',r.title);setVal('outStyle',r.stylePrompt);setVal('outPrompt',r.promptLyrics);setVal('outNegative',r.negativePrompt);setVal('titleSeed',r.title);setVal('genre',r.genre);setVal('style',r.style);setVal('country',r.country);setVal('bpm',r.bpm);setVal('songKey',r.key||'A minor');setVal('language',r.language||'English');setVal('inspiredBy',r.inspiredBy||'');setVal('coreIdea',r.coreIdea||'');setVal('hookPhrase',r.hookPhrase||'');updateCounters(); status('Loaded: '+r.title,'good')}
+function filters(){return{k:val('filterKeyword').toLowerCase(),g:val('filterGenre'),s:val('filterStyle'),c:val('filterCountry'),i:val('filterInspired').toLowerCase(),min:Number(val('filterBpmMin'))||0,max:Number(val('filterBpmMax'))||999,fav:!!(el('filterFavorites')&&el('filterFavorites').checked),sort:val('librarySort')}}
+function filtered(){var f=filters(); var arr=state.library.filter(function(r){var hay=[r.title,r.stylePrompt,r.promptLyrics,r.negativePrompt,r.genre,r.style,r.country,r.inspiredBy,r.traits,r.coreIdea].join(' ').toLowerCase(); if(f.k&&hay.indexOf(f.k)<0)return false; if(f.g&&r.genre!==f.g)return false; if(f.s&&r.style!==f.s)return false; if(f.c&&r.country!==f.c)return false; if(f.i&&String(r.inspiredBy||'').toLowerCase().indexOf(f.i)<0)return false; if(f.fav&&!r.favorite)return false; var bpm=Number(r.bpm)||0; if(bpm<f.min||bpm>f.max)return false; return true}); arr.sort(function(a,b){if(f.sort==='oldest')return String(a.createdAt).localeCompare(String(b.createdAt)); if(f.sort==='title')return String(a.title).localeCompare(String(b.title)); if(f.sort==='bpmLow')return(Number(a.bpm)||0)-(Number(b.bpm)||0); if(f.sort==='bpmHigh')return(Number(b.bpm)||0)-(Number(a.bpm)||0); return String(b.createdAt).localeCompare(String(a.createdAt))}); return arr}
+function fillFilterOptions(){var gen=el('filterGenre'), sty=el('filterStyle'), cty=el('filterCountry'); [['genre',gen],['style',sty],['country',cty]].forEach(function(pair){var key=pair[0], sel=pair[1]; if(!sel)return; var cur=sel.value; var vals={}; state.library.forEach(function(r){if(r[key])vals[r[key]]=1}); var html='<option value="">Any</option>'; Object.keys(vals).sort().forEach(function(v){html+='<option>'+esc(v)+'</option>'}); sel.innerHTML=html; sel.value=cur})}
+function renderLibrary(){fillFilterOptions(); var arr=filtered(); var pick=el('libraryPicker'); if(pick){var h='<option value="">Choose saved prompt...</option>'; state.library.forEach(function(r){h+='<option value="'+esc(r.id)+'">'+esc(r.title)+' · '+esc(r.genre)+' · '+esc(r.bpm)+' BPM</option>'}); pick.innerHTML=h} var list=el('libraryList'); if(!list)return; if(!arr.length){list.innerHTML='<div class="empty">No saved prompts match the filters.</div>'; return} list.innerHTML=arr.map(function(r){return '<article class="item"><h3>'+esc(r.favorite?'★ ':'')+esc(r.title)+'</h3><p>'+esc(r.genre)+' · '+esc(r.style)+' · '+esc(r.country)+' · '+esc(r.bpm)+' BPM</p><p><span class="badge">Inspired: '+esc(r.inspiredBy||'none')+'</span><span class="badge">'+esc(r.limitProfile||'v55')+'</span></p><div class="actions"><button type="button" data-lib="load" data-id="'+esc(r.id)+'">Load</button><button type="button" data-lib="copy" data-id="'+esc(r.id)+'">Copy all</button><button type="button" data-lib="fav" data-id="'+esc(r.id)+'">'+(r.favorite?'Unfavorite':'Favorite')+'</button><button type="button" data-lib="dupe" data-id="'+esc(r.id)+'">Duplicate</button><button type="button" class="danger" data-lib="del" data-id="'+esc(r.id)+'">Delete</button></div></article>'}).join('')}
+function findRec(id){return state.library.filter(function(r){return r.id===id})[0]}
+function copyText(t,msg){try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){status(msg||'Copied.','good')}).catch(function(){fallbackCopy(t,msg)})}else fallbackCopy(t,msg)}catch(e){fallbackCopy(t,msg)}}
+function fallbackCopy(t,msg){var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');status(msg||'Copied.','good')}catch(e){status('Copy blocked. Text selected in a temporary field; use manual copy.','warn')}setTimeout(function(){try{document.body.removeChild(ta)}catch(e){}},250)}
+function copyAll(){var t='TITLE:\n'+val('outTitle')+'\n\nSTYLE:\n'+val('outStyle')+'\n\nPROMPT / LYRICS:\n'+val('outPrompt')+'\n\nNEGATIVE / EXCLUDE:\n'+val('outNegative'); copyText(t,'Copied all Suno fields.')} 
+function download(name,textContent,type){var blob=new Blob([textContent],{type:type||'text/plain'}); var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(function(){URL.revokeObjectURL(a.href);try{document.body.removeChild(a)}catch(e){}},200)}
+function exportJSON(){download('prompt-muse-suno-library-v14.json',JSON.stringify(state.library,null,2),'application/json'); status('Exported library JSON.','good')}
+function markdown(){var t='# '+val('outTitle')+'\n\n## Style\n\n'+val('outStyle')+'\n\n## Prompt / Lyrics\n\n'+val('outPrompt')+'\n\n## Negative / Exclude\n\n'+val('outNegative')+'\n'; download((val('outTitle')||'suno-prompt').toLowerCase().replace(/[^a-z0-9]+/g,'-')+'.md',t,'text/markdown')}
+function importJSON(){var f=el('importFile'); if(!f||!f.files||!f.files[0]){status('Choose a JSON file first.','warn');return} var reader=new FileReader(); reader.onload=function(){try{var arr=JSON.parse(reader.result); if(!Array.isArray(arr))throw new Error('JSON must be an array'); arr.forEach(function(r){r.id=r.id||uid(); state.library.push(r)}); persist(); renderLibrary(); status('Imported '+arr.length+' prompts.','good')}catch(e){showError('import failed',e); status('Import failed.','bad')}}; reader.readAsText(f.files[0])}
+function localPolish(){var base=record(); state.ai=[{kind:'Safe Commercial',title:base.title,style:base.stylePrompt+', release-friendly clarity, original phrasing, no imitation',prompt:base.promptLyrics,negative:base.negativePrompt+', no living-artist names in final prompt'},{kind:'Poetic',title:base.title+' — Poetic Cut',style:base.stylePrompt+', more image-led lyricism, graceful emotional restraint',prompt:base.promptLyrics.replace(/sea light/g,'silver sea light').replace(/the night/g,'the velvet night'),negative:base.negativePrompt},{kind:'Venue Ready',title:base.title+' — Venue Mix',style:base.stylePrompt+', low-intrusion hospitality playback, smooth transitions, warm playlist flow',prompt:base.promptLyrics.replace(/\[Bridge\][\s\S]*?\[Final Chorus\]/,'[Instrumental Break]\nKeep it smooth, elegant, and low-intrusion for hospitality playback.\n\n[Final Chorus]'),negative:base.negativePrompt}]; renderAI(); status('Created local polish variants.','good')}
+function renderAI(){var box=el('aiResults'); if(!box)return; if(!state.ai.length){box.innerHTML='<div class="empty">No variants yet.</div>';return} box.innerHTML=state.ai.map(function(v,i){return '<article class="item"><h3>'+esc(v.kind)+': '+esc(v.title)+'</h3><p>'+esc(v.style.slice(0,160))+'</p><div class="actions"><button type="button" data-ai="apply" data-index="'+i+'">Apply</button><button type="button" data-ai="copy" data-index="'+i+'">Copy</button><button type="button" data-ai="save" data-index="'+i+'">Save</button></div></article>'}).join('')}
+function applyAI(i){var v=state.ai[Number(i)]; if(!v)return; setVal('outTitle',v.title);setVal('outStyle',v.style);setVal('outPrompt',v.prompt);setVal('outNegative',v.negative);updateCounters();status('Applied '+v.kind+' variant.','good')}
+function runCommand(cmd){if(!cmd)return; bump('command:'+cmd); if(cmd==='spark')spark(); else if(cmd==='generate')generate(false); else if(cmd==='lyrics'){setVal('lyricMode','full');generate(false);status('Full lyrics written.','good')} else if(cmd==='images')sparkImages(); else if(cmd==='copyAll')copyAll(); else if(cmd==='save')save(); else if(cmd==='polish')localPolish(); else if(cmd==='export')exportJSON(); else if(cmd==='llmBrief'){updateRepoConsole();status('LLM upgrade brief generated.','good')} else if(cmd==='gitCommands')copyGitCommands(); else if(cmd==='selftest')selfTest(); else if(cmd==='clear')clearEditor(); var cs=el('commandSelect'); if(cs)cs.value=''}
+function clearEditor(){['titleSeed','hookPhrase','coreIdea','inspiredBy','manualTraits','instruments','arrangement','mood','lyricImages','avoidWords'].forEach(function(id){setVal(id,'')}); state.lastHash=''; generate(false); status('Editor cleared.','good')}
+function selfTest(){try{generate(true); if(!val('outTitle'))throw new Error('title output empty'); var before=state.library.length; save(); if(state.library.length<=before)throw new Error('library save did not increment'); localPolish(); if(!state.ai.length)throw new Error('local polish did not create variants'); status('Self-test passed: JS, generation, library, local polish.','good')}catch(e){showError('self-test failed',e);status('Self-test failed.','bad')}}
+function resetCaches(){try{if(navigator.serviceWorker&&navigator.serviceWorker.getRegistrations){navigator.serviceWorker.getRegistrations().then(function(regs){regs.forEach(function(r){r.unregister()})})} if(window.caches&&caches.keys){caches.keys().then(function(keys){keys.forEach(function(k){caches.delete(k)})})} status('Cache/service-worker reset requested. Refresh page.','good')}catch(e){showError('cache reset failed',e)}}
+function resetStorage(){state.library=[];storeRemove('promptMuseV14Library');storeRemove('promptMuseV12Library');storeRemove('promptMuseV13Library');persist();renderLibrary();status('Storage reset.','good')}
+
+function repoValue(id,fallback){var v=val(id).trim();return v||fallback}
+function repoSlug(){var r=repoValue('repoUrl','https://github.com/OWNER/prompt-muse-suno');return r.replace(/^https?:\/\/github\.com\//,'').replace(/\.git$/,'')}
+function buildLLMBrief(){
+ var rec=record();
+ var brief=[
+'# Prompt Muse Suno App Upgrade Brief',
+'',
+'## Assignment',
+'You are updating Prompt Muse for Suno from GitHub and preparing a Vercel preview deployment. Work in a branch, make targeted changes, run tests, and prepare a pull request summary.',
+'',
+'## Repository',
+'- GitHub repo: '+repoValue('repoUrl','https://github.com/OWNER/prompt-muse-suno'),
+'- Vercel production URL: '+repoValue('vercelUrl','https://YOUR-PROJECT.vercel.app'),
+'- Target branch: '+repoValue('branchName','upgrade/v15-next'),
+'- Target version: '+repoValue('targetVersion','v15'),
+'- Preferred LLM/agent: '+repoValue('llmName','Any coding LLM'),
+'',
+'## Upgrade goal',
+repoValue('upgradeGoal','Improve the app while preserving current working behavior.'),
+'',
+'## Hard constraints',
+repoValue('upgradeConstraints','Do not expose secrets. Preserve iPhone reliability. Keep Suno-facing prompts artist-safe.'),
+'',
+'## Required test plan',
+repoValue('testPlan','Run npm test and manually test index.html and diagnose.html.'),
+'',
+'## Current Suno prompt bundle to preserve during regression testing',
+'- Title: '+rec.title,
+'- Genre: '+rec.genre,
+'- Style: '+rec.style,
+'- Country/place: '+rec.country,
+'- BPM: '+rec.bpm,
+'- Inspired by metadata only: '+rec.inspiredBy,
+'',
+'### Style field',
+rec.stylePrompt,
+'',
+'### Prompt / lyrics field',
+rec.promptLyrics,
+'',
+'### Negative / exclude field',
+rec.negativePrompt,
+'',
+'## Files to inspect first',
+'- index.html',
+'- diagnose.html',
+'- package.json',
+'- vercel.json',
+'- api/polish.js',
+'- docs/PROJECT_BRIEF_V14.md',
+'- docs/DEPLOYMENT_GITHUB_VERCEL.md',
+'- llm/UPGRADE_PROMPT.md',
+'- tests/',
+'',
+'## Acceptance criteria',
+'- No JavaScript startup errors.',
+'- Heartbeat updates on iPhone Safari.',
+'- Emergency command menu and Spark slider generate fields even if buttons are unreliable.',
+'- Title, Style, Prompt/Lyrics, and Negative fields remain plain textareas.',
+'- Library save/export/import still works.',
+'- npm test passes.',
+'- Vercel preview deployment is checked before merge.',
+'',
+'## Pull request summary format',
+'1. What changed',
+'2. Why it changed',
+'3. Tests run',
+'4. iPhone/manual test result',
+'5. Risks or follow-up items'
+ ].join('\n');
+ setVal('llmBriefOut',brief);
+ return brief;
+}
+function buildGitCommands(){
+ var branch=repoValue('branchName','upgrade/v15-next');
+ var remote=repoValue('repoUrl','https://github.com/OWNER/prompt-muse-suno.git');
+ var cmds=['# One-time setup if the repo is not cloned yet','git clone '+remote,'cd prompt-muse-suno','','# Create an upgrade branch','git checkout main','git pull origin main','git checkout -b '+branch,'','# After the LLM edits files','npm test','git status','git add .','git commit -m "Upgrade Prompt Muse to '+repoValue('targetVersion','v15')+'"','git push -u origin '+branch,'','# Open a pull request in GitHub. Vercel should create a Preview Deployment for the PR.',''].join('\n');
+ setVal('gitCommandsOut',cmds);
+ return cmds;
+}
+function updateRepoConsole(){try{buildLLMBrief();buildGitCommands()}catch(e){showError('repo console failed',e)}}
+function copyLLMBrief(){copyText(val('llmBriefOut')||buildLLMBrief(),'Copied LLM upgrade brief.')}
+function downloadLLMBrief(){var name='prompt-muse-'+repoValue('targetVersion','v15').toLowerCase().replace(/[^a-z0-9]+/g,'-')+'-llm-upgrade-brief.md';download(name,val('llmBriefOut')||buildLLMBrief(),'text/markdown')}
+function copyGitCommands(){copyText(val('gitCommandsOut')||buildGitCommands(),'Copied Git commands.')}
+
+function bind(){
+ var ids=['titleSeed','hookPhrase','coreIdea','genre','style','country','bpm','songKey','language','vocalType','inspiredBy','manualTraits','instruments','arrangement','mood','lyricMode','pointOfView','rhymeFeel','lyricImages','avoidWords','limitProfile','strictLimits','manualTitleLimit','manualStyleLimit','manualPromptLimit','manualNegativeLimit']; ids.forEach(function(id){var x=el(id); if(x){x.addEventListener('input',function(){state.lastHash=''});x.addEventListener('change',function(){state.lastHash=''})}});
+ var filters=['filterKeyword','filterGenre','filterStyle','filterCountry','filterInspired','filterBpmMin','filterBpmMax','filterFavorites','librarySort']; filters.forEach(function(id){var x=el(id);if(x){x.addEventListener('input',renderLibrary);x.addEventListener('change',renderLibrary)}});
+ var repoInputs=['repoUrl','vercelUrl','branchName','targetVersion','llmName','upgradeGoal','upgradeConstraints','testPlan']; repoInputs.forEach(function(id){var x=el(id);if(x){x.addEventListener('input',updateRepoConsole);x.addEventListener('change',updateRepoConsole)}});
+ var cs=el('commandSelect'); if(cs)cs.addEventListener('change',function(){runCommand(cs.value)});
+ var ip=el('ideaPreset'); if(ip)ip.addEventListener('change',function(){bump('ideaPreset');sparkByTitle(ip.value);ip.value=''});
+ var sl=el('sparkSlider'); if(sl)sl.addEventListener('input',function(){bump('sparkSlider');spark()});
+ var lp=el('libraryPicker'); if(lp)lp.addEventListener('change',function(){var r=findRec(lp.value); if(r)restore(r)});
+ var imp=el('importFile'); if(imp)imp.addEventListener('change',function(){status('JSON selected. Tap Import selected JSON or use the command menu.','good')});
+ [['btnTapTest',function(){bump('tapTest');status('Tap test received.','good')}],['btnSpark',function(){bump('sparkButton');spark()}],['linkSpark',function(e){e.preventDefault();bump('sparkLink');spark()}],['inputSpark',function(){bump('sparkInput');spark()}],['btnGenerate',function(){bump('generate');generate(false)}],['btnLog',function(){bump('log');var x=el('eventLog');if(x)x.style.display=x.style.display==='block'?'none':'block'}],['btnLyrics',function(){bump('lyrics');setVal('lyricMode','full');generate(false);status('Full lyrics written.','good')}],['btnImages',function(){bump('images');sparkImages()}],['btnCopyAll',function(){bump('copyAll');copyAll()}],['btnSave',function(){bump('save');save()}],['btnMarkdown',function(){bump('markdown');markdown()}],['btnPolish',function(){bump('polish');localPolish()}],['btnExport',function(){bump('export');exportJSON()}],['btnImport',function(){bump('import');importJSON()}],['btnClearLibrary',function(){bump('clearLibrary');resetStorage()}],['btnBuildLLMBrief',function(){bump('llmBrief');updateRepoConsole();status('LLM upgrade brief generated.','good')}],['btnCopyLLMBrief',function(){bump('copyLLMBrief');copyLLMBrief()}],['btnDownloadLLMBrief',function(){bump('downloadLLMBrief');downloadLLMBrief()}],['btnCopyGitCommands',function(){bump('copyGitCommands');copyGitCommands()}],['btnResetCache',function(){bump('resetCache');resetCaches()}],['btnResetStorage',function(){bump('resetStorage');resetStorage()}]].forEach(function(pair){var x=el(pair[0]);if(x){x.addEventListener('click',pair[1]);x.addEventListener('touchend',function(ev){}, {passive:true})}});
+ document.addEventListener('click',function(e){var c=e.target.closest('[data-copy]'); if(c){bump('copy:'+c.getAttribute('data-copy'));copyText(val(c.getAttribute('data-copy')),'Copied field.');return} var lib=e.target.closest('[data-lib]'); if(lib){var id=lib.getAttribute('data-id'), act=lib.getAttribute('data-lib'), r=findRec(id); bump('lib:'+act); if(!r)return; if(act==='load')restore(r); if(act==='copy')copyText('TITLE:\n'+r.title+'\n\nSTYLE:\n'+r.stylePrompt+'\n\nPROMPT / LYRICS:\n'+r.promptLyrics+'\n\nNEGATIVE / EXCLUDE:\n'+r.negativePrompt,'Copied library item.'); if(act==='fav'){r.favorite=!r.favorite;persist();renderLibrary()} if(act==='dupe'){var d=JSON.parse(JSON.stringify(r));d.id=uid();d.title=d.title+' copy';d.createdAt=new Date().toISOString();state.library.unshift(d);persist();renderLibrary()} if(act==='del'){state.library=state.library.filter(function(x){return x.id!==id});persist();renderLibrary()}} var ai=e.target.closest('[data-ai]'); if(ai){var idx=ai.getAttribute('data-index'), act2=ai.getAttribute('data-ai'); bump('ai:'+act2); if(act2==='apply')applyAI(idx); if(act2==='copy'){var v=state.ai[Number(idx)]; if(v)copyText('TITLE:\n'+v.title+'\n\nSTYLE:\n'+v.style+'\n\nPROMPT / LYRICS:\n'+v.prompt+'\n\nNEGATIVE / EXCLUDE:\n'+v.negative,'Copied AI variant.')} if(act2==='save'){applyAI(idx);save()}}});
+ document.querySelectorAll('#outTitle,#outStyle,#outPrompt,#outNegative').forEach(function(x){x.addEventListener('focus',function(){try{this.select()}catch(e){}})});
+}
+function init(){try{status('JavaScript ready. InputDrive active.','good'); loadLibrary(); bind(); renderLibrary(); renderAI(); generate(true); updateRepoConsole(); setInterval(autoTick,1000); setTimeout(autoTick,50); log('init complete '+BUILD)}catch(e){showError('startup failed',e);status('Startup failed. See red error box.','bad')}}
+window.PM13={runCommand:runCommand,spark:spark,generate:generate,selfTest:selfTest,save:save,copyAll:copyAll};
+window.onerror=function(m,u,l,c,e){showError('global error line '+l,e||m);return false};
+window.onunhandledrejection=function(e){showError('unhandled promise',e&&e.reason)};
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
 </body>
 </html>

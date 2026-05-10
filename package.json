@@ -1,0 +1,13 @@
+{
+  "name": "prompt-muse-suno-v14-github-vercel",
+  "version": "14.0.0",
+  "private": true,
+  "description": "GitHub-to-Vercel repo-ready iPhone Suno prompt studio with LLM upgrade console.",
+  "scripts": {
+    "check": "node --check api/polish.js && node --check netlify/functions/polish.js && node scripts/verify.mjs",
+    "test": "npm run check",
+    "verify": "node scripts/verify.mjs",
+    "brief": "node scripts/print-llm-brief.mjs"
+  },
+  "dependencies": {}
+}

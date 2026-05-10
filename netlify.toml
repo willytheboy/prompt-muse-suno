@@ -1,0 +1,7 @@
+[build]
+  publish = "."
+
+[[redirects]]
+  from = "/api/polish"
+  to = "/.netlify/functions/polish"
+  status = 200
