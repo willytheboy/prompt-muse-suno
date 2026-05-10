@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#111827">
-<title>Prompt Muse v14 GitHub → Vercel for Suno</title>
+<title>Prompt Muse v14.1 GitHub → Vercel for Suno</title>
 <link rel="manifest" href="manifest.webmanifest">
 <style>
 :root{
@@ -53,7 +53,7 @@ input[type=range]{padding:0;background:transparent;border:0;min-height:34px}
 <body>
 <main>
   <section class="hero">
-    <div class="kicker">Prompt Muse · v14 GitHub → Vercel · repo-ready</div>
+    <div class="kicker">Prompt Muse · v14.1 GitHub → Vercel · Vercel config fixed</div>
     <h1>Suno prompt studio with a GitHub → Vercel upgrade interface.</h1>
     <p>Generation is automatic, and the project is now structured so any coding LLM can update files in GitHub and let Vercel deploy the result.</p>
   </section>
@@ -232,7 +232,7 @@ sea light keeps calling me home</textarea><div class="counter" id="countPrompt">
 <script>
 (function(){
 'use strict';
-var BUILD='v14-github-vercel';
+var BUILD='v14.1-vercel-fix';
 var state={tap:0,auto:0,library:[],lastHash:'',storageOK:false,heartbeat:0,ai:[],busy:false};
 var memoryStore={};
 function el(id){return document.getElementById(id)}
@@ -306,7 +306,7 @@ function copyText(t,msg){try{if(navigator.clipboard&&navigator.clipboard.writeTe
 function fallbackCopy(t,msg){var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');status(msg||'Copied.','good')}catch(e){status('Copy blocked. Text selected in a temporary field; use manual copy.','warn')}setTimeout(function(){try{document.body.removeChild(ta)}catch(e){}},250)}
 function copyAll(){var t='TITLE:\n'+val('outTitle')+'\n\nSTYLE:\n'+val('outStyle')+'\n\nPROMPT / LYRICS:\n'+val('outPrompt')+'\n\nNEGATIVE / EXCLUDE:\n'+val('outNegative'); copyText(t,'Copied all Suno fields.')} 
 function download(name,textContent,type){var blob=new Blob([textContent],{type:type||'text/plain'}); var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(function(){URL.revokeObjectURL(a.href);try{document.body.removeChild(a)}catch(e){}},200)}
-function exportJSON(){download('prompt-muse-suno-library-v14.json',JSON.stringify(state.library,null,2),'application/json'); status('Exported library JSON.','good')}
+function exportJSON(){download('prompt-muse-suno-library-v14-1.json',JSON.stringify(state.library,null,2),'application/json'); status('Exported library JSON.','good')}
 function markdown(){var t='# '+val('outTitle')+'\n\n## Style\n\n'+val('outStyle')+'\n\n## Prompt / Lyrics\n\n'+val('outPrompt')+'\n\n## Negative / Exclude\n\n'+val('outNegative')+'\n'; download((val('outTitle')||'suno-prompt').toLowerCase().replace(/[^a-z0-9]+/g,'-')+'.md',t,'text/markdown')}
 function importJSON(){var f=el('importFile'); if(!f||!f.files||!f.files[0]){status('Choose a JSON file first.','warn');return} var reader=new FileReader(); reader.onload=function(){try{var arr=JSON.parse(reader.result); if(!Array.isArray(arr))throw new Error('JSON must be an array'); arr.forEach(function(r){r.id=r.id||uid(); state.library.push(r)}); persist(); renderLibrary(); status('Imported '+arr.length+' prompts.','good')}catch(e){showError('import failed',e); status('Import failed.','bad')}}; reader.readAsText(f.files[0])}
 function localPolish(){var base=record(); state.ai=[{kind:'Safe Commercial',title:base.title,style:base.stylePrompt+', release-friendly clarity, original phrasing, no imitation',prompt:base.promptLyrics,negative:base.negativePrompt+', no living-artist names in final prompt'},{kind:'Poetic',title:base.title+' — Poetic Cut',style:base.stylePrompt+', more image-led lyricism, graceful emotional restraint',prompt:base.promptLyrics.replace(/sea light/g,'silver sea light').replace(/the night/g,'the velvet night'),negative:base.negativePrompt},{kind:'Venue Ready',title:base.title+' — Venue Mix',style:base.stylePrompt+', low-intrusion hospitality playback, smooth transitions, warm playlist flow',prompt:base.promptLyrics.replace(/\[Bridge\][\s\S]*?\[Final Chorus\]/,'[Instrumental Break]\nKeep it smooth, elegant, and low-intrusion for hospitality playback.\n\n[Final Chorus]'),negative:base.negativePrompt}]; renderAI(); status('Created local polish variants.','good')}

@@ -61,3 +61,16 @@ AGENTS.md
 llm/UPGRADE_PROMPT.md
 docs/DEPLOYMENT_GITHUB_VERCEL.md
 ```
+
+
+## v14.1 Vercel deploy fix
+
+This build removes the explicit `functions` block from `vercel.json`. Vercel now auto-detects Node.js functions placed in `/api`, including `/api/polish.js` and `/api/health.js`.
+
+After deployment, test:
+
+```text
+https://YOUR-APP.vercel.app/api/health
+```
+
+If it returns JSON with `ok: true`, the API folder is deployed correctly.
