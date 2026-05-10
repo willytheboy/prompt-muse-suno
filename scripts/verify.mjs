@@ -29,6 +29,7 @@ const checks = [
   { label: "Album Studio", ok: /Album Studio/i.test(index) && /Track count/i.test(index) },
   { label: "Suno copy dock", ok: /Suno copy dock/i.test(index) && /Prompt \/ Lyrics/i.test(index) },
   { label: "lyrics generation", ok: /actual sectioned lyrics|Generate full lyrics/i.test(index) },
+  { label: "LyricsGuard", ok: /LyricsGuard|Regenerate full lyrics|regenerateLyrics/i.test(index) },
   { label: "GitHub and Vercel text", ok: /GitHub/i.test(index) && /Vercel/i.test(index) },
   { label: "manifest names Prompt Muse", ok: /Prompt Muse/i.test(manifest) },
   ...forbidden.map((item) => ({ label: `forbidden display token: ${item.label}`, ok: !item.pattern.test(index) }))

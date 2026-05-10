@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#09090f">
-<title>Prompt Muse v15 AI Studio for Suno</title>
+<title>Prompt Muse v15.2 LyricsGuard for Suno</title>
 <link rel="manifest" href="/manifest.webmanifest" crossorigin="use-credentials">
 <style>
 :root{
@@ -29,7 +29,7 @@ input,textarea,select{width:100%;border:1px solid var(--line);border-radius:16px
 <div class="app" id="app">
   <aside class="rail" aria-label="Prompt Muse navigation">
     <div class="brand"><div class="logo" aria-hidden="true"></div><div><h1>Prompt Muse</h1><p>AI Studio for Suno</p></div></div>
-    <div class="version"><span class="pill">v15.0.0</span><span class="pill">AI Studio UI</span><span class="pill">GitHub to Vercel</span></div>
+    <div class="version"><span class="pill">v15.2.0</span><span class="pill">AI Studio UI + LyricsGuard</span><span class="pill">GitHub to Vercel</span></div>
     <nav class="nav">
       <button class="active" data-scroll="compose">Compose</button>
       <button data-scroll="album">Album</button>
@@ -46,30 +46,37 @@ input,textarea,select{width:100%;border:1px solid var(--line);border-radius:16px
     <div class="rail-card">
       <b>AI routing</b>
       <p class="tiny muted" id="apiSummary">Server endpoint: /api/ai</p>
-      <button class="flat" data-action="openSettings">Edit settings</button>
+      <p class="tiny" id="apiStatusMini"><span class="chip">API status: not checked</span></p>
+      <div class="actions" style="margin-top:10px">
+        <button class="flat" data-action="checkApi">Check API</button>
+        <button class="flat" data-action="openSettings">Settings</button>
+      </div>
     </div>
   </aside>
 
   <main class="main">
     <section class="hero">
       <div class="hero-card">
-        <p class="pill" style="display:inline-flex;margin:0 0 14px">Latest app version: v15.0.0</p>
+        <p class="pill" style="display:inline-flex;margin:0 0 14px">Latest app version: v15.2.0</p>
         <h2>Compose, polish, and sequence Suno releases from one clean AI cockpit.</h2>
         <p>Build a single song, a best-of collection, a consistent album, a history-of release, or a venue-ready pack. Artist inspiration stays in memory; Suno-facing prompts stay original and release-safe.</p>
         <div class="quick">
           <button class="primary" data-action="spark">Spark composition</button>
           <button data-action="generate">Generate lyrics</button>
+          <button data-action="regenerateLyrics">Regenerate full lyrics</button>
           <button data-action="openAlbum">Build album</button>
           <button data-action="aiPolish">AI polish</button>
+          <button data-action="checkApi">Check API</button>
         </div>
       </div>
       <div class="status-card">
-        <div class="cardhead"><div><h3 style="margin:0">Studio status</h3><p class="tiny muted" id="status">Ready. v15 AI Studio active.</p></div><button class="flat" data-action="tapTest">Tap test</button></div>
+        <div class="cardhead"><div><h3 style="margin:0">Studio status</h3><p class="tiny muted" id="status">Ready. v15.1 AI Studio active.</p></div><button class="flat" data-action="tapTest">Tap test</button></div>
         <div class="status-grid">
-          <div class="stat"><b id="versionStat">v15.0.0</b><span>latest version</span></div>
+          <div class="stat"><b id="versionStat">v15.2.0</b><span>latest version</span></div>
           <div class="stat"><b id="tapStat">0</b><span>tap count</span></div>
           <div class="stat"><b id="libraryStat">0</b><span>library items</span></div>
           <div class="stat"><b id="storageStat">OK</b><span>storage</span></div>
+          <div class="stat"><b id="apiStat">Not checked</b><span>API deployment</span></div>
         </div>
       </div>
     </section>
@@ -97,6 +104,7 @@ input,textarea,select{width:100%;border:1px solid var(--line);border-radius:16px
           <div class="actions">
             <button class="primary" data-action="spark">Spark composition</button>
             <button data-action="generate">Generate full lyrics</button>
+            <button data-action="regenerateLyrics">Force lyrics repair</button>
             <button data-action="saveComposition">Save to library</button>
             <button data-action="resetBrief">Reset brief</button>
           </div>
@@ -137,14 +145,14 @@ input,textarea,select{width:100%;border:1px solid var(--line);border-radius:16px
           <div class="cardhead"><div><h3>Suno copy dock</h3><p class="muted tiny">Copy these fields into Suno. Lyrics are real lyrics; musical instructions stay in Style.</p></div></div>
           <div class="copyfield"><label>Title</label><textarea id="outTitle" rows="2"></textarea><div class="actions"><button data-copy="outTitle">Copy title</button></div><div class="count" id="countTitle">0 / 100</div></div>
           <div class="copyfield"><label>Style</label><textarea id="outStyle"></textarea><div class="actions"><button data-copy="outStyle">Copy style</button></div><div class="count" id="countStyle">0 / 1000</div></div>
-          <div class="copyfield"><label>Prompt / Lyrics</label><textarea id="outLyrics"></textarea><div class="actions"><button data-copy="outLyrics">Copy lyrics</button></div><div class="count" id="countLyrics">0 / 5000</div></div>
+          <div class="copyfield"><label>Prompt / Lyrics</label><textarea id="outLyrics"></textarea><div class="actions"><button data-copy="outLyrics">Copy lyrics</button><button data-action="regenerateLyrics">Repair / regenerate lyrics</button></div><div class="count" id="countLyrics">0 / 5000</div><div class="tiny safe" id="lyricsHealth">LyricsGuard waiting for generated lyrics.</div></div>
           <div class="copyfield"><label>Negative / Exclude</label><textarea id="outNegative"></textarea><div class="actions"><button data-copy="outNegative">Copy negative</button></div><div class="count" id="countNegative">0 / 500 advisory</div></div>
           <div class="actions"><button class="primary" data-action="copyAll">Copy all Suno fields</button><button data-action="saveComposition">Save</button></div>
         </section>
       </aside>
     </section>
 
-    <div class="footerbar"><span>Prompt Muse v15.0.0 AI Studio UI. No service worker cache during active development.</span><span>Use server-side API keys only for production.</span></div>
+    <div class="footerbar"><span>Prompt Muse v15.2.0 AI Studio UI + LyricsGuard. No service worker cache during active development.</span><span>Use server-side API keys only for production.</span></div>
   </main>
 </div>
 
@@ -153,6 +161,11 @@ input,textarea,select{width:100%;border:1px solid var(--line);border-radius:16px
     <div class="modalhead"><div><h3 style="margin:0">Settings and AI defaults</h3><p class="tiny muted" style="margin:4px 0 0">Saved locally on this device. API secrets should stay server-side.</p></div><button data-action="closeSettings">Close</button></div>
     <div class="modalbody">
       <div class="notice">Security note: do not put a real OpenAI API key in public browser code. Use Vercel or Netlify environment variables and call a server endpoint such as /api/ai.</div>
+      <div class="safe" style="margin-top:12px">
+        <b>API deployment check</b>
+        <p class="tiny muted" id="apiStatusDetail" style="margin:6px 0 10px">Not checked yet. Click Check API after Vercel deploys.</p>
+        <div class="actions"><button class="primary" data-action="checkApi">Check API now</button><button data-action="copyApiHealthUrl">Copy health URL</button></div>
+      </div>
       <div class="grid" style="margin-top:14px">
         <div class="field col-4"><label>AI provider preset</label><select id="setProvider"><option value="vercel">Vercel server /api/ai</option><option value="vercelPolish">Vercel polish /api/polish</option><option value="netlify">Netlify function /.netlify/functions/ai</option><option value="custom">Custom proxy endpoint</option></select></div>
         <div class="field col-8"><label>AI endpoint URL</label><input id="setEndpoint" placeholder="/api/ai"></div>
@@ -197,13 +210,13 @@ input,textarea,select{width:100%;border:1px solid var(--line);border-radius:16px
   </div>
 </div>
 
-<div class="badgefixed">Prompt Muse - Latest app version: <b>v15.0.0</b></div>
+<div class="badgefixed">Prompt Muse - Latest app version: <b>v15.2.0</b></div>
 
 <script>
 (function(){
 'use strict';
 var VERSION='15.0.0';
-var BUILD='v15-ai-studio-ui';
+var BUILD='v15.2-lyrics-guard';
 var LIMITS={title:100,style:1000,lyrics:5000,negative:500};
 var storageOK=true;
 var state={tap:0,library:[],albums:[],settings:{},variants:[],currentAlbum:null,log:[]};
@@ -237,17 +250,29 @@ function applyBrief(b){Object.keys(b||{}).forEach(function(k){if(el(k))set(k,b[k
 function makeTitle(b,i){if(b.title)return b.title; var base=['Sea Light','Blue Hour','Terrace Moon','Harbor Glow','Afterglow','Coastal Memory','Night Returns','Tide Keeps Time']; return pick(base,i)+(b.country?' - '+String(b.country).split(',')[0]:'')}
 function traitsFromInspired(s){var low=String(s||'').toLowerCase();var traits=[]; if(/sade/.test(low))traits.push('silky late-night restraint'); if(/fairuz|فيروز/.test(low))traits.push('Levantine poetic place imagery'); if(/ziad/.test(low))traits.push('urban Beirut jazz wit'); if(/daft|rufus|black coffee|nora/.test(low))traits.push('clean electronic pulse with warm human groove'); if(/umm|kalthoum|oum/.test(low))traits.push('long emotional phrasing and dignified melodic tension'); if(!traits.length&&s)traits.push('translated inspiration as general mood only, no direct imitation'); return traits.join(', ')}
 function makeStyle(b,role,i){var bpm=b.bpm||pick([82,88,94,96,104,112],i);var ins=b.instruments||'oud, Rhodes, soft trumpet, warm bass, hand percussion';var vocal=b.vocal||'intimate original vocal, restrained delivery';var t=traitsFromInspired(b.inspiredBy);var parts=[b.genre||'Mediterranean lounge',b.style||'warm organic production',bpm+' BPM',b.key||'minor key warmth',b.country||'coastal Mediterranean setting',ins,vocal,'album-ready arrangement','premium clean mix','no direct artist names']; if(t)parts.push(t); if(role)parts.push('track role: '+role); return clamp(parts.filter(Boolean).join(', '),LIMITS.style)}
-function makeLyrics(b,role,i){var title=makeTitle(b,i);var topic=words(b.topics||'sea light, terrace candles, blue hour, tide');var a=pick(topic,0)||'sea light', c=pick(topic,1)||'terrace candles', d=pick(topic,2)||'blue hour', e=pick(topic,3)||'tide';var hook=String(title).replace(/\s+-\s+.*$/,'');var lang=b.language||'English with Arabic phrases';var arabic=/arabic/i.test(lang)?'Ya layl, ':'';var roleLine=role?'This is the '+role.toLowerCase()+' of the night':'The night keeps a soft place for us';var lines=[
-'[Intro]',arabic+a+' on the water',String(b.country||'the coast')+' breathing low','',
+function makeLyrics(b,role,i){
+var title=makeTitle(b,i);var topic=words(b.topics||'sea light, terrace candles, blue hour, tide');
+var a=pick(topic,0)||'sea light', c=pick(topic,1)||'terrace candles', d=pick(topic,2)||'blue hour', e=pick(topic,3)||'tide';
+var hook=String(title).replace(/\s+-\s+.*$/,'');var lang=b.language||'English with Arabic phrases';var arabic=/arabic/i.test(lang)?'Ya layl, ':'';var roleLine=role?'This is the '+role.toLowerCase()+' of the night':'The night keeps a soft place for us';
+var core=String(b.coreIdea||'A coastal love song with premium, original imagery.');
+var place=String(b.country||'the coast');
+var lines=[
+'[Intro]',arabic+a+' on the water',place+' breathing low','',
 '[Verse 1]','I kept a small light burning near the door','Your name moved softly through '+c,'Every old street knew what we could not say','And '+d+' folded slowly over the shore','',
 '[Pre-Chorus]',roleLine,'I hear the room go quiet when the waves begin','',
 '[Chorus]',hook+', carry me home',hook+', under the moon','We let '+a+' say what words could never hold','And '+e+' keeps time for me and you','',
 '[Verse 2]','The band played low where the glasses shone','A warm brass line crossed the midnight air','I found your shadow near the open sea','Still turning back as if the song was there','',
 '[Bridge]','No borrowed melody, no ghost to chase','Only our footsteps in an honest place','',
-'[Final Chorus]',hook+', carry me home',hook+', under the moon','We let '+a+' rise where the silence used to be','And '+e+' keeps time for me and you'
-];return clamp(lines.join('\n'),LIMITS.lyrics)}
+'[Final Chorus]',hook+', carry me home',hook+', under the moon','We let '+a+' rise where the silence used to be','And '+e+' keeps time for me and you','',
+'[Outro]','The tide moves softly through '+place,hook+', carry me home'
+];
+return clamp(lines.join('\n'),LIMITS.lyrics)}
+function lyricLooksLikeInstructions(s){s=String(s||'').trim();if(!s)return true;var lower=s.toLowerCase();var bad=['write ','generate ','create ','use ','include ','add ','describe ','four concise','sectioned lyrics','lyric scaffold','placeholder','instruction','prompt should','verse about','chorus about','make the chorus','keep it'];var hits=bad.filter(function(x){return lower.indexOf(x)>=0}).length;var sections=(s.match(/\[(intro|verse|pre-chorus|chorus|bridge|outro|final chorus)\]/ig)||[]).length;var lineCount=s.split(/\n+/).filter(function(x){return x.trim()}).length;return hits>=2 || sections<3 || lineCount<10}
+function validateLyrics(raw,b,role,i,source){var s=String(raw||'').trim();var repaired=false;if(lyricLooksLikeInstructions(s)){s=makeLyrics(b,role||'full lyrics',i||Date.now());repaired=true} s=clamp(s,LIMITS.lyrics);updateLyricsHealth(s,repaired,source);return s}
+function updateLyricsHealth(s,repaired,source){var sections=(String(s||'').match(/\[(intro|verse|pre-chorus|chorus|bridge|outro|final chorus)\]/ig)||[]).length;var ok=!lyricLooksLikeInstructions(s);var msg=ok?'LyricsGuard OK: full sectioned lyrics detected ('+sections+' sections).':'LyricsGuard warning: output still looks like instructions.';if(repaired)msg='LyricsGuard repaired instruction-like output into full lyrics.';text('lyricsHealth',msg+(source?' Source: '+source+'.':''))}
 function negative(){return 'no direct artist names, no impersonation, no copied melody, no copyrighted hooks, no harsh clipping, no muddy low end, no random spoken instructions, no off-key vocals'}
-function generate(role,i){var b=brief();var title=clamp(makeTitle(b,i),LIMITS.title);set('outTitle',title);set('outStyle',makeStyle(b,role,i));set('outLyrics',makeLyrics(Object.assign({},b,{title:title}),role,i));set('outNegative',clamp(negative(),LIMITS.negative));updateCounts();remember(b);status('Generated Suno-ready lyrics for '+title+'.','good')}
+function generate(role,i){var b=brief();var title=clamp(makeTitle(b,i),LIMITS.title);var bb=Object.assign({},b,{title:title});set('outTitle',title);set('outStyle',makeStyle(bb,role,i));set('outLyrics',validateLyrics(makeLyrics(bb,role,i),bb,role,i,'local generator'));set('outNegative',clamp(negative(),LIMITS.negative));updateCounts();remember(b);status('Generated full Suno-ready lyrics for '+title+'.','good')}
+function regenerateLyrics(){var b=brief();var title=val('outTitle')||clamp(makeTitle(b,Date.now()),LIMITS.title);var bb=Object.assign({},b,{title:title});set('outTitle',title);if(!val('outStyle'))set('outStyle',makeStyle(bb,'full lyrics',Date.now()));set('outLyrics',validateLyrics('',bb,'full lyrics',Date.now(),'forced repair'));set('outNegative',clamp(val('outNegative')||negative(),LIMITS.negative));updateCounts();remember(bb);status('Regenerated full sectioned lyrics for '+title+'.','good')}
 function spark(){var idea=pick(ideas);applyBrief({title:idea.title,coreIdea:idea.idea,genre:idea.genre,style:idea.style,country:idea.country,bpm:idea.bpm,key:idea.key,topics:idea.topics});generate('lead single',Math.floor(Math.random()*99));status('Sparked composition: '+val('title'), 'good')}
 function updateCounts(){[['outTitle','countTitle',LIMITS.title],['outStyle','countStyle',LIMITS.style],['outLyrics','countLyrics',LIMITS.lyrics],['outNegative','countNegative',LIMITS.negative]].forEach(function(x){var n=(el(x[0])&&el(x[0]).value.length)||0;text(x[1],n+' / '+x[2])})}
 function currentFields(){return {title:val('outTitle'),stylePrompt:val('outStyle'),promptLyrics:val('outLyrics'),negativePrompt:val('outNegative')}}
@@ -267,18 +292,66 @@ function loadTrack(id){var t=findTrack(id);if(!t)return;set('outTitle',t.title);
 function saveTrack(id){var t=findTrack(id);if(!t)return;state.library.unshift(Object.assign({},brief(),t,{id:'pm_'+Date.now()}));safeSet('pmV15Library',state.library);renderLibrary();status('Saved album track to library.','good')}
 function saveAlbum(){if(!state.currentAlbum)buildAlbum();state.albums.unshift(state.currentAlbum);safeSet('pmV15Albums',state.albums);state.currentAlbum.tracks.forEach(function(t){state.library.unshift(Object.assign({},brief(),t,{id:'pm_'+Date.now()+'_'+t.trackNumber}))});safeSet('pmV15Library',state.library);renderLibrary();status('Saved album and added tracks to library.','good')}
 function download(name,content,type){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type:type||'text/plain'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500)}
+
+function apiHealthPath(endpoint){
+  endpoint=String(endpoint||'/api/ai').trim();
+  if(!endpoint || endpoint==='/api/ai' || endpoint.indexOf('/api/')===0)return '/api/health';
+  if(endpoint.indexOf('/.netlify/functions/ai')>=0)return endpoint.replace('/.netlify/functions/ai','/.netlify/functions/health');
+  try{var u=new URL(endpoint,window.location.href);if(u.pathname.indexOf('/.netlify/functions/ai')>=0){u.pathname=u.pathname.replace('/.netlify/functions/ai','/.netlify/functions/health');return u.toString()}u.pathname=u.pathname.replace(/\/api\/ai\/?$/,'/api/health');return u.toString()}catch(e){return '/api/health'}
+}
+function setApiStatus(label,detail,kind){
+  text('apiStat',label||'Unknown');
+  html('apiStatusMini','<span class="chip">API status: '+esc(label||'Unknown')+'</span>');
+  text('apiStatusDetail',detail||'');
+  log('API status - '+(label||'Unknown')+': '+(detail||''));
+  if(kind==='good')status('API deployed: '+(detail||label),'good');
+  else if(kind==='warn')status('API check warning: '+(detail||label),'warn');
+  else if(kind==='bad')status('API check failed: '+(detail||label),'bad');
+}
+async function checkApi(){
+  var s=Object.assign({},defaults,state.settings||{});
+  var health=apiHealthPath(s.endpoint||'/api/ai');
+  setApiStatus('Checking','Calling '+health+' ...','');
+  try{
+    var res=await fetch(health,{method:'GET',headers:{'Accept':'application/json'},cache:'no-store'});
+    var ct=res.headers.get('content-type')||'';
+    var data=ct.indexOf('application/json')>=0?await res.json():{text:await res.text()};
+    if(res.ok && data && data.ok){
+      var key=data.hasOpenAIKey?'OpenAI key configured':'OpenAI key missing';
+      var model=data.model?('model '+data.model):'model unknown';
+      var version=data.version||'unknown version';
+      var commit=data.commit?('commit '+String(data.commit).slice(0,7)):'commit unknown';
+      setApiStatus('Live',version+' - '+key+' - '+model+' - '+commit,'good');
+      return data;
+    }
+    if(res.status===401 || res.status===403){setApiStatus('Protected','Vercel returned '+res.status+'. Deployment Protection or authentication is blocking the API.','warn');return null}
+    if(res.status===404){setApiStatus('Missing','/api/health was not found. The API files may not be deployed or Vercel root directory is wrong.','bad');return null}
+    setApiStatus('Error','HTTP '+res.status+' from '+health+'. '+(data.error||data.text||''),'bad');
+  }catch(e){
+    setApiStatus('Offline','Could not reach '+health+': '+(e.message||e),'bad');
+  }
+  return null;
+}
+function copyApiHealthUrl(){
+  var s=Object.assign({},defaults,state.settings||{});
+  var health=apiHealthPath(s.endpoint||'/api/ai');
+  var full=new URL(health,window.location.href).toString();
+  copyText(full);
+  status('Copied API health URL.','good');
+}
+
 function settings(){state.settings=Object.assign({},defaults,safeGet('pmV15Settings',{}));['Provider','Endpoint','Model','Instructions','Artist','Genre','Style','Country','Bpm','Language'].forEach(function(k){var key=k.charAt(0).toLowerCase()+k.slice(1);set('set'+k,state.settings[key]||'')});text('apiSummary','Server endpoint: '+state.settings.endpoint+' - model hint: '+state.settings.model)}
 function saveSettings(){var s={provider:val('setProvider')||'vercel',endpoint:val('setEndpoint')||'/api/ai',model:val('setModel')||'gpt-5.5',instructions:val('setInstructions')||defaults.instructions,artist:val('setArtist'),genre:val('setGenre'),style:val('setStyle'),country:val('setCountry'),bpm:val('setBpm'),language:val('setLanguage')};safeSet('pmV15Settings',s);state.settings=s;sessionStorage.setItem('pmV15SessionToken',val('setSessionToken')||'');settings();status('Settings saved.','good')}
 function loadDefaults(){var s=Object.assign({},defaults,state.settings||{});applyBrief({artist:s.artist,genre:s.genre,style:s.style,country:s.country,bpm:s.bpm,language:s.language});status('Defaults applied.','good')}
 async function aiCall(action){var s=Object.assign({},defaults,state.settings||{});var endpoint=s.endpoint||'/api/ai';var token=sessionStorage.getItem('pmV15SessionToken')||'';var payload={action:action,settings:s,fields:currentFields(),brief:brief(),albumRequest:{type:val('albumType'),trackCount:val('trackCount'),moodArc:val('moodArc'),variation:val('variation'),albumGenres:val('albumGenres'),albumNotes:val('albumNotes')}};try{status('Calling AI endpoint '+endpoint+' ...','');var headers={'Content-Type':'application/json'};if(token)headers.Authorization=token;var res=await fetch(endpoint,{method:'POST',headers:headers,body:JSON.stringify(payload)});var data=await res.json();if(!res.ok)throw new Error(data.error||'AI endpoint failed');return data}catch(e){status('AI endpoint unavailable. Using local fallback: '+(e.message||e),'warn');return null}}
 async function aiPolish(){var data=await aiCall('polish');if(data&&(data.variants||data.composition)){if(data.composition&&data.composition.title){applyAIComposition(data.composition);return}state.variants=data.variants||[];renderVariants();return}localVariants()}
 async function aiAlbum(){var data=await aiCall('album');if(data&&data.album&&data.album.tracks){state.currentAlbum=data.album;renderAlbum();status('AI album generated.','good');return}buildAlbum(true)}
-function applyAIComposition(c){set('outTitle',c.title||val('outTitle'));set('outStyle',c.stylePrompt||c.style||val('outStyle'));set('outLyrics',c.promptLyrics||c.lyrics||val('outLyrics'));set('outNegative',c.negativePrompt||val('outNegative'));updateCounts();status('Applied AI composition.','good')}
-function localVariants(){var b=brief();state.variants=['Safe commercial','Poetic premium','Venue ready'].map(function(kind,i){var bb=Object.assign({},b,{title:makeTitle(b,i)+' '+kind.replace(/ .*/,'')});return {kind:kind,title:bb.title,stylePrompt:makeStyle(bb,kind,i),promptLyrics:makeLyrics(bb,kind,i),negativePrompt:negative(),notes:'Local fallback variant. Configure /api/ai for server AI.'}});renderVariants();status('Generated local AI-lab variants.','good')}
+function applyAIComposition(c){var b=Object.assign({},brief(),{title:c.title||val('outTitle')});set('outTitle',c.title||val('outTitle'));set('outStyle',c.stylePrompt||c.style||val('outStyle'));set('outLyrics',validateLyrics(c.promptLyrics||c.lyrics||val('outLyrics'),b,'AI composition',Date.now(),'AI composition'));set('outNegative',c.negativePrompt||val('outNegative')||negative());updateCounts();status('Applied AI composition with LyricsGuard.','good')}
+function localVariants(){var b=brief();state.variants=['Safe commercial','Poetic premium','Venue ready'].map(function(kind,i){var bb=Object.assign({},b,{title:makeTitle(b,i)+' '+kind.replace(/ .*/,'')});return {kind:kind,title:bb.title,stylePrompt:makeStyle(bb,kind,i),promptLyrics:validateLyrics(makeLyrics(bb,kind,i),bb,kind,i,'local variant'),negativePrompt:negative(),notes:'Local fallback variant. Configure /api/ai for server AI.'}});renderVariants();status('Generated local AI-lab variants.','good')}
 function renderVariants(){if(!state.variants.length){html('aiResults','<div class="empty">AI variants will appear here.</div>');return}html('aiResults',state.variants.map(function(v,i){return '<article class="item"><h4>'+esc(v.kind)+' - '+esc(v.title)+'</h4><p class="tiny muted">'+esc(v.notes||'')+'</p><div class="actions"><button data-var="apply" data-i="'+i+'">Apply</button><button data-var="copy" data-i="'+i+'">Copy all</button><button data-var="save" data-i="'+i+'">Save</button></div></article>'}).join(''))}
-function applyVariant(i){var v=state.variants[Number(i)];if(!v)return;set('outTitle',v.title);set('outStyle',v.stylePrompt);set('outLyrics',v.promptLyrics);set('outNegative',v.negativePrompt);updateCounts();status('Applied variant: '+v.kind,'good')}
-function init(){state.library=safeGet('pmV15Library',safeGet('promptMuseV14Library',[]));state.albums=safeGet('pmV15Albums',[]);settings();renderMemory();renderLibrary();text('storageStat',storageOK?'OK':'Memory');generate('starter',0);status('Ready. v15 AI Studio active.','good')}
-document.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;tap();var a=b.dataset.action;if(b.dataset.copy){var x=el(b.dataset.copy);copyText(x?x.value:'');status('Copied field.','good');return}if(a){if(a==='spark')spark(); if(a==='generate')generate('full lyrics',1); if(a==='saveComposition')saveComposition(); if(a==='resetBrief'){['artist','title','coreIdea','genre','style','country','bpm','key','inspiredBy','topics','instruments','vocal'].forEach(function(id){set(id,'')});status('Brief reset.','good')} if(a==='copyAll')copyAll(); if(a==='tapTest')status('Tap test worked.','good'); if(a==='openSettings')el('settingsModal').hidden=false; if(a==='closeSettings')el('settingsModal').hidden=true; if(a==='saveSettings')saveSettings(); if(a==='clearSettings'){safeSet('pmV15Settings',{});settings();status('Settings cleared.','good')} if(a==='loadDefaults')loadDefaults(); if(a==='openAlbum')el('albumModal').hidden=false; if(a==='closeAlbum')el('albumModal').hidden=true; if(a==='buildAlbum')buildAlbum(); if(a==='saveAlbum')saveAlbum(); if(a==='exportAlbum'){if(!state.currentAlbum)buildAlbum();download('prompt-muse-album-v15.json',JSON.stringify(state.currentAlbum,null,2),'application/json')} if(a==='aiAlbum')aiAlbum(); if(a==='aiPolish')aiPolish(); if(a==='applyFirstVariant')applyVariant(0); if(a==='exportLibrary')download('prompt-muse-library-v15.json',JSON.stringify(state.library,null,2),'application/json'); if(a==='triggerImport')el('importFile').click(); if(a==='openDiagnostics')el('diagnosticsModal').hidden=false; if(a==='closeDiagnostics')el('diagnosticsModal').hidden=true}if(b.dataset.scroll){var target=el(b.dataset.scroll);if(target)target.scrollIntoView({behavior:'smooth',block:'start'});document.querySelectorAll('.nav button').forEach(function(n){n.classList.remove('active')});b.classList.add('active')}if(b.dataset.lib){var id=b.dataset.id;if(b.dataset.lib==='load')loadRecord(id);if(b.dataset.lib==='copy'){var r=state.library.find(function(x){return x.id===id});if(r)copyText('TITLE\n'+(r.title||'')+'\n\nSTYLE\n'+(r.stylePrompt||'')+'\n\nPROMPT / LYRICS\n'+(r.promptLyrics||'')+'\n\nNEGATIVE / EXCLUDE\n'+(r.negativePrompt||''))}if(b.dataset.lib==='fav'){var r2=state.library.find(function(x){return x.id===id});if(r2)r2.favorite=!r2.favorite;safeSet('pmV15Library',state.library);renderLibrary()}if(b.dataset.lib==='del'){state.library=state.library.filter(function(x){return x.id!==id});safeSet('pmV15Library',state.library);renderLibrary()}}if(b.dataset.track){if(b.dataset.track==='load')loadTrack(b.dataset.id);if(b.dataset.track==='save')saveTrack(b.dataset.id);if(b.dataset.track==='copy'){var t=findTrack(b.dataset.id);if(t)copyText('TITLE\n'+t.title+'\n\nSTYLE\n'+t.stylePrompt+'\n\nPROMPT / LYRICS\n'+t.promptLyrics+'\n\nNEGATIVE / EXCLUDE\n'+t.negativePrompt)}}if(b.dataset.var){if(b.dataset.var==='apply')applyVariant(b.dataset.i);if(b.dataset.var==='copy'){var v=state.variants[Number(b.dataset.i)];if(v)copyText('TITLE\n'+v.title+'\n\nSTYLE\n'+v.stylePrompt+'\n\nPROMPT / LYRICS\n'+v.promptLyrics+'\n\nNEGATIVE / EXCLUDE\n'+v.negativePrompt)}if(b.dataset.var==='save'){applyVariant(b.dataset.i);saveComposition()}}});
+function applyVariant(i){var v=state.variants[Number(i)];if(!v)return;set('outTitle',v.title);set('outStyle',v.stylePrompt);set('outLyrics',validateLyrics(v.promptLyrics,Object.assign({},brief(),{title:v.title}),v.kind,Date.now(),'variant'));set('outNegative',v.negativePrompt);updateCounts();status('Applied variant: '+v.kind,'good')}
+function init(){state.library=safeGet('pmV15Library',safeGet('promptMuseV14Library',[]));state.albums=safeGet('pmV15Albums',[]);settings();renderMemory();renderLibrary();text('storageStat',storageOK?'OK':'Memory');generate('starter',0);status('Ready. v15.2 LyricsGuard active.','good');updateLyricsHealth(val('outLyrics'),false,'startup'); setTimeout(checkApi,600)}
+document.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;tap();var a=b.dataset.action;if(b.dataset.copy){var x=el(b.dataset.copy);copyText(x?x.value:'');status('Copied field.','good');return}if(a){if(a==='spark')spark(); if(a==='generate')generate('full lyrics',1); if(a==='regenerateLyrics')regenerateLyrics(); if(a==='saveComposition')saveComposition(); if(a==='resetBrief'){['artist','title','coreIdea','genre','style','country','bpm','key','inspiredBy','topics','instruments','vocal'].forEach(function(id){set(id,'')});status('Brief reset.','good')} if(a==='copyAll')copyAll(); if(a==='tapTest')status('Tap test worked.','good'); if(a==='openSettings')el('settingsModal').hidden=false; if(a==='closeSettings')el('settingsModal').hidden=true; if(a==='saveSettings')saveSettings(); if(a==='clearSettings'){safeSet('pmV15Settings',{});settings();status('Settings cleared.','good')} if(a==='loadDefaults')loadDefaults(); if(a==='openAlbum')el('albumModal').hidden=false; if(a==='closeAlbum')el('albumModal').hidden=true; if(a==='buildAlbum')buildAlbum(); if(a==='saveAlbum')saveAlbum(); if(a==='exportAlbum'){if(!state.currentAlbum)buildAlbum();download('prompt-muse-album-v15.json',JSON.stringify(state.currentAlbum,null,2),'application/json')} if(a==='aiAlbum')aiAlbum(); if(a==='aiPolish')aiPolish(); if(a==='checkApi')checkApi(); if(a==='copyApiHealthUrl')copyApiHealthUrl(); if(a==='applyFirstVariant')applyVariant(0); if(a==='exportLibrary')download('prompt-muse-library-v15.json',JSON.stringify(state.library,null,2),'application/json'); if(a==='triggerImport')el('importFile').click(); if(a==='openDiagnostics')el('diagnosticsModal').hidden=false; if(a==='closeDiagnostics')el('diagnosticsModal').hidden=true}if(b.dataset.scroll){var target=el(b.dataset.scroll);if(target)target.scrollIntoView({behavior:'smooth',block:'start'});document.querySelectorAll('.nav button').forEach(function(n){n.classList.remove('active')});b.classList.add('active')}if(b.dataset.lib){var id=b.dataset.id;if(b.dataset.lib==='load')loadRecord(id);if(b.dataset.lib==='copy'){var r=state.library.find(function(x){return x.id===id});if(r)copyText('TITLE\n'+(r.title||'')+'\n\nSTYLE\n'+(r.stylePrompt||'')+'\n\nPROMPT / LYRICS\n'+(r.promptLyrics||'')+'\n\nNEGATIVE / EXCLUDE\n'+(r.negativePrompt||''))}if(b.dataset.lib==='fav'){var r2=state.library.find(function(x){return x.id===id});if(r2)r2.favorite=!r2.favorite;safeSet('pmV15Library',state.library);renderLibrary()}if(b.dataset.lib==='del'){state.library=state.library.filter(function(x){return x.id!==id});safeSet('pmV15Library',state.library);renderLibrary()}}if(b.dataset.track){if(b.dataset.track==='load')loadTrack(b.dataset.id);if(b.dataset.track==='save')saveTrack(b.dataset.id);if(b.dataset.track==='copy'){var t=findTrack(b.dataset.id);if(t)copyText('TITLE\n'+t.title+'\n\nSTYLE\n'+t.stylePrompt+'\n\nPROMPT / LYRICS\n'+t.promptLyrics+'\n\nNEGATIVE / EXCLUDE\n'+t.negativePrompt)}}if(b.dataset.var){if(b.dataset.var==='apply')applyVariant(b.dataset.i);if(b.dataset.var==='copy'){var v=state.variants[Number(b.dataset.i)];if(v)copyText('TITLE\n'+v.title+'\n\nSTYLE\n'+v.stylePrompt+'\n\nPROMPT / LYRICS\n'+v.promptLyrics+'\n\nNEGATIVE / EXCLUDE\n'+v.negativePrompt)}if(b.dataset.var==='save'){applyVariant(b.dataset.i);saveComposition()}}});
 ['search','filterGenre','filterArtist','filterCountry','filterBpm'].forEach(function(id){var x=el(id);if(x)x.addEventListener('input',renderLibrary)});
 ['outTitle','outStyle','outLyrics','outNegative'].forEach(function(id){var x=el(id);if(x)x.addEventListener('input',updateCounts)});
 el('importFile').addEventListener('change',function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){try{var arr=JSON.parse(r.result);if(Array.isArray(arr)){state.library=arr.concat(state.library);safeSet('pmV15Library',state.library);renderLibrary();status('Imported library JSON.','good')}}catch(err){status('Import failed: '+err.message,'bad')}};r.readAsText(f)});

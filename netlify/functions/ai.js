@@ -25,7 +25,9 @@ exports.handler = async function(event) {
     };
     const prompt = [
       'You are Prompt Muse AI Studio for Suno. Return strict JSON only.',
-      'Generate release-safe, original Suno fields. Prompt lyrics must be actual sectioned lyrics, not instructions.',
+      'Generate release-safe, original Suno fields. Hard rule: every promptLyrics value must be actual finished lyrics, never writing instructions, never a scaffold, never placeholders.',
+      'Every promptLyrics must start with [Intro] or [Verse 1] and include at least [Verse 1], [Chorus], [Verse 2], and [Bridge] or [Outro].',
+      'Do not write phrases like write, generate, include, add, four concise lines, use imagery, or make the chorus inside promptLyrics.',
       'Keep direct artist names out of title, stylePrompt, promptLyrics, and negativePrompt. Artist names may be used only as private metadata in the user brief.',
       'For action polish, fill variants and composition. For action album, fill album with 1 to 12 tracks. Still provide all required keys.',
       JSON.stringify(body, null, 2)
