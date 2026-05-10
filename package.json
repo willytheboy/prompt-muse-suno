@@ -1,13 +1,12 @@
 {
-  "name": "prompt-muse-suno-v14-6-album-builder",
-  "version": "14.6.0",
+  "name": "prompt-muse-suno-v15-ai-studio-ui",
+  "version": "15.0.0",
   "private": true,
-  "description": "GitHub-to-Vercel iPhone Suno prompt studio with LyricsFirst generation, searchable library, and full 1 to 12 track Album Builder.",
+  "description": "Prompt Muse v15 AI Studio UI for Suno.",
   "scripts": {
-    "check": "node --check api/polish.js && node --check api/health.js && node --check netlify/functions/polish.js && node scripts/verify.mjs",
     "test": "npm run check",
-    "verify": "node scripts/verify.mjs",
-    "brief": "node scripts/print-llm-brief.mjs"
+    "check": "node --check api/polish.js && node --check api/health.js && node --check api/ai.js && node --check netlify/functions/polish.js && node --check netlify/functions/ai.js && node scripts/verify.mjs",
+    "llm:brief": "node scripts/print-llm-brief.mjs"
   },
   "dependencies": {}
 }
