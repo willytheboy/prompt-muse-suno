@@ -39,5 +39,12 @@
         }
       ]
     }
+  ],
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "destination": "https://suno-companion-5-0-studio.vercel.app/",
+      "permanent": false
+    }
   ]
 }
